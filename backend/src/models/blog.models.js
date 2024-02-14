@@ -8,14 +8,15 @@ const blogSchema = new mongoose.Schema({
         trim:true,
         index:true,
     },
-    decription:{
+    description:{
         type:String,
         required:true,
         trim:true,
     },
     owner:{
         type:mongoose.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        required: true,
     }
     ,
     thumbnail:{
@@ -46,11 +47,6 @@ const blogSchema = new mongoose.Schema({
         type:mongoose.Types.ObjectId,
         ref: "Comment"
     }],
-    views:{
-        type:Number,
-        default:0,
-    }
-
 }, {timestamps:true})
 
 export const Blog = mongoose.model('Blog', blogSchema)
