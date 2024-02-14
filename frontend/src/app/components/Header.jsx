@@ -4,7 +4,6 @@ import '../page.css'
 import '../styles/Header.css'
 import Link from 'next/link'
 
-import NextTopLoader from 'nextjs-toploader'
 
 const Header = () => {
   return (

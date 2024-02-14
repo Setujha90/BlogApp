@@ -1,5 +1,5 @@
 import Header from "./components/Header.jsx"
-import ProgressBar from "./ProgressBar.jsx"
+import ProgressBar from "./components/ProgressBar.jsx"
 
 export const metadata = {
   title: 'Next.js',

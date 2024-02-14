@@ -1,8 +1,9 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import '../styles/Profile.css'
 import axios from 'axios'
 import { LogoutSubmit } from '../server/signup.js'
+import Spinner from './Spinner.jsx'
 
 import { useRouter } from 'next/navigation'
 
@@ -12,6 +13,8 @@ const Profile = async({id}) => {
 
   let user;
   const url = "http://localhost:8000/api/v1/users"
+
+  const [loading, setLoading] = useState(false)
 
   try {
     await axios.get(`${url}/${id}`)
@@ -25,7 +28,9 @@ const Profile = async({id}) => {
   }
 
   const { username, fullName, email, avatarImage, blogs } = user.user
+  const loadingSpinner = <><Spinner/><span>Loading...</span></>
   
+
   return (
     <main>
       <div className="container">
@@ -49,16 +54,18 @@ const Profile = async({id}) => {
             <button 
               onClick={async(e)=>{
                 try{
+                  setLoading(true)
                   const response = await LogoutSubmit()
                   router.replace("/users/signup")
                 }
                 catch(error){
                   throw error
                 }
+                setLoading(false)
               }}
               className="btn btn2"
             >
-              Log Out
+              {loading ? loadingSpinner : 'Logout'}
             </button>
           </div>
         </div>

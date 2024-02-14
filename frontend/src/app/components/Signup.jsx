@@ -23,7 +23,7 @@ const Signup = () => {
 
   const [loading, setLoading] = useState(false)
 
-  const loadingSpinner = <><Spinner size='sm' /><span>Loading...</span></>
+  const loadingSpinner = <><Spinner/><span>Loading...</span></>
 
   return (
     <main>
