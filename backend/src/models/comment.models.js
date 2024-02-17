@@ -15,6 +15,10 @@ const commentSchema = new mongoose.Schema({
     blog:{
         type:mongoose.Types.ObjectId,
         ref: "Blog"
+    },
+    noOfLikes:{
+        type:Number,
+        default: 0
     }
 }, {timestamps:true})
 

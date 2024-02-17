@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
         enum: ["user", "admin"],
         default: "user"
     },
-    viewedBlogs:[{
+    blogHistory:[{
         type:mongoose.Types.ObjectId,
         ref: "Blog"
     }]

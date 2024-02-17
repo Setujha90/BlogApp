@@ -1,10 +1,15 @@
 
 import { Blog } from "../models/blog.models.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.models.js";
+import { Like } from "../models/likes.models.js";
+import { Comment } from "../models/comment.models.js"
+import { View } from "../models/views.models.js"
+
+import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { ApiError } from "../utils/ApiError.js"
 import { uploadOnCloud } from "../utils/cloudinary.js"
+import mongoose from "mongoose";
 
 
 export const createBlog = asyncHandler(async(req, res) => {
@@ -176,12 +181,37 @@ export const likeBlog = asyncHandler(async(req, res) => {
     const user = req.user
     // yaha checks lgana baaki h if same user baar baar like krde to
 
-
     if(!user){
         throw new ApiError(401, "Login to like this blog")
     }
 
     const blogId = req.params.id
+
+    if(!blogId){
+        throw new ApiError(400, "Invalid user id")
+    }
+
+    const blogObjectId = new mongoose.Types.ObjectId(`${blogId}`)
+
+    // agar koi banda pehle se isko like kiye hoga to uska views document bana hoga to usme check krte h
+    const ifAlreadyLikedBySameUser = await Like.aggregate([
+        {
+            $match:{
+                blog : blogObjectId,
+                likedBy : user._id
+            }
+        }
+    ])
+
+    if(ifAlreadyLikedBySameUser.length > 0){
+        return res.status(200).json(new ApiResponse(200, {}, "User already liked this blog"))
+    }
+
+    const likesDocument = await Like.create({
+        blog: blogId,
+        likedBy: user._id
+    })
+
     const LikedBlog = await Blog.findByIdAndUpdate(blogId, {
         $inc:{
             noOfLikes: 1
@@ -197,7 +227,7 @@ export const likeBlog = asyncHandler(async(req, res) => {
         .json(new ApiResponse(
             200,
             {
-                LikedBlog
+                LikedBlog, likesDocument
             },
             "Successfully liked the blog"
         ))
@@ -207,14 +237,49 @@ export const getBlogById = asyncHandler(async(req, res) => {
     const blogId = req.params.id
     const user = req.user
 
+    if(!blogId){
+        throw new ApiError(400, "Blog id is required")
+    }
+
     const blog = await Blog.findById(blogId)
 
     if(!blog){
         throw new ApiError(400, "Blog id is invalid")
     }
 
+    let viewedDocument
     // yaha or checks lgana baaki h if same user baar baar fetch kre usko handle krna h
     if(user){
+
+        const blogObjectId = new mongoose.Types.ObjectId(`${blogId}`)
+        
+        const isAlreadyViewed = await View.aggregate([
+            {
+                $match:{
+                    blog : blogObjectId,
+                    user : user._id
+                }
+            }
+        ])
+
+        if(isAlreadyViewed.length > 0){
+            return res.status(200).json(new ApiResponse(200, {blog}, "User already viewed this blog"))
+        }
+
+        viewedDocument = await View.create({
+            blog: blogId,
+            user: user._id
+        })
+
+        const userHistory = await User.findById(user._id)
+
+        if(!userHistory){
+            throw new ApiError(500, "Error while fetching user data")
+        }
+
+        userHistory.blogHistory.push(blogId)
+        userHistory.save({validateBeforeSave: false})
+
         blog.noOfViews+=1
         blog.save({validateBeforeSave: false})
     }
@@ -224,7 +289,7 @@ export const getBlogById = asyncHandler(async(req, res) => {
         .json(new ApiResponse(
             200,
             {
-                blog
+                blog, viewedDocument
             },
             "fetched blog successfully"
         ))
@@ -242,6 +307,38 @@ export const comment = asyncHandler(async(req, res) => {
         throw new ApiError(401, "Only logged in users can comment")
     }
 
-    
+    const { content } = req.body
 
+    if(!content || content.trim() === ""){
+        throw new ApiError(400, "Comment cannot be empty")
+    }
+
+    const comment = await Comment.create({
+        content,
+        owner: user._id,
+        blog: blogId
+    })
+
+    if(!comment){
+        throw new ApiError(500, "Error while creating comment!!! Please try again later")
+    }
+
+    const blog = await Blog.findById(blogId)
+    
+    if(!blog){
+        throw new ApiError(400, "Error while fetching the blog")
+    }
+
+    blog.comment.push(comment)
+    blog.save({validateBeforeSave: false})
+
+    return res
+        .status(200)
+        .json(new ApiResponse(
+            200,
+            {
+                comment, blog
+            },
+            "comment posted successfully"
+        ))
 })
