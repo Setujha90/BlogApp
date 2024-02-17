@@ -1,21 +1,24 @@
 import React from 'react'
 import { LogoutSubmit } from '../server/signup.js'
 import { useRouter } from 'next/navigation.js'
-import '../styles/Profile.css'
+// import '../styles/Profile.css'
 
-
+import { useDispatch } from 'react-redux'
+import { loggedOut } from '../redux/user/userSlice.js'
 
 const Logout = async() => {
 
-    const router = useRouter()
+  const router = useRouter()
+
+  const dispatch = useDispatch();
 
   return (
     <button 
     onClick={async(e)=>{
       try{
         const response = await LogoutSubmit()
-        console.log(response)
-        router.replace("/")
+        dispatch(loggedOut())
+        router.replace("/user/signup")
       }
       catch(error){
         throw error

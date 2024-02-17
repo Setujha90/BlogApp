@@ -1,9 +1,9 @@
-import Header from '@/app/components/Header.jsx'
-import Profile from '@/app/components/Profile.jsx'
+import Profile from '@/app/components/Profile/Profile.jsx'
 import React from 'react'
 
 
 const page = ({params}) => {
+
   return (
     <div>
       <Profile id={params.id} />

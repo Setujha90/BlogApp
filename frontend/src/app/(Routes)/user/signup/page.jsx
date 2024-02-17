@@ -1,6 +1,5 @@
 import React from 'react'
-import Header from '@/app/components/Header'
-import Signup from '@/app/components/Signup'
+import Signup from '@/app/components/Auth/Signup.jsx'
 
 const page = () => {
   return (

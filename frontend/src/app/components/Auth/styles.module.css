@@ -1,6 +1,6 @@
 
 
-main{
+.main{
     min-width: 100vw;
     min-height: calc(100vh - 4rem);
     background: rgb(123,119,193);
@@ -19,7 +19,7 @@ main{
     background-color: white;
     min-width: 65%;
     max-width: 65%;
-    height: 600px;
+    /* height: 600px; */
     min-height: 70%;
     max-height: 85%;
     border-radius: 20px;

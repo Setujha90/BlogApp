@@ -1,0 +1,177 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin: 20px 150px;
+    padding: 50px;
+    /* align-items: center; */
+
+}
+
+.profile{
+    display: grid;
+    grid-template-rows: 300px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-gap: 20px;
+}
+
+.profile .pic{
+    min-width: 300px;
+    text-align: center;
+    background: rgb(235, 235, 235, 5%);
+    border-radius: 30px;
+}
+
+.profile .pic img{
+    width: 240px;
+    height: 240px;
+    margin: auto;
+    margin-top: 15px;
+    margin-bottom: 0px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.profile .pic p{
+    margin: 0px;
+    font-size: 1.2em;
+}
+
+.description{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 0px 50px;
+    background: rgb(235, 235, 235, 5%);
+    border-radius: 30px;
+    font-size: 1.2em;
+}
+
+.description .details{
+    line-height: 1em;    
+}
+
+.description .actionButtons button{
+    font-size: 1.2em;
+    padding: 10px 30px;
+    border-radius: 10px;
+    border: none;
+}
+
+.section2{
+    background: rgb(235, 235, 235, 5%);
+    border-radius: 30px;
+    margin: 50px 0px;
+    padding: 20px 20px;
+    overflow: hidden;
+    flex: 1;
+}
+
+.section2 .slideBar{
+    background: rgb(235, 235, 235, 10%);
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: space-around;
+    padding: 10px;
+    border-radius: inherit;
+}
+
+.section2 .slideBar div{
+    padding: 5px 20px;
+}
+
+.section2 .slideBar div button{
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 1.2em;
+}
+
+.section2 .slideBar div:hover{
+    background: rgb(235, 235, 235, 20%);
+    cursor: pointer;
+    border-radius: inherit;
+}
+
+.section2 .slideBar div button:hover{
+  cursor: pointer;
+}
+
+.section2 .data{
+    display: grid;
+    margin: auto;
+    margin-top: 40px;
+    /* padding: 0px 22px; */
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    grid-gap: 20px;
+    justify-items: center;
+}
+
+.section2 .data .div1{
+    width: 480px;
+    height: 320px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.divColor-1 {
+    background-color: #ff7f0e; /* Orange */
+  }
+  
+  .divColor-2 {
+    background-color: #1f77b4; /* Blue */
+  }
+  
+  .divColor-3 {
+    background-color: #2ca02c; /* Green */
+  }
+  
+  .divColor-4 {
+    background-color: #d62728; /* Red */
+  }
+  
+  .divColor-5 {
+    background-color: #9467bd; /* Purple */
+  }
+  
+  .divColor-6 {
+    background-color: #8c564b; /* Brown */
+  }
+  
+  .divColor-7 {
+    background-color: #e377c2; /* Pink */
+  }
+  
+  .divColor-8 {
+    background-color: #7f7f7f; /* Gray */
+  }
+  
+  .divColor-9 {
+    background-color: #bcbd22; /* Yellow-Green */
+  }
+  
+  .divColor-10 {
+    background-color: #17becf; /* Cyan */
+  }
+  
+  .divColor-11 {
+    background-color: #9edae5; /* Light Blue */
+  }
+  
+  .divColor-12 {
+    background-color: #ffbb78; /* Light Orange */
+  }
+  
+  .divColor-13 {
+    background-color: #c5b0d5; /* Light Purple */
+  }
+  
+  .divColor-14 {
+    background-color: #c49c94; /* Light Brown */
+  }
+  
+  .divColor-15 {
+    background-color: #f7b6d2; /* Light Pink */
+  }

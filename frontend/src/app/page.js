@@ -1,10 +1,10 @@
 import React from 'react'
-import Header from './components/Header.jsx'
+import Home from './components/Home/Home.jsx'
 
 const page = () => {
   return (
     <div>
-
+      <Home />
     </div>
   )
 }

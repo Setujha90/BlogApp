@@ -1,51 +1,58 @@
 "use client";
+
 import { useRouter } from 'next/navigation'
 import React, { useState } from "react";
-import "../page.css";
-import "../styles/Signup.css";
 import Link from "next/link";
-import { SignupSubmit, SigninSubmit } from "../server/signup.js";
-import Spinner from './Spinner.jsx';
+
+import { useDispatch } from 'react-redux';
+import { isLoggedIn, loggedOut } from '@/app/redux/user/userSlice.js';
+
+import Spinner from '../Spinner.jsx';
+import "../../page.css";
+import styles from './styles.module.css'
+
+import { SignupSubmit, SigninSubmit } from "../../server/signup.js";
 
 const Signup = () => {
 
   const router = useRouter()
 
+  
   const [toggle, setToggle] = useState(false);
-
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [avatarImage, setAvatarImage] = useState("")
-
   const [statusMsg, setStatusMsg] = useState("")
-
   const [loading, setLoading] = useState(false)
 
   const loadingSpinner = <><Spinner/><span>Loading...</span></>
 
+  const dispatch = useDispatch()
+
   return (
-    <main>
-      <div className="container">
+    <main className={styles.main}>
+      <div className={styles.container}>
         <form encType="multipart/form-data"
           onSubmit={async(e)=>{
             e.preventDefault()
             // yaha try catch lgana h agar koi field nhi mila ya fir image nhi mila to
             try {
               setLoading(true)
-              const status = await SignupSubmit(username, fullName, email, avatarImage, password);
-                setStatusMsg(`You have been registered successfully. Sign in using your credentials`)
+              const { id, avatarImage } = await SignupSubmit(username, fullName, email, avatarImage, password);
+              dispatch(isLoggedIn({id, avatarImage}))
+              setStatusMsg(`You have been registered successfully. Sign in using your credentials`)
             } catch (error) {
                 setStatusMsg(`User registration failed!! ${error}`)
             }
             setLoading(false)
           }}
 
-          className={`form signup ${toggle ? "show" : "hidden"}`} action="">
+          className={`${styles.form} ${styles.signup} ${toggle ? styles.show : styles.hidden}`}>
           <h1>Sign Up</h1>
           <p>Create your brand new account</p>
-          <div className="input">
+          <div className={styles.input}>
             <input
               type="text"
               value={username}
@@ -91,7 +98,7 @@ const Signup = () => {
           <span>
             {statusMsg}
           </span>
-          <button className="btn btn2">
+          <button className={`btn ${styles.btn2}`}>
             {loading ? loadingSpinner : 'Sign Up'}
           </button>
         </form>
@@ -101,22 +108,23 @@ const Signup = () => {
             // yaha try catch lgana h agar koi field nhi mila ya fir image nhi mila to
             try {
               setLoading(true)
-              const id = await SigninSubmit(email, password);
+              const { id, avatarImage } = await SigninSubmit(email, password);
+              dispatch(isLoggedIn({id, avatarImage}))
               setStatusMsg(`Login Successfull`)
               // console.log(document.cookie)
-              router.replace(`http://localhost:3000/users/profile/${id}`)
+              router.replace(`http://localhost:3000/user/profile/${id}`)
             } 
             catch (error) {
                 setStatusMsg(`User login failed!! ${error}`)
             }
             setLoading(false)
           }}
-          className={`form signin ${!toggle ? "show" : "hidden"}`}
+          className={`${styles.form} ${styles.signin} ${!toggle ? styles.show : styles.hidden}`}
           action=""
           >
           <h1>Sign In</h1>
           <p>Sign in using your email and password</p>
-          <div className="input">
+          <div className={styles.input}>
             <input 
                 type="text" 
                 value={email} 
@@ -143,14 +151,14 @@ const Signup = () => {
               <Link href={"/users/signup"}> Click Here</Link>
             </span>
           </div>
-          <button className="btn btn2">
+          <button className={`btn ${styles.btn2}`}>
             {loading ? loadingSpinner : 'Sign In'}
           </button>
         </form>
-        <div className={`welcome signup ${toggle ? "show" : "hidden"}`}>
+        <div className={`${styles.welcome} ${styles.signup} ${toggle ? styles.show : styles.hidden}`}>
           <h1>Welcome Back!</h1>
           <p>Use your email and password to login</p>
-          <button className="btn btn2"
+          <button className={`btn ${styles.btn2}`}
             onClick={() => {
               setToggle(false);
             }}
@@ -158,10 +166,10 @@ const Signup = () => {
             Sign In
           </button>
         </div>
-        <div className={`welcome signin ${!toggle ? "show" : "hidden"}`}>
+        <div className={`${styles.welcome} ${styles.signin} ${!toggle ? styles.show : styles.hidden}`}>
           <h1>Hello, Friend!</h1>
           <p>Register with your personal details to use all of site features</p>
-          <button className="btn btn2"
+          <button className={`btn ${styles.btn2}`}
             onClick={() => {
               setToggle(true);
             }}
