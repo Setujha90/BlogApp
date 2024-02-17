@@ -5,6 +5,7 @@ import styles from "./styles.module.css";
 import axios from "axios";
 
 const Profile = ({ id }) => {
+  
   const [user, setUser] = useState(null);
 
   useEffect(() => {

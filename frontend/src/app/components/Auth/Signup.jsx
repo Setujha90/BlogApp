@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 
 import { useDispatch } from 'react-redux';
-import { isLoggedIn, loggedOut } from '@/app/redux/user/userSlice.js';
+import { isLoggedIn } from '@/app/redux/user/userSlice.js';
 
 import Spinner from '../Spinner.jsx';
 import "../../page.css";

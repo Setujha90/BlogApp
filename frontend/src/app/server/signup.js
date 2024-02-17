@@ -13,7 +13,14 @@ export const userById = async(id) =>{
     try {
       const res = await axios.get(`${url}/${id}`)
         user = res.data.data["user"]
-        return { "username": user.username, "fullName": user.fullName, "email": user.email, "avatarImage": user.avatarImage, "blogs": user.blogs }
+        return { 
+            "username": user.username, 
+            "fullName": user.fullName, 
+            "email": user.email, 
+            "avatarImage": user.avatarImage, 
+            "blogs": user.blogs, 
+            "blogHistory": user.blogHistory 
+        }
     } catch (error) {
       throw error
     }

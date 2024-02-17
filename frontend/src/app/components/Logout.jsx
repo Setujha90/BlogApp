@@ -1,3 +1,4 @@
+"use client"
 import React from 'react'
 import { LogoutSubmit } from '../server/signup.js'
 import { useRouter } from 'next/navigation.js'
@@ -6,7 +7,7 @@ import { useRouter } from 'next/navigation.js'
 import { useDispatch } from 'react-redux'
 import { loggedOut } from '../redux/user/userSlice.js'
 
-const Logout = async() => {
+const Logout = () => {
 
   const router = useRouter()
 
