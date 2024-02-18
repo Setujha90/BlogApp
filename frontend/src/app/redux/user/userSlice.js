@@ -2,28 +2,49 @@ import { createSlice } from "@reduxjs/toolkit"
 
 
 const initialState = {
-    isUser : false,
-    id : null,
-    avatarImage : "",
+    currentUser: JSON.parse(localStorage.getItem("user")),
+    loading: false,
+    error: null,
 }
 
+
 export const userSlice = createSlice({
-    name: "isUser",
+    name: "user",
     initialState,
     reducers: {
-        isLoggedIn: (state, action) => {
-            state.isUser = true
-            state.id = action.payload.id
-            state.avatarImage = action.payload.avatarImage
+        // process start (sign up and sign in and logout)
+        authStart : (state) => {
+            state.loading = true
+            state.error = null
         },
-        loggedOut : (state, action) => {
-            state.isUser = false
-            state.id = null
-            state.avatarImage = ""
-        }
+
+        // sucess
+        signUpSuccess : (state) => {
+            state.loading = false
+            state.error = null
+        },
+
+        signInSuccess : (state, action) => {
+            state.currentUser = action.payload
+            state.loading = false
+            state.error = null
+            localStorage.setItem("user", JSON.stringify(state.currentUser))
+        },
+
+        logoutSuccess : (state) => {
+            state.loading = false
+            state.currentUser = null
+            state.error = null
+        },
+
+        // failure
+        authFailure : (state, action) => {
+            state.loading = false
+            state.error = action.payload
+        },
     }
 })
 
-export const {isLoggedIn, loggedOut} = userSlice.actions
+export const {authStart, signUpSuccess, signInSuccess, logoutSuccess, authFailure} = userSlice.actions
 
 export default userSlice.reducer

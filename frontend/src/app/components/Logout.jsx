@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation.js'
 // import '../styles/Profile.css'
 
 import { useDispatch } from 'react-redux'
-import { loggedOut } from '../redux/user/userSlice.js'
+import { authFailure, authStart, logoutSuccess } from '../redux/user/userSlice.js'
 
 const Logout = () => {
 
@@ -17,15 +17,16 @@ const Logout = () => {
     <button 
     onClick={async(e)=>{
       try{
-        const response = await LogoutSubmit()
-        dispatch(loggedOut())
+        dispatch(authStart())
+        await LogoutSubmit()
+        dispatch(logoutSuccess())
         router.replace("/user/signup")
       }
       catch(error){
+        dispatch(authFailure(error.message))
         throw error
       }
     }}
-    className="btn btn2"
   >
     Log Out
   </button>

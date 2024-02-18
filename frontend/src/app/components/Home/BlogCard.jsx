@@ -21,6 +21,10 @@ const BlogCard = ({ data }) => {
     fetchData();
   }, [data]);
 
+  if(data.length === 0){
+    return (<div>Empty</div>);
+  }
+
   return (
     <>
       {data.map((blog, i) => (

@@ -9,19 +9,14 @@ import Image from 'next/image'
 import Logout from '../Logout'
 
 const Header = () => {
-
-  const { isUser, id, avatarImage } = useSelector(state => ({
-    isUser: state.isUser,
-    id: state.id,
-    avatarImage: state.avatarImage
-  }));
   
+  const user = useSelector(state => state.user.currentUser)
 
   const [dropDown, setDropDown] = useState(false)
 
   return (
     <>
-      <navbar className={styles.header}>
+      <div className={styles.header}>
         <div className={styles.blog}>
           <Link className={styles.link} href={"/"}>Vishal's Blog</Link>
         </div>
@@ -35,21 +30,24 @@ const Header = () => {
         </div>
         <div className={styles.right}>
           {/* <div>Dark/Light</div> */}
-          {isUser ? 
+          {user ? 
             <><Image onClick={(e)=>{
               setDropDown(!dropDown)
-            }} className={styles.profileDP} src={avatarImage} width={60} height={60}/> 
+            }} className={styles.profileDP} src={user.avatarImage} width={60} height={60}/> 
             <div style={{display: dropDown? "flex": "none"}} className={styles.dropDown}>
               <button>Help & Support</button>
               <button>
-                <Link href={`/user/profile/${id}`}>Profile</Link>
+                <Link href={`/user/profile`}>Profile</Link>
+              </button>
+              <button>
+                <Link href={'/blog/5'}>Blog</Link>
               </button>
               <Logout/>
             </div>
             </>
             : <div><Link href={"/user/signup"} className={styles.btn}>Sign Up</Link></div>}
         </div>
-      </navbar>
+      </div>
     </>
   )
 }

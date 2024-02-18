@@ -5,13 +5,13 @@ import React, { useState } from "react";
 import Link from "next/link";
 
 import { useDispatch } from 'react-redux';
-import { isLoggedIn } from '@/app/redux/user/userSlice.js';
 
 import Spinner from '../Spinner.jsx';
 import "../../page.css";
 import styles from './styles.module.css'
 
 import { SignupSubmit, SigninSubmit } from "../../server/signup.js";
+import { authFailure, authStart, signInSuccess, signUpSuccess } from '@/app/redux/user/userSlice.js';
 
 const Signup = () => {
 
@@ -39,12 +39,14 @@ const Signup = () => {
             e.preventDefault()
             // yaha try catch lgana h agar koi field nhi mila ya fir image nhi mila to
             try {
+              dispatch(authStart())
               setLoading(true)
-              const { id, avatarImage } = await SignupSubmit(username, fullName, email, avatarImage, password);
-              dispatch(isLoggedIn({id, avatarImage}))
+              await SignupSubmit(username, fullName, email, avatarImage, password);
               setStatusMsg(`You have been registered successfully. Sign in using your credentials`)
+              dispatch(signUpSuccess())
             } catch (error) {
-                setStatusMsg(`User registration failed!! ${error}`)
+              dispatch(authFailure(error.message))
+              setStatusMsg(`User registration failed!! ${error}`)
             }
             setLoading(false)
           }}
@@ -107,14 +109,16 @@ const Signup = () => {
             e.preventDefault()
             // yaha try catch lgana h agar koi field nhi mila ya fir image nhi mila to
             try {
+              dispatch(authStart())
               setLoading(true)
-              const { id, avatarImage } = await SigninSubmit(email, password);
-              dispatch(isLoggedIn({id, avatarImage}))
+              const currentUser = await SigninSubmit(email, password);
+              dispatch(signInSuccess(currentUser))
               setStatusMsg(`Login Successfull`)
               // console.log(document.cookie)
-              router.replace(`http://localhost:3000/user/profile/${id}`)
+              router.replace(`http://localhost:3000/`)
             } 
             catch (error) {
+              dispatch(authFailure(error.message))
                 setStatusMsg(`User login failed!! ${error}`)
             }
             setLoading(false)

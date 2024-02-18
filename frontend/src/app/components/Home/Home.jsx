@@ -8,15 +8,12 @@ import FetchBlogs from "./FetchBlogs";
 
 const Home = () => {
 
-  const { isUser, id } = useSelector(state => ({
-    isUser: state.isUser,
-    id: state.id,
-  }))
+  const user = useSelector(state => state.user.currentUser)
 
   return (
     <div className={styles.container}>
       {/* side profile position fixed hoga*/}
-      { isUser ? <SideProfile id={id} /> : ""}
+      { user ? <SideProfile /> : "Yaha Sign In ka button"}
 
       {/* all blogs here */}
       <div className={styles.blogsContainer}>

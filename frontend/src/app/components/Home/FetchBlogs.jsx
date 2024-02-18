@@ -1,17 +1,28 @@
-import React from 'react'
-import BlogCard from './BlogCard'
-import { getAllBlogs } from '@/app/server/blogs'
+import React, { useState, useEffect } from 'react';
+import BlogCard from './BlogCard';
+import { getAllBlogs } from '@/app/server/blogs';
 
-const FetchBlogs = async () => {
+const FetchBlogs = () => {
+  const [blogs, setBlogs] = useState([]);
 
-  const data = await getAllBlogs()
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getAllBlogs();
+        setBlogs(data);
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+      }
+    };
 
+    fetchData();
+  }, []);
 
   return (
     <>
-      <BlogCard data={data}/>
+      <BlogCard data={blogs} />
     </>
-  )
-}
+  );
+};
 
-export default FetchBlogs
+export default FetchBlogs;

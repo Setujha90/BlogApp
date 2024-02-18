@@ -7,20 +7,11 @@ export const loggedInUser = async (id) => {
 }
 
 export const userById = async(id) =>{
-    let user;
     const url = "http://localhost:8000/api/v1/users"
   
     try {
       const res = await axios.get(`${url}/${id}`)
-        user = res.data.data["user"]
-        return { 
-            "username": user.username, 
-            "fullName": user.fullName, 
-            "email": user.email, 
-            "avatarImage": user.avatarImage, 
-            "blogs": user.blogs, 
-            "blogHistory": user.blogHistory 
-        }
+        return res.data.data["user"]
     } catch (error) {
       throw error
     }
@@ -42,10 +33,8 @@ export const SignupSubmit = async (username, fullName, email, avatarImage, passw
             }
         });
 
-        const res = response.data.data["createdUser"]
-        return {id:res._id, avatarImage:res.avatarImage};
+        return response.data.data["createdUser"]
     } catch (error) {
-        console.error('Error occurred while signing up:', error);
         throw error; // Re-throw the error to handle it in the component
     }
 };
@@ -55,8 +44,8 @@ export const SigninSubmit = async (email, password) => {
         const response = await axios.post(`${url}/login`, 
                 {"email": email, "password": password},
                 {withCredentials: true});
-        const res = response.data.data["loggedInUser"]
-        return {id:res._id, avatarImage:res.avatarImage};
+                
+        return response.data.data["loggedInUser"]
     } catch (error) {
         throw error;
     }

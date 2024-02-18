@@ -1,0 +1,56 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 20px 150px;
+    padding: 30px;
+    background: rgb(235, 235, 235, 20%);
+    border-radius: 30px;
+}
+
+.profile{
+    display: flex;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.profile img{
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.blog{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.blog input, .container textarea{
+    font-size: 1.2em;
+    margin: 20px 0px;
+    padding: 15px;
+    border-radius: 20px;
+    outline: none;
+    border: none;
+}
+
+.blog input{
+    margin: 0px;
+}
+
+.blog textarea{
+    overflow: auto;
+    resize: none;
+}
+
+.blog button{
+    max-width: 100px;
+    padding: 10px;
+    font-size: 1.2em;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+}

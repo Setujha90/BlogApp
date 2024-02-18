@@ -1,12 +1,12 @@
 import React from 'react'
 import styles from "./styles.module.css"
 
-import { userById } from '@/app/server/signup'
+import { useSelector } from 'react-redux'
 
-const SideProfile = async ({id}) => {
+const SideProfile = () => {
 
-    const {username, fullName, email, avatarImage, blogs, blogHistory} = await userById(id)
-    
+  const {fullName, email, avatarImage, blogs} = useSelector(state => state.user.currentUser)
+  
   return (
     <div className={styles.profile}>
         <div className={styles.profileCard}>
@@ -31,6 +31,8 @@ const SideProfile = async ({id}) => {
             <p>Total views on all blogs</p>
             <p>2186</p>
           </div>
+        </div>
+        <div>
         </div>
     </div>
   )

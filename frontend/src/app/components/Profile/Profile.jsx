@@ -1,33 +1,18 @@
 "use client"
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "../../page.css";
 import styles from "./styles.module.css";
-import axios from "axios";
+import { useSelector } from "react-redux";
 
-const Profile = ({ id }) => {
-  
-  const [user, setUser] = useState(null);
+const Profile = () => {
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8000/api/v1/users/${id}`);
-        setUser(response.data.data.user);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        // Handle error gracefully, e.g., set error state
-      }
-    };
+  const user = useSelector(state => state.user.currentUser);
 
-    fetchData();
-  }, [id]);
-
-  if (!user) {
-    // Render loading state or return null
-    return null;
+  if(!user){
+    return (<div>You need to login first to access this page!!!</div>)
   }
 
-  const { username, fullName, email, avatarImage, blogs, viewedBlogs, blogHistory } = user;
+  const { username, fullName, email, avatarImage, blogs, blogHistory } = user
 
   return (
     <div className={styles.container}>
@@ -45,6 +30,7 @@ const Profile = ({ id }) => {
           <div className={styles.actionButtons}>
             <button className={styles.editBtn}>Edit</button>
             {/* <button className={styles.updateBtn}>Update</button> */}
+            <button>Create Blog</button>
           </div>
         </div>
       </div>
