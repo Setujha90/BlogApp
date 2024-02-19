@@ -79,7 +79,7 @@ export const getBlogById = async (id) => {
     try{
         const response = await axios.get(`${url}/${id}`, {}, {withCredentials:true})
 
-        return response.data.data
+        return response.data.data["blog"]
     }
     catch(error){
         throw error

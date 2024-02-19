@@ -57,6 +57,11 @@ export const createBlog = asyncHandler(async(req, res) => {
         throw new ApiError(500, "Error while creating blog!!!")
     }
 
+    const userBlogUpdate = await User.findById(user._id)
+
+    user.blogs.push(blog._id)
+    user.save({validateBeforeSave:false})
+
     return res
         .status(200)
         .json(new ApiResponse(
@@ -109,11 +114,20 @@ export const deleteBlog = asyncHandler(async(req, res) => {
         throw new ApiError(401, "You are unauthorised to delete blogs of other users")
     }
 
+    const userDeleteBlog = await User.findById(user._id)
+
+    if(!userDeleteBlog){
+        throw new ApiError(401, "Unauthorized to delete this blog")
+    }
+
     const deletedBlog = await Blog.findByIdAndDelete(blogId)
 
     if(!deletedBlog){
         throw new ApiError(500, "Error while deleting blog")
     }
+
+    user.blogs = user.blogs.filter(blog_Id => String(blog_Id) !== String(blogId))
+    user.save({validateBeforeSave:false})
 
     return res
         .status(200)
@@ -204,6 +218,8 @@ export const likeBlog = asyncHandler(async(req, res) => {
     ])
 
     if(ifAlreadyLikedBySameUser.length > 0){
+        // yaha delete krdo like 
+        // abhi nhi banaye h...
         return res.status(200).json(new ApiResponse(200, {}, "User already liked this blog"))
     }
 

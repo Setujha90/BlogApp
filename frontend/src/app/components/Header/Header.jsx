@@ -40,7 +40,7 @@ const Header = () => {
                 <Link href={`/user/profile`}>Profile</Link>
               </button>
               <button>
-                <Link href={'/blog/5'}>Blog</Link>
+                <Link href={'/blog/create'}>Blog</Link>
               </button>
               <Logout/>
             </div>

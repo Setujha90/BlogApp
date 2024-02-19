@@ -1,8 +1,23 @@
 "use client"
-import React from 'react'
+import React, { useEffect } from 'react'
 import NextTopLoader from 'nextjs-toploader';
+import { useDispatch } from 'react-redux';
+import { signInSuccess } from '../redux/user/userSlice';
+
+
 
 const ProgressBar = () => {
+
+  const dispatch = useDispatch()
+
+  useEffect(()=>{
+    const userData = localStorage.getItem("user")
+
+    if(userData){
+      dispatch(signInSuccess(JSON.parse(userData)))
+    }
+  }, [])
+
   return (
     <div>
       <NextTopLoader

@@ -20,7 +20,7 @@ const FetchBlogs = () => {
 
   return (
     <>
-      <BlogCard data={blogs} />
+      {blogs.length > 0 ? <BlogCard data={blogs} /> : <div>No Posts Available Right Now</div>}
     </>
   );
 };

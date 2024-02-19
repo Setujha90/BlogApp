@@ -5,8 +5,14 @@ import { useSelector } from 'react-redux'
 
 const SideProfile = () => {
 
-  const {fullName, email, avatarImage, blogs} = useSelector(state => state.user.currentUser)
+  const userData = useSelector(state => state.user.currentUser)
   
+  if(!userData){
+    return <div>Yaha SignIn krne ka button</div>
+  }
+
+  const {fullName, email, avatarImage, blogs} = userData
+
   return (
     <div className={styles.profile}>
         <div className={styles.profileCard}>

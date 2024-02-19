@@ -13,13 +13,20 @@ const Blog = () => {
   const router = useRouter()
 
   const user = useSelector(state => state.user.currentUser)
-
+  
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [thumbnail, setThumbnail] = useState(null)
   const [images, setImages] = useState(null)
 
-
+  if(!user){
+    return (
+      <div>
+        You need to login first to create a blog
+      </div>
+    )
+  }
+  
   return (
     <div className={styles.container}>
 

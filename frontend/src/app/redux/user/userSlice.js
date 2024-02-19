@@ -2,11 +2,14 @@ import { createSlice } from "@reduxjs/toolkit"
 
 
 const initialState = {
-    currentUser: JSON.parse(localStorage.getItem("user")),
+    currentUser: null,
     loading: false,
     error: null,
 }
 
+// if (typeof window !== 'undefined') {
+//     initialState.currentUser = JSON.parse(localStorage.getItem("user"));
+// }
 
 export const userSlice = createSlice({
     name: "user",
@@ -35,6 +38,9 @@ export const userSlice = createSlice({
             state.loading = false
             state.currentUser = null
             state.error = null
+            // if(typeof localStorage !== 'undefined'){
+                localStorage.removeItem("user")
+            // }
         },
 
         // failure

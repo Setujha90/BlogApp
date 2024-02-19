@@ -38,6 +38,10 @@ const userSchema = new mongoose.Schema({
         enum: ["user", "admin"],
         default: "user"
     },
+    blogs: [{
+        type:mongoose.Types.ObjectId,
+        ref: "Blog"
+    }],
     blogHistory:[{
         type:mongoose.Types.ObjectId,
         ref: "Blog"
