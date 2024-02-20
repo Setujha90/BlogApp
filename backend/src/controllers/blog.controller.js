@@ -220,7 +220,23 @@ export const likeBlog = asyncHandler(async(req, res) => {
     if(ifAlreadyLikedBySameUser.length > 0){
         // yaha delete krdo like 
         // abhi nhi banaye h...
-        return res.status(200).json(new ApiResponse(200, {}, "User already liked this blog"))
+
+        const deleteLike = await Like.findByIdAndDelete(ifAlreadyLikedBySameUser[0]._id)
+
+        if(!deleteLike){
+            throw new ApiError(500, "Unable to unlike this post, Try again later")
+        }
+
+        const blog = await Blog.findById(blogId)
+
+        if(!blog){
+            return new ApiError(500, "Blog is unliked but not updated on the blog noOfLikes!!!")
+        }
+
+        blog.noOfLikes -= 1
+        blog.save({validateBeforeSave:false})
+
+        return res.status(200).json(new ApiResponse(200, {blog}, "User unliked the blog"))
     }
 
     const likesDocument = await Like.create({
@@ -228,13 +244,13 @@ export const likeBlog = asyncHandler(async(req, res) => {
         likedBy: user._id
     })
 
-    const LikedBlog = await Blog.findByIdAndUpdate(blogId, {
+    const blog = await Blog.findByIdAndUpdate(blogId, {
         $inc:{
             noOfLikes: 1
         }
     }, {new : true})
 
-    if(!LikedBlog){
+    if(!blog){
         throw new ApiError(500, "Error while updating the likes of blog")
     }
 
@@ -243,7 +259,7 @@ export const likeBlog = asyncHandler(async(req, res) => {
         .json(new ApiResponse(
             200,
             {
-                LikedBlog, likesDocument
+                blog, likesDocument
             },
             "Successfully liked the blog"
         ))

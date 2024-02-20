@@ -1,48 +1,49 @@
 "use client"
-import React, { useEffect, useState } from 'react'
-import styles from "./Create/styles.module.css"
-import { getBlogById } from '@/app/server/blogs'
-import { userById } from '@/app/server/signup'
+import React, { useEffect, useState } from 'react';
+import styles from "./Create/styles.module.css";
+import { getBlogById } from '@/app/server/blogs';
+import { userById } from '@/app/server/signup';
 
+const ShowBlog = ({ id }) => {
+    const [blog, setBlog] = useState({});
+    const [owner, setOwner] = useState({});
+    const [loading, setLoading] = useState(true);
 
-const ShowBlog = ({id}) => {
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const blogData = await getBlogById(id);
+                setBlog(blogData);
 
-
-    const [blog, setBlog] = useState({})
-    const [owner, setOwner] = useState({})
-
-    useEffect(async() => {
-        try{
-            const blog = await getBlogById(id)
-            setBlog(blog)
-
-            const writer = await userById(blog.owner)
-            setOwner(writer)
-
-        } catch(error){
-            throw error
+                const writer = await userById(blogData.owner);
+                setOwner(writer);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
+            }
         }
+        fetchData();
+    }, [id]);
 
-    }, [])
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
-    console.log(blog)
-    console.log(owner)
+    return (
+        <div className={styles.container}>
+            <div className={styles.profile}>
+                <img src={owner.avatarImage} alt="avatar" />
+                <p>{owner.fullName}</p>
+            </div>
+            <div>
+                <h1>{blog.title}</h1>
+                <p>{blog.description}</p>
+                {/* Render the first image */}
+                {blog.images.length > 0 && <img src={blog.images[0]} alt="holla" />}
+            </div>
+        </div>
+    );
+};
 
-  return (
-    <div className={styles.container}>
-        {/* <div className={styles.profile}>
-          <img src={avatarImage} alt="avatar" />
-          <p>{fullName}</p>
-        </div> */}
-
-        {/* blog part */}
-        {/* <div>
-            <h1>{title}</h1>
-            <p>{description}</p>
-        </div> */}
-    
-    </div>
-  )
-}
-
-export default ShowBlog
+export default ShowBlog;

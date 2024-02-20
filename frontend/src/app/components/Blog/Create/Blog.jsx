@@ -42,6 +42,7 @@ const Blog = () => {
             const {_id} = await createBlog(title, description, thumbnail, images)
             // router.push(`/blog/${id}`)
             console.log("Blog Posted with id:-", _id)
+            router.replace(`/blog/${_id}`)
           } catch (error) {
             console.error("Error hua h yaarr ", error)
           }

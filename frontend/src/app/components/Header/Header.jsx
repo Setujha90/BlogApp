@@ -35,14 +35,10 @@ const Header = () => {
               setDropDown(!dropDown)
             }} className={styles.profileDP} src={user.avatarImage} width={60} height={60}/> 
             <div style={{display: dropDown? "flex": "none"}} className={styles.dropDown}>
-              <button>Help & Support</button>
-              <button>
-                <Link href={`/user/profile`}>Profile</Link>
-              </button>
-              <button>
-                <Link href={'/blog/create'}>Blog</Link>
-              </button>
+              <Link className={styles.button} href={`/user/${user._id}`}>Profile</Link>
+              <Link className={styles.button} href={'/blog/create'}>Create Blog</Link>
               <Logout/>
+              <Link className={styles.button} href={"/"}>Help & Support</Link>
             </div>
             </>
             : <div><Link href={"/user/signup"} className={styles.btn}>Sign Up</Link></div>}

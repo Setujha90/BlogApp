@@ -109,69 +109,18 @@
     justify-items: center;
 }
 
-.section2 .data .div1{
+.section2 .data div{
+    /* background-color: rgb(48, 233, 224); */
     width: 480px;
     height: 320px;
     border-radius: 20px;
     overflow: hidden;
-}
+    text-align: center;
+    position: relative;
+  }
 
-.divColor-1 {
-    background-color: #ff7f0e; /* Orange */
-  }
-  
-  .divColor-2 {
-    background-color: #1f77b4; /* Blue */
-  }
-  
-  .divColor-3 {
-    background-color: #2ca02c; /* Green */
-  }
-  
-  .divColor-4 {
-    background-color: #d62728; /* Red */
-  }
-  
-  .divColor-5 {
-    background-color: #9467bd; /* Purple */
-  }
-  
-  .divColor-6 {
-    background-color: #8c564b; /* Brown */
-  }
-  
-  .divColor-7 {
-    background-color: #e377c2; /* Pink */
-  }
-  
-  .divColor-8 {
-    background-color: #7f7f7f; /* Gray */
-  }
-  
-  .divColor-9 {
-    background-color: #bcbd22; /* Yellow-Green */
-  }
-  
-  .divColor-10 {
-    background-color: #17becf; /* Cyan */
-  }
-  
-  .divColor-11 {
-    background-color: #9edae5; /* Light Blue */
-  }
-  
-  .divColor-12 {
-    background-color: #ffbb78; /* Light Orange */
-  }
-  
-  .divColor-13 {
-    background-color: #c5b0d5; /* Light Purple */
-  }
-  
-  .divColor-14 {
-    background-color: #c49c94; /* Light Brown */
-  }
-  
-  .divColor-15 {
-    background-color: #f7b6d2; /* Light Pink */
+  .section2 .data div h3{
+    color: wheat;
+    position: absolute;
+    backdrop-filter: blur(10px) saturate(70%);
   }

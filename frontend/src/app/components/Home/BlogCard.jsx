@@ -43,12 +43,15 @@ const BlogCard = ({ data }) => {
           </div>
           <div className={styles.blogPart}>
             {/* Title */}
-            <Link href={`/blog/${blog._id}`}>{blog.title}</Link>
+            <Link href={`/blog/${blog._id}`}><h2>{blog.title}</h2></Link>
             {/* Description */}
             <p>{blog.description}</p>
             <img src={blog.thumbnail} alt="Blog Image" />
           </div>
           <div className={styles.actionButtons}>
+            <div>
+              {blog.noOfViews} Views
+            </div>
             <div>
               <span> {blog.noOfLikes} </span>
               <button className={styles.btn}

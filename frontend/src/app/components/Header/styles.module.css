@@ -95,7 +95,7 @@
   background-color: rgb(235, 235, 235 , 70%);
 }
 
-.dropDown button,.dropDown Link{
+.dropDown .button, .dropDown button{
   background-color: rgba(178, 243, 255, 0.5);
   border-radius: 10px;
   font-size: 1.1em;
@@ -107,7 +107,7 @@
   transition: all 0.25s ease;
 }
 
-.dropDown button:hover,.dropDown Link:hover{
+.dropDown .button:hover, .dropDown button:hover{
   cursor: pointer;
   color: black;
   background-color: rgb(101, 232, 255);
