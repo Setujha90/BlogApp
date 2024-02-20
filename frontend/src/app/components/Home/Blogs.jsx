@@ -2,13 +2,14 @@ import React, { useState } from 'react'
 import styles from "./styles.module.css";
 import Link from 'next/link';
 import { likeBlog } from '@/app/server/blogs';
+import Spinner from '../Spinner';
 
 
 
 const Blogs = ({blog, userData, i}) => {
 
     const [likes, setLikes] = useState(blog.noOfLikes)
-
+    const [loading, setLoading] = useState(false)
 
     return (
         <div key={blog._id} className={styles.blogCard}>
@@ -36,10 +37,11 @@ const Blogs = ({blog, userData, i}) => {
               {blog.noOfViews} Views
             </div>
             <div>
-              <span> {likes} </span>
+              <span> {loading ? <Spinner /> : likes} </span>
               <button className={styles.btn}
                 onClick={async(e)=>{
                   try{
+                    setLoading(true)
                     // setLikes(blog.noOfLikes)
                     const response = await likeBlog(blog._id)
                     if(response["likesDocument"]){
@@ -48,6 +50,7 @@ const Blogs = ({blog, userData, i}) => {
                     else{
                       setLikes(likes-1)
                     }
+                    setLoading(false)
                   }
                   catch(error){
                     console.error("Error while Liking the blog", error)

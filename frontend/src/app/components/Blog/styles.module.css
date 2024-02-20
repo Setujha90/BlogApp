@@ -1,0 +1,80 @@
+
+.hr {
+    border: none;
+    width: 100%;
+    border-top: 2px solid rgb(255, 255, 255, 25%);
+    color: #333;
+    overflow: visible;
+    text-align: center;
+    height: 5px;
+    z-index: 5555;
+  }
+
+.comment{
+    padding: 5px;
+    margin-top: 30px;
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255, 10%);
+}
+
+.writeComment{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px;
+    border-radius: 10px;
+    /* background-color: rgb(211, 211, 211, 40%); */
+}
+
+.writeComment input{
+    width: 100%;
+    padding: 10px;
+    font-size: 1.2em;
+    /* border-radius: 50px; */
+    outline: none;
+    border: none;
+    background:transparent;
+    border-bottom: 3px solid blue;
+}
+
+.writeComment button{
+    padding: 10px 20px;
+    font-size: 1.2em;
+}
+
+.commentSection{
+    padding: 15px;
+}
+
+.commentCard .commentProfile div p{
+    line-height: 5px;
+}
+
+.commentProfile{
+    display: flex;
+    gap: 10px;
+    padding: 10px 0px;
+}
+
+.commentProfile div p{
+    color: #333;
+}
+
+.commentProfile img, .writeComment img{
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.commentTime{
+    padding: 0px 15px;
+    font-size: .9em;
+}
+
+.commentContent{
+    line-height: 23px;
+}
+
+.commentButton{
+    padding: 0px 60px;
+}

@@ -77,9 +77,20 @@ export const likeBlog = async (id) => {
 
 export const getBlogById = async (id) => {
     try{
-        const response = await axios.get(`${url}/${id}`, {}, {withCredentials:true})
+        const response = await axios.get(`${url}/${id}`)
 
         return response.data.data["blog"]
+    }
+    catch(error){
+        throw error
+    }
+}
+
+export const comment = async(id, content) => {
+    try{
+        const response = await axios.post(`${url}/${id}/comment`, {content: content}, {withCredentials: true})
+
+        return response.data.data["comment"]
     }
     catch(error){
         throw error
