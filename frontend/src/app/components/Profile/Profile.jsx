@@ -29,7 +29,7 @@ const Profile = ({id}) => {
     }
 
     fetchUser()
-  }, [user])
+  }, [])
 
   if(loading){
     return (
@@ -52,7 +52,7 @@ const Profile = ({id}) => {
           </div>
 
           {
-            loggedInUser._id == user._id ?           
+            loggedInUser && loggedInUser?._id === user._id ?           
             
             <div className={styles.actionButtons}>
               <button className={styles.editBtn}>Edit</button>

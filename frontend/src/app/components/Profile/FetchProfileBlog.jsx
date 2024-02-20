@@ -1,4 +1,5 @@
 import { getBlogById } from '@/app/server/blogs'
+import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
 const FetchProfileBlog = ({id}) => {
@@ -28,10 +29,12 @@ const FetchProfileBlog = ({id}) => {
   }
 
   return (
-    <div id={blog._id}>
-      <h3>{blog.title}</h3>
-      <img src={blog.thumbnail} alt="Thumbnail" />
-    </div>
+    <Link href={`/blog/${blog._id}`}>
+      <div id={blog._id}>
+        <h3>{blog.title}</h3>
+        <img src={blog.thumbnail} alt="Thumbnail" />
+      </div>
+    </Link>
   )
 }
 
