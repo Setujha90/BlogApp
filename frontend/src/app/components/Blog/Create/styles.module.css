@@ -22,6 +22,12 @@
     object-position: center;
 }
 
+.blogPart div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .blog{
     display: flex;
     flex-direction: column;

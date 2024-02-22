@@ -5,13 +5,18 @@ import { likeBlog } from '@/app/server/blogs';
 import Spinner from '../Spinner';
 import { copyToClipboard } from '@/app/server/copyToClipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
+import { faShareFromSquare, faBookmark } from '@fortawesome/free-regular-svg-icons';
+import { useSelector } from 'react-redux';
 
 
 const Blogs = ({blog, userData, i}) => {
 
-    const [likes, setLikes] = useState(blog.noOfLikes)
-    const [loading, setLoading] = useState(false)
+    // const [likes, setLikes] = useState(blog.noOfLikes)
+    // const [loading, setLoading] = useState(false)
+    const loggedInUser = useSelector(state => state.user.currentUser)
+
+    const [copyLoading, setCopyLoading] = useState(false)
+    const [bookmarkLoading, setBookmarkLoading] = useState(false)
 
     return (
         <div key={blog._id} className={styles.blogCard}>
@@ -29,11 +34,26 @@ const Blogs = ({blog, userData, i}) => {
               </div>
             </div>
               
-            <div>
-              <button onClick={async(e) => {
-                await copyToClipboard(`http://localhost:3000/blog/${blog._id}`)
-              }}><FontAwesomeIcon icon="fa-regular fa-share-from-square" />Share</button>
-              <button>BookMark</button>
+            <div className={styles.actionButtons}>
+                <button className={`${styles.popUp} ${copyLoading ? styles.copyPopUp: ""}`} onClick={async(e) => {
+                  setCopyLoading(false)
+                  await copyToClipboard(`http://localhost:3000/blog/${blog._id}`)
+                  setBookmarkLoading(false)
+                  setCopyLoading(true)
+                  }}>
+                  <FontAwesomeIcon icon={faShareFromSquare} />
+                </button>
+                {
+                loggedInUser ?
+                <button className={`${bookmarkLoading? styles.bookmarkPopUp : ""} ${styles.popUp}`} onClick={(e) => {
+                  setBookmarkLoading(true)
+                  setCopyLoading(false)
+                  }} >
+                  <FontAwesomeIcon icon={faBookmark} />
+                </button>
+                :
+                ""
+                }
             </div>
           </div>
           <div className={styles.blogPart}>

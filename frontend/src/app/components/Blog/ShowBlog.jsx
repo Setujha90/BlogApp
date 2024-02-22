@@ -2,15 +2,18 @@
 import React, { useEffect, useState } from 'react';
 import styles from "./Create/styles.module.css";
 import commentStyles from "./styles.module.css"
-import { getBlogById, viewBlogById } from '@/app/server/blogs';
+import { deleteBlog, getBlogById, viewBlogById } from '@/app/server/blogs';
 import { userById } from '@/app/server/signup';
 import WriteComment from './WriteComment';
+import { useRouter } from 'next/navigation';
 
 const ShowBlog = ({ id }) => {
     const [blog, setBlog] = useState({});
     const [owner, setOwner] = useState({});
     const [loading, setLoading] = useState(true);
     const [comments, setComments] = useState([])
+
+    const router = useRouter()
 
     useEffect(() => {
         async function fetchData() {
@@ -44,7 +47,13 @@ const ShowBlog = ({ id }) => {
                 <p>{owner.fullName}</p>
             </div>
             <div className={styles.blogPart}>
-                <h1>{blog.title}</h1>
+                <div>
+                    <h1>{blog.title}</h1>
+                    <button onClick={async(e) => {
+                        const response = await deleteBlog(blog._id)
+                        router.replace('/')
+                    }}>Delete</button>
+                </div>
                 <p>{blog.description}</p>
                 {/* Render the first image */}
                 {blog.images.length > 0 && <img src={blog.images[0]} alt="holla" />}

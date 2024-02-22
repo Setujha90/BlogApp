@@ -39,7 +39,7 @@ export const deleteBlog = async (id) => {
             withCredentials: true
             })
 
-        return response
+        return response.data.data
     }
     catch(error){
         throw error

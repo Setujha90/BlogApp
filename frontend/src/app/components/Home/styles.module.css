@@ -63,9 +63,9 @@
 .blogCard{
     background-color: rgb(218, 218, 218);
     border-radius: inherit;
-    overflow: hidden;
+    /* overflow: hidden; */
     padding: 20px;
-    width: 800px;
+    max-width: 800px;
 }
 
 .profileContainer{
@@ -73,6 +73,67 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.profileContainer .actionButtons {
+    display: flex;
+    gap: 10px;
+}
+
+.profileContainer .actionButtons div{
+    /* display: flex; */
+}
+
+.popUp {
+    align-items: center;
+    margin: 0px;
+    background: transparent;
+    padding: 8px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    position: relative; /* Ensure relative positioning for pseudo-elements */
+}
+
+.popUp svg {
+    color: rgb(44, 44, 44);
+}
+
+.popUp:hover {
+    background-color: rgba(99, 99, 99, 0.158);
+    cursor: pointer;
+}
+
+.popUp svg:active {
+    color: rgb(0, 0, 0);
+}
+
+.popUp:before {
+    content: ""; /* Empty content */
+    position: absolute;
+    top: -100%; /* Adjust this value as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(99, 99, 99, 0.158);
+    padding: 10px;
+    border-radius: 20px;
+    white-space: nowrap; /* Prevent wrapping */
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease; /* Add transition for smooth appearance */
+}
+
+.popUp:hover:before {
+    opacity: 1; /* Show the pseudo-element on hover */
+}
+
+.copyPopUp:before {
+    content: "Copied!!";
+}
+
+.bookmarkPopUp:before {
+    content: "Bookmarked!!";
+}
+
 
 .profilePostCard{
     display: flex;
@@ -102,10 +163,12 @@
     border-radius: 10px;
 }
 
+/* ye .actionButtons Like comment views walla h */
+/* 
 .actionButtons{
     display: flex;
     justify-content: space-evenly;
     align-items: center;
     text-align: center;
     margin-top: 15px;
-}
+} */
