@@ -36,8 +36,8 @@ export const createBlog = async (title, description, thumbnail, images) => {
 export const deleteBlog = async (id) => {
     try{
         const response = await axios.delete(`${url}/${id}/delete`, {
-            withCredentials: true,
-        })
+            withCredentials: true
+            })
 
         return response
     }
@@ -84,6 +84,17 @@ export const getBlogById = async (id) => {
     catch(error){
         throw error
     }
+}
+
+export const viewBlogById = async (id) => {
+    try{
+        const response = await axios.post(`${url}/${id}/view`, {}, {withCredentials:true})
+
+        return response
+    }
+    catch(error){
+        throw error
+    }  
 }
 
 export const comment = async(id, content) => {

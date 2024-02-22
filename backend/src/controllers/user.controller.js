@@ -104,13 +104,20 @@ const login = asyncHandler(async(req, res) => {
     const options = {
         // httpOnly: true,
         sameSite: false,
+        maxAge: 24 * 60 * 60 * 1000,
         // secure: true
     }
 
     return res
         .status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
+        .cookie("accessToken", accessToken, {
+            sameSite: false,
+            maxAge: 24 * 60 * 60 * 1000,
+        })
+    .cookie("refreshToken", refreshToken, {
+        sameSite: false,
+        maxAge: 24 * 60 * 60 * 10000,
+    })
         .json(new ApiResponse(
             200, 
             {

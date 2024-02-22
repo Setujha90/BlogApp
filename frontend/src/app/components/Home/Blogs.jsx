@@ -3,6 +3,8 @@ import styles from "./styles.module.css";
 import Link from 'next/link';
 import { likeBlog } from '@/app/server/blogs';
 import Spinner from '../Spinner';
+import { copyToClipboard } from '@/app/server/copyToClipboard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
 
@@ -14,15 +16,24 @@ const Blogs = ({blog, userData, i}) => {
     return (
         <div key={blog._id} className={styles.blogCard}>
           {/* Render blog details using userData state */}
-          <div className={styles.profilePostCard}>
-            <div className={styles.pic}>
-              <img src={userData[i]?.avatarImage} alt="DP" />
-            </div>
-            <div className={styles.details}>
-              <div>
-                <Link href={`/user/${userData[i]?._id}`}>{userData[i]?.fullName}</Link> . <span>Time</span>
+          <div className={styles.profileContainer}>
+            <div className={styles.profilePostCard}>
+              <div className={styles.pic}>
+                <img src={userData[i]?.avatarImage} alt="DP" />
               </div>
-              <div>1 Friends</div>
+              <div className={styles.details}>
+                <div>
+                  <Link href={`/user/${userData[i]?._id}`}>{userData[i]?.fullName}</Link> . <span>Time</span>
+                </div>
+                <div>1 Friends</div>
+              </div>
+            </div>
+              
+            <div>
+              <button onClick={async(e) => {
+                await copyToClipboard(`http://localhost:3000/blog/${blog._id}`)
+              }}><FontAwesomeIcon icon="fa-regular fa-share-from-square" />Share</button>
+              <button>BookMark</button>
             </div>
           </div>
           <div className={styles.blogPart}>
@@ -33,7 +44,7 @@ const Blogs = ({blog, userData, i}) => {
             <img src={blog.thumbnail} alt="Blog Image" />
           </div>
           <div className={styles.actionButtons}>
-            <div>
+            {/* <div>
               {blog.noOfViews} Views
             </div>
             <div>
@@ -62,8 +73,8 @@ const Blogs = ({blog, userData, i}) => {
             <div>
               <span> {blog.noOfComments} </span>
               <button className={styles.btn}>Comment</button>
-            </div>
-            <button>Share</button>
+            </div> */}
+
           </div>
         </div>
     )

@@ -1,12 +1,18 @@
 import mongoose from "mongoose";
 
 
+
 const commentSchema = new mongoose.Schema({
     content:{
         type:String,
         required:true,
         trim:true,
     },
+    comment:[{
+        type: mongoose.Types.ObjectId,
+        ref: "Comment"
+    }],
+    
     owner:{
         type:mongoose.Types.ObjectId,
         ref: "User",

@@ -60,7 +60,7 @@ export const createBlog = asyncHandler(async(req, res) => {
     const userBlogUpdate = await User.findById(user._id)
 
     user.blogs.push(blog._id)
-    user.save({validateBeforeSave:false})
+    await user.save({validateBeforeSave:false})
 
     return res
         .status(200)
@@ -127,7 +127,7 @@ export const deleteBlog = asyncHandler(async(req, res) => {
     }
 
     user.blogs = user.blogs.filter(blog_Id => String(blog_Id) !== String(blogId))
-    user.save({validateBeforeSave:false})
+    await user.save({validateBeforeSave:false})
 
     return res
         .status(200)
@@ -234,7 +234,7 @@ export const likeBlog = asyncHandler(async(req, res) => {
         }
 
         blog.noOfLikes -= 1
-        blog.save({validateBeforeSave:false})
+        await blog.save({validateBeforeSave:false})
 
         return res.status(200).json(new ApiResponse(200, {blog}, "User unliked the blog"))
     }
@@ -267,7 +267,6 @@ export const likeBlog = asyncHandler(async(req, res) => {
 
 export const getBlogById = asyncHandler(async(req, res) => {
     const blogId = req.params.id
-    const user = req.user
 
     if(!blogId){
         throw new ApiError(400, "Blog id is required")
@@ -279,42 +278,69 @@ export const getBlogById = asyncHandler(async(req, res) => {
         throw new ApiError(400, "Blog id is invalid")
     }
 
-    let viewedDocument
-    // yaha or checks lgana baaki h if same user baar baar fetch kre usko handle krna h
-    if(user){
 
-        const blogObjectId = new mongoose.Types.ObjectId(`${blogId}`)
-        
-        const isAlreadyViewed = await View.aggregate([
+    return res
+        .status(200)
+        .json(new ApiResponse(
+            200,
             {
-                $match:{
-                    blog : blogObjectId,
-                    user : user._id
-                }
-            }
-        ])
+                blog
+            },
+            "fetched blog successfully"
+        ))
+})
 
-        if(isAlreadyViewed.length > 0){
-            return res.status(200).json(new ApiResponse(200, {blog}, "User already viewed this blog"))
-        }
-
-        viewedDocument = await View.create({
-            blog: blogId,
-            user: user._id
-        })
-
-        const userHistory = await User.findById(user._id)
-
-        if(!userHistory){
-            throw new ApiError(500, "Error while fetching user data")
-        }
-
-        userHistory.blogHistory.push(blogId)
-        userHistory.save({validateBeforeSave: false})
-
-        blog.noOfViews+=1
-        blog.save({validateBeforeSave: false})
+export const viewBlog = asyncHandler(async(req, res) => {
+    const blogId = req.params.id
+    const user = req.user
+    
+    if(!user){
+        return res
+            .status(200)
+            .json("Done")
     }
+
+    if(!blogId){
+        throw new ApiError(400, "Blog id is required")
+    }
+
+    const blog = await Blog.findById(blogId)
+
+    if(!blog){
+        throw new ApiError(400, "Blog id is invalid")
+    }
+
+    const blogObjectId = new mongoose.Types.ObjectId(`${blogId}`)
+        
+    const isAlreadyViewed = await View.aggregate([
+        {
+            $match:{
+                blog : blogObjectId,
+                user : user._id
+            }
+        }
+    ])
+
+    if(isAlreadyViewed.length > 0){
+        return res.status(200).json(new ApiResponse(200, {blog}, "User already viewed this blog"))
+    }
+
+    const viewedDocument = await View.create({
+        blog: blogId,
+        user: user._id
+    })
+
+    const userHistory = await User.findById(user._id)
+
+    if(!userHistory){
+        throw new ApiError(500, "Error while fetching user data")
+    }
+
+    userHistory.blogHistory.push(blogId)
+    await userHistory.save({validateBeforeSave: false})
+
+    blog.noOfViews+=1
+    await blog.save({validateBeforeSave: false})
 
     return res
         .status(200)
@@ -323,7 +349,7 @@ export const getBlogById = asyncHandler(async(req, res) => {
             {
                 blog, viewedDocument
             },
-            "fetched blog successfully"
+            "Blog viewed"
         ))
 })
 
@@ -361,8 +387,8 @@ export const comment = asyncHandler(async(req, res) => {
         throw new ApiError(400, "Error while fetching the blog")
     }
 
-    blog.comment.push(comment)
-    blog.save({validateBeforeSave: false})
+    blog.comment.push(comment._id)
+    await blog.save({validateBeforeSave: false})
 
     return res
         .status(200)

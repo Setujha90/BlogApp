@@ -78,3 +78,8 @@
 .commentButton{
     padding: 0px 60px;
 }
+
+.commentButton button{
+    margin: 0px 5px;
+
+}
