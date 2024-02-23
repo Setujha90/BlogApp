@@ -120,13 +120,76 @@ export const deleteBlog = asyncHandler(async(req, res) => {
         throw new ApiError(401, "Unauthorized to delete this blog")
     }
 
+    const blogObjectId = new mongoose.Types.ObjectId(`${blogId}`)
+
+    const blogViews = await View.aggregate([
+        {
+            $match:{
+                blog : blogObjectId,
+            }
+        },
+        {
+            $project:{
+                _id:1,
+            }
+        }
+    ])
+
+    let blogViewsList = []
+    
+    blogViews.filter((viewsId) => {
+        blogViewsList.push(viewsId._id)
+    })
+
+    const viewsDelete = await View.deleteMany({ _id: blogViewsList})
+
+    if(!viewsDelete){
+        throw new ApiError(500, "Error while deleting blog's views")
+    }
+
+    const blogLikes = await Like.aggregate([
+        {
+            $match:{
+                blog: blogObjectId,
+            }
+        },
+        {
+            $project:{
+                _id:1,
+            }
+        }
+    ])
+
+    let blogLikesList = []
+
+    blogLikes.filter((likesId) => {
+        blogLikesList.push(likesId._id)
+    })
+
+    const likesDelete = await Like.deleteMany({ _id: blogLikesList})
+
+    if(!likesDelete){
+        throw new ApiError(500, "Not able to delete blog's likes")
+    }
+
+    const comments = blog.comment
+
+    const deletedComments = await Comment.deleteMany({ _id : comments})
+
+    if(!deletedComments){
+        throw new ApiError(500, "Not able to delete blog's comment")
+    }
+
+    console.log(deletedComments)
+
     const deletedBlog = await Blog.findByIdAndDelete(blogId)
 
     if(!deletedBlog){
         throw new ApiError(500, "Error while deleting blog")
     }
 
-    user.blogs = user.blogs.filter(blog_Id => String(blog_Id) !== String(blogId))
+    user.blogHistory = user.blogHistory.filter(blog_Id => {return String(blog_Id) !== String(blogId)})
+    user.blogs = user.blogs.filter(blog_Id => {return String(blog_Id) !== String(blogId)})
     await user.save({validateBeforeSave:false})
 
     return res
@@ -134,7 +197,9 @@ export const deleteBlog = asyncHandler(async(req, res) => {
         .json(new ApiResponse(
             200,
             {
-                deletedBlog
+                deleteBlog,
+                "History" :user.blogHistory,
+                "blogs" : user.blogs
             },
             "Blog Deleted Successfully"
         ))

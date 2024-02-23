@@ -7,6 +7,8 @@ import {
     logout,
     getUserById,
     getAllUsers,
+    updateProfilePic,
+    updateUserProfile,
 } from "../controllers/user.controller.js"
 import { verifyJWT } from '../middleware/auth.middleware.js';
 
@@ -21,6 +23,7 @@ router.route("/").get(getAllUsers)
 
 // secured routes
 router.route("/logout").post(verifyJWT, logout)
-
+router.route("/:id/updateProfilePic").post(upload.single('avatarImage'),verifyJWT, updateProfilePic)
+router.route("/:id/updateUserProfile").post(verifyJWT, updateUserProfile)
 
 export default router;

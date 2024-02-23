@@ -5,7 +5,7 @@ import { ApiError } from "../utils/ApiError.js"
 import { uploadOnCloud } from "../utils/cloudinary.js"
 
 
-const generateAccessAndRefreshToken = async(id) => {
+export const generateAccessAndRefreshToken = async(id) => {
     const user = await User.findById(id)
 
     if(!user){
@@ -22,7 +22,7 @@ const generateAccessAndRefreshToken = async(id) => {
     return {accessToken, refreshToken}
 }
 
-const register = asyncHandler(async(req, res) => {
+export const register = asyncHandler(async(req, res) => {
     const { username, fullName, email, password } = req.body
     const avatarImageLocalPath = req.file?.path
 
@@ -78,7 +78,7 @@ const register = asyncHandler(async(req, res) => {
         ))
 })
 
-const login = asyncHandler(async(req, res) => {
+export const login = asyncHandler(async(req, res) => {
     const { email, password } = req.body
 
     if(!email && !password){
@@ -127,7 +127,7 @@ const login = asyncHandler(async(req, res) => {
         ))
 })
 
-const logout = asyncHandler(async(req, res)=>{
+export const logout = asyncHandler(async(req, res)=>{
 
     await User.findByIdAndUpdate(
         req.user._id,
@@ -155,7 +155,7 @@ const logout = asyncHandler(async(req, res)=>{
         ))
 })
 
-const getUserById = asyncHandler(async(req, res) => {
+export const getUserById = asyncHandler(async(req, res) => {
     const { id } = req.params
 
     if(!id){
@@ -187,7 +187,7 @@ const getUserById = asyncHandler(async(req, res) => {
         ))
 })
 
-const getAllUsers = asyncHandler(async(req, res) => {
+export const getAllUsers = asyncHandler(async(req, res) => {
     
     const user = await User.find()?.select("-password -refreshToken -role")
 
@@ -207,5 +207,98 @@ const getAllUsers = asyncHandler(async(req, res) => {
 
 })
 
+export const updateProfilePic = asyncHandler(async(req, res) => {
+    const loggedInUser = req.user
+    const {id} = req.params
+    console.log(req.file)
+    const avatarImageLocalPath = req.file?.path
 
-export {register,login,logout, getUserById, getAllUsers}
+    if(!id){
+        throw new ApiError(400, "Invalid Id")
+    }
+    
+    if(!loggedInUser){
+        throw new ApiError(401, "User must be logged in")
+    }
+
+    const user = await User.findById(id)
+
+    if(!user){
+        throw new ApiError(404, "User not found!!")
+    }
+
+    if(!(String(loggedInUser._id) == String(user._id))){
+        throw new ApiError(401, "You are unauthorised to delete blogs of other users")
+    }
+
+    if(!avatarImageLocalPath){
+        throw new ApiError(401, "Please upload avatar image")
+    }
+
+    const avatarImage = await uploadOnCloud(avatarImageLocalPath)
+
+    if(!avatarImage){
+        throw new ApiError(501, "Error while uploading avatarImage to cloud")
+    }
+
+    user.avatarImage = avatarImage.url
+    await user.save({validateBeforeSave:false})
+
+    return res
+        .status(200)
+        .json(new ApiResponse(
+            200,
+            {
+                user,
+            },
+            "User profile updated successfully!"
+        ))
+
+})
+
+export const updateUserProfile = asyncHandler(async(req, res) => {
+    const loggedInUser = req.user
+    const {id} = req.params
+
+    const {fullName, email} = req.body
+
+    if(!loggedInUser){
+        throw new ApiError(401, "User must be logged in to user these features")
+    }
+
+    if(!id){
+        throw new ApiError(400, "Invalid user id")
+    }
+
+    if([fullName, email].some((field) => !field || field.trim() === "")){
+        throw new ApiError(400, "All fields are required!!")
+    }
+
+    const user = await User.findById(id)
+
+    if(!user){
+        throw new ApiError(404, "User not found!!")
+    }
+
+    if(String(loggedInUser._id) !== String(user._id)){
+        throw new ApiError(401, "You cannot tamper other users profile")
+    }
+
+    user.fullName = fullName
+    user.email = email
+    await user.save({validateBeforeSave:false})
+
+    return res
+        .status(200)
+        .json(new ApiResponse(
+            200,
+            {
+                user
+            },
+            "User updated successfully"
+        ))
+})
+
+export const userHistory = asyncHandler(async(req, res) => {
+})
+
