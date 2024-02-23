@@ -49,7 +49,29 @@
 }
 
 .description .details{
-    line-height: 1em;    
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.description .details input{
+    font-size: 1.2em;
+    outline: none;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    background: rgb(255, 255, 255, 10%);
+}
+
+.description .details input:disabled{
+    color: black;
+    background: transparent;
+}
+
+.description .actionButtons{
+    margin-left: 20px;
+    display: flex;
+    gap:10px;
 }
 
 .description .actionButtons button{
@@ -104,23 +126,37 @@
     margin: auto;
     margin-top: 40px;
     /* padding: 0px 22px; */
-    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(700px, 1fr));
     grid-gap: 20px;
     justify-items: center;
 }
 
-.section2 .data div{
-    /* background-color: rgb(48, 233, 224); */
-    width: 480px;
-    height: 320px;
+.section2 .data .blogCard{
+    background-color: rgb(235, 235, 235, 10%);
+    width: 690px;
+    height: 350px;
     border-radius: 20px;
-    overflow: hidden;
-    text-align: center;
     position: relative;
-  }
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0px 10px 0px 20px;
+}
 
-  .section2 .data div h3{
-    color: wheat;
-    position: absolute;
-    backdrop-filter: blur(10px) saturate(70%);
-  }
+.section2 .data .blogCard .blogThumbnail{
+    width: 1000px;
+    height: 300px;
+
+}
+
+.section2 .data .blogCard img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 20px;
+}
+
+.section2 .data .blogCard .blogDescription *{
+    word-wrap: break-word;
+}

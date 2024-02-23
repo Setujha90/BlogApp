@@ -6,6 +6,9 @@ import { deleteBlog, getBlogById, viewBlogById } from '@/app/server/blogs';
 import { userById } from '@/app/server/signup';
 import WriteComment from './WriteComment';
 import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import Link from 'next/link';
 
 const ShowBlog = ({ id }) => {
     const [blog, setBlog] = useState({});
@@ -42,18 +45,20 @@ const ShowBlog = ({ id }) => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.profile}>
-                <img src={owner.avatarImage} alt="avatar" />
-                <p>{owner.fullName}</p>
+            <div className={styles.profileCard}>
+                <div className={styles.profile}>
+                    <img src={owner.avatarImage} alt="avatar" />
+                    <Link href={`/user/${owner._id}`}>{owner.fullName}</Link>
+                </div>
+                <div>
+                    <button onClick={async(e) => {
+                        // const response = await deleteBlog(blog._id)
+                        router.replace('/')
+                    }}><FontAwesomeIcon icon={faTrash} /></button>
+                </div>
             </div>
             <div className={styles.blogPart}>
-                <div>
-                    <h1>{blog.title}</h1>
-                    <button onClick={async(e) => {
-                        const response = await deleteBlog(blog._id)
-                        router.replace('/')
-                    }}>Delete</button>
-                </div>
+                <h1>{blog.title}</h1>
                 <p>{blog.description}</p>
                 {/* Render the first image */}
                 {blog.images.length > 0 && <img src={blog.images[0]} alt="holla" />}

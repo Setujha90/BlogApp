@@ -5,6 +5,8 @@ import Comment from './Comment';
 import { useSelector } from 'react-redux';
 import Image from 'next/image';
 import { getCommentById, replyComment } from '@/app/server/comment';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 
 const WriteComment = ({id, blogComments, commentIdReply, replyCommentId}) => {
@@ -76,7 +78,7 @@ const WriteComment = ({id, blogComments, commentIdReply, replyCommentId}) => {
                 <input type="text" placeholder='Enter Your Comment' value={commentIdReply ? replyContent : commentContent} onChange={(e)=>{
                     commentIdReply ? setReplyContent(e.target.value) : setCommentContent(e.target.value)
                 }} />
-                <button disabled={commentIdReply ? replyContent.length === 0 : commentContent.length === 0}>Post</button>
+                <button disabled={commentIdReply ? replyContent.length === 0 : commentContent.length === 0}><FontAwesomeIcon icon={faArrowRight} /></button>
             </div>
         </form>
         )

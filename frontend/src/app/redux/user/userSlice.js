@@ -34,13 +34,28 @@ export const userSlice = createSlice({
             localStorage.setItem("user", JSON.stringify(state.currentUser))
         },
 
+        updateStart: (state) => {
+            state.loading = true
+            state.error = null
+        },
+
+        updateFailure: (state, action) => {
+            state.loading = false
+            state.error = action.payload
+        },
+
+        updateSuccess: (state, action) => {
+            state.currentUser = action.payload
+            state.loading = false
+            state.error = null
+            localStorage.setItem("user", JSON.stringify(state.currentUser))
+        },
+
         logoutSuccess : (state) => {
             state.loading = false
             state.currentUser = null
             state.error = null
-            // if(typeof localStorage !== 'undefined'){
-                localStorage.removeItem("user")
-            // }
+            localStorage.removeItem("user")
         },
 
         // failure
@@ -51,6 +66,6 @@ export const userSlice = createSlice({
     }
 })
 
-export const {authStart, signUpSuccess, signInSuccess, logoutSuccess, authFailure} = userSlice.actions
+export const {authStart, signUpSuccess, signInSuccess, logoutSuccess, authFailure, updateStart, updateFailure, updateSuccess} = userSlice.actions
 
 export default userSlice.reducer

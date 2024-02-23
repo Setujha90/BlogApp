@@ -8,6 +8,35 @@
     border-radius: 30px;
 }
 
+.container .profileCard{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container .profileCard div button{
+    background: rgb(240, 240, 240, 40%);
+    border: none;
+    outline: none;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.container .profileCard div button:hover:before{
+    content: "Delete";
+    position: absolute;
+    font-size: 1.6em;
+    transform: translate(-15%, -120%);
+    background: rgba(255, 255, 255, 30%);
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+.container .profileCard div button svg{
+    font-size: 3em;
+    padding: 10px;
+}
+
 .profile{
     display: flex;
     margin-bottom: 15px;

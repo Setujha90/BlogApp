@@ -1,6 +1,7 @@
 import { getBlogById } from '@/app/server/blogs'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
+import styles from './styles.module.css'
 
 const FetchProfileBlog = ({id}) => {
 
@@ -30,12 +31,18 @@ const FetchProfileBlog = ({id}) => {
 
   return (
     <Link href={`/blog/${blog._id}`}>
-      <div id={blog._id}>
-        <h3>{blog.title}</h3>
-        <img src={blog.thumbnail} alt="Thumbnail" />
+      <div className={styles.blogCard} key={blog._id} id={blog._id}>
+        <div className={styles.blogThumbnail}>
+          <img src={blog.thumbnail} alt="Thumbnail" />
+        </div>
+        <div className={styles.blogDescription}>
+          <h4>{blog.title}</h4>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Et, accusantium sequi harum a officia blanditiis ullam aut dolorem. Debitis, animi.</p>
+        </div>
       </div>
     </Link>
   )
 }
 
 export default FetchProfileBlog
+

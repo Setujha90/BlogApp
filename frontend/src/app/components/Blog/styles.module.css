@@ -34,13 +34,18 @@
     outline: none;
     border: none;
     background:transparent;
-    border-bottom: 3px solid blue;
+    border-bottom: 3px solid rgba(128, 128, 128, 0.719);
 }
 
 .writeComment button{
     padding: 10px 20px;
     font-size: 1.2em;
 }
+
+/* .writeComment button{
+    position: absolute;
+    
+} */
 
 .commentSection{
     padding: 15px;

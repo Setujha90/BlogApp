@@ -28,7 +28,7 @@ const Blogs = ({blog, userData, i}) => {
               </div>
               <div className={styles.details}>
                 <div>
-                  <Link href={`/user/${userData[i]?._id}`}>{userData[i]?.fullName}</Link> . <span>Time</span>
+                  <Link href={`/user/${userData[i]?._id}`}>@{userData[i]?.fullName}</Link> . <span>{Date(blog.updatedAt) - Date.now()}</span>
                 </div>
                 <div>1 Friends</div>
               </div>

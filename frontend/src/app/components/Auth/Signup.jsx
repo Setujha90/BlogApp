@@ -27,7 +27,7 @@ const Signup = () => {
   const [statusMsg, setStatusMsg] = useState("")
   const [loading, setLoading] = useState(false)
 
-  const loadingSpinner = <><Spinner/><span>Loading...</span></>
+  const loadingSpinner = <><Spinner width={20} height={20}/><span>Loading...</span></>
 
   const dispatch = useDispatch()
 

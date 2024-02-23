@@ -7,10 +7,12 @@ import Link from 'next/link'
 import { useSelector } from 'react-redux'
 import Image from 'next/image'
 import Logout from '../Logout'
+import Spinner from '../Spinner'
 
 const Header = () => {
   
   const user = useSelector(state => state.user.currentUser)
+  const loading = useSelector(state => state.user.loading)
 
   const [dropDown, setDropDown] = useState(false)
 
@@ -31,9 +33,10 @@ const Header = () => {
         <div className={styles.right}>
           {/* <div>Dark/Light</div> */}
           {user ? 
-            <><Image onClick={(e)=>{
+            <>{loading && <Spinner width={50} height={50} />}
+            {!loading && <Image onClick={(e)=>{
               setDropDown(!dropDown)
-            }} className={styles.profileDP} src={user.avatarImage} width={60} height={60}/> 
+            }} className={styles.profileDP} src={user.avatarImage} width={60} height={60}/> }
             <div style={{display: dropDown? "flex": "none"}} className={styles.dropDown}>
               <Link className={styles.button} href={`/user/${user._id}`}>Profile</Link>
               <Link className={styles.button} href={'/blog/create'}>Create Blog</Link>

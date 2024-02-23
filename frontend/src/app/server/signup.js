@@ -2,10 +2,6 @@ import axios from 'axios';
 
 const url = "http://localhost:8000/api/v1/users";
 
-export const loggedInUser = async (id) => {
-
-}
-
 export const userById = async(id) =>{
     const url = "http://localhost:8000/api/v1/users"
   
@@ -65,3 +61,33 @@ export const LogoutSubmit = async() => {
 
 }
 
+export const updateProfilePic = async(id, avatarImage) => {
+    try {
+        const formData = new FormData();
+        formData.append('avatarImage', avatarImage); // Append the file here
+        const response = await axios.post(`${url}/${id}/updateProfilePic`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+            withCredentials:true
+        })
+
+        return response.data.data["user"]
+    } catch (error) {
+        throw error
+    }
+}
+
+export const updateUserProfile = async(id, fullName, email) => {
+    try{
+        const response = await axios.post(`${url}/${id}/updateUserProfile`, {
+            "fullName":fullName,
+            "email": email
+        }, {withCredentials:true})
+
+        return response.data.data["user"]
+    }
+    catch(error){
+        throw error
+    }
+}
