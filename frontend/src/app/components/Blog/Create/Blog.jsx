@@ -2,9 +2,11 @@
 import React, { useState } from 'react'
 import styles from "./styles.module.css"
 
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { createBlog } from '@/app/server/blogs'
 import { useRouter } from 'next/navigation'
+import { updateFailure, updateStart, updateSuccess } from '@/app/redux/user/userSlice'
+import Spinner from '../../Spinner'
 
 
 
@@ -12,14 +14,16 @@ const Blog = () => {
 
   const router = useRouter()
 
-  const user = useSelector(state => state.user.currentUser)
+  const loggedInUser = useSelector(state => state.user.currentUser)
+  const loading = useSelector(state => state.user.loading)
+  const dispatch = useDispatch()
   
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [thumbnail, setThumbnail] = useState(null)
   const [images, setImages] = useState(null)
 
-  if(!user){
+  if(!loggedInUser){
     return (
       <div>
         You need to login first to create a blog
@@ -31,19 +35,22 @@ const Blog = () => {
     <div className={styles.container}>
 
       <div className={styles.profile}>
-        <img src={user.avatarImage} alt="avatar" />
-        <p>{user.fullName}</p>
+        <img src={loggedInUser.avatarImage} alt="avatar" />
+        <p>{loggedInUser.fullName}</p>
       </div>
 
       <form encType="multipart/form-data" className={styles.blog}
         onSubmit={async(e)=>{
           e.preventDefault()
+          dispatch(updateStart())
           try {
-            const {_id} = await createBlog(title, description, thumbnail, images)
+            const {_id, user} = await createBlog(title, description, thumbnail, images)
             // router.push(`/blog/${id}`)
             console.log("Blog Posted with id:-", _id)
+            dispatch(updateSuccess(user))
             router.replace(`/blog/${_id}`)
           } catch (error) {
+            dispatch(updateFailure(error))
             console.error("Error hua h yaarr ", error)
           }
         }}
@@ -63,7 +70,7 @@ const Blog = () => {
         <label>Images : <input name='images' id='images' onChange={(e) => {
           setImages(e.target.files[0])
         }} type="file" /></label>
-        <button>POST</button>
+        <button disabled={loading}>{loading ? <Spinner /> : "POST"}</button>
       </form>
     </div>
   )

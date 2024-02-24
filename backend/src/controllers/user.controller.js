@@ -3,7 +3,9 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { ApiError } from "../utils/ApiError.js"
 import { uploadOnCloud } from "../utils/cloudinary.js"
-
+import {View} from "../models/views.models.js"
+import { Like } from "../models/likes.models.js"
+import { Blog } from "../models/blog.models.js"
 
 export const generateAccessAndRefreshToken = async(id) => {
     const user = await User.findById(id)
@@ -299,6 +301,199 @@ export const updateUserProfile = asyncHandler(async(req, res) => {
         ))
 })
 
+// user history is directly available in user model blogHistory
 export const userHistory = asyncHandler(async(req, res) => {
+    const user = req.user
+
+    if(!user){
+        throw new ApiError(401, "User must be logged in to use these features")
+    }
+
+    const history = await View.aggregate([
+        {
+            $match: {
+                user: user._id,
+            }
+        },
+        {
+            $project:{
+                _id:1
+            }
+        }
+    ])
+
+    const userHistory = history.map(item => item._id);
+
+    return res
+        .status(200)
+        .json(new ApiResponse(
+            200,
+            {
+                userHistory
+            },
+            "fetched successfully"
+        ))
 })
 
+export const likedBlogs = asyncHandler(async(req, res) => {
+    const user = req.user
+
+    if(!user){
+        throw new ApiError(401, "User must be logged in to use these features")
+    }
+
+    const blogs = await Like.aggregate([
+        {
+            $match: {
+                user: user._id,
+            }
+        },
+        {
+            $project:{
+                _id:1
+            }
+        }
+    ])
+
+    const likedBlogs = blogs.map(items => items._id)
+    
+    return res
+        .status(200)
+        .json(new ApiResponse(
+            200,
+            {
+                likedBlogs
+            },
+            "fetched liked blogs successfully"
+        ))
+})
+
+export const bookmark = asyncHandler(async(req, res) => {
+    const loggedInUser = req.user
+    const { id } = req.params
+    const {blogId} = req.body
+
+    if(!id){
+        throw new ApiError(400, "Invalid user id")
+    }
+
+    if(!loggedInUser){
+        throw new ApiError(401, "User must be logged in to use these features")
+    }
+
+    if(!blogId){
+        throw new ApiError(400, "Blog id is required")
+    }
+
+    const blog = await Blog.findById(blogId)
+
+    if(!blog){
+        throw new ApiError(404, "Blog not found")
+    }
+
+    const user = await User.findById(id)
+
+    if(!user){
+        throw new ApiError(404, "User not found")
+    }
+
+    const isBookmarked = user.bookmark.includes(blogId)
+
+    if(isBookmarked){
+        user.bookmark = user.bookmark.filter(item => String(item) !== String(blogId))
+        await user.save({validateBeforeSave:false})
+        return res
+            .status(200)
+            .json(new ApiResponse(
+                200,
+                {
+                    user
+                },
+                "Bookmark removed successfully"
+            ))
+    }
+
+    user.bookmark.push(blogId)
+    await user.save({validateBeforeSave:false})
+
+    return res
+        .status(200)
+        .json(new ApiResponse(
+            200,
+            {
+                user
+            },
+            "Bookmark added successfully"
+        ))
+})
+
+export const follow = asyncHandler(async(req, res) => {
+    const loggedInUser = req.user
+    const {id} = req.params
+    const {userId} = req.body
+
+    if(!loggedInUser){
+        throw new ApiError(401, "User must be logged in to use these features")
+    }
+
+    if(!id){
+        throw new ApiError(400, "Invalid user id")
+    }
+
+    if(!userId){
+        throw new ApiError(400, "Followed user id is required")
+    }
+
+    const user = await User.findById(id)
+
+    if(!user){
+        throw new ApiError(404, "User not found")
+    }
+
+    const followedUser = await User.findById(userId)
+
+    if(!followedUser){
+        throw new ApiError(404, "Followed user not found")
+    }
+
+    if(String(user._id) === String(followedUser._id)){
+        throw new ApiError(400, "You cannot follow yourself")
+    }
+
+    const isFollowed = user.following.includes(userId)
+
+    if(isFollowed){
+        followedUser.followers = followedUser.followers.filter(item => String(item) !== String(user._id))
+        await followedUser.save({validateBeforeSave:false})
+
+        user.following = user.following.filter(item => String(item) !== String(userId))
+        await user.save({validateBeforeSave:false})
+        return res
+            .status(200)
+            .json(new ApiResponse(
+                200,
+                {
+                    user
+                },
+                "Follow removed successfully"
+            ))
+    }
+
+    followedUser.followers.push(user._id)
+    await followedUser.save({validateBeforeSave:false})
+
+    // add follow to user
+
+    user.following.push(userId)
+    await user.save({validateBeforeSave:false})
+    
+    return res
+        .status(200)
+        .json(new ApiResponse(
+            200,
+            {
+                user
+            },
+            "Follow added successfully"
+        ))
+})

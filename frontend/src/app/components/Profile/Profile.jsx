@@ -55,7 +55,7 @@ const Profile = ({id}) => {
       <div className={styles.profile}>
         {/* Main profile section */}
         <div className={styles.pic}>
-          <label htmlFor="avatarImage">
+          <label htmlFor={ loggedInUser && loggedInUser._id === user._id ? "avatarImage" : ""}>
             {updateLoading && <Spinner width={200} height={200} />}
             {!updateLoading && <img src={avatarImage} alt="Profile Image" />}
           </label>

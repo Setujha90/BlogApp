@@ -45,7 +45,19 @@ const userSchema = new mongoose.Schema({
     blogHistory:[{
         type:mongoose.Types.ObjectId,
         ref: "Blog"
-    }]
+    }],
+    bookmark: [{
+        type: mongoose.Types.ObjectId,
+        ref: "Blog"
+    }],
+    followers: [{
+        type: mongoose.Types.ObjectId,
+        ref: "User"
+    }],
+    following: [{
+        type: mongoose.Types.ObjectId,
+        ref: "User"
+    }],
 }, {timestamps: true})
 
 userSchema.pre("save", async function(next) {

@@ -67,7 +67,7 @@ export const createBlog = asyncHandler(async(req, res) => {
         .json(new ApiResponse(
             200,
             {
-                blog
+                blog, user
             },
             "Blog created successfully"
         ))
@@ -199,7 +199,8 @@ export const deleteBlog = asyncHandler(async(req, res) => {
             {
                 deleteBlog,
                 "History" :user.blogHistory,
-                "blogs" : user.blogs
+                "blogs" : user.blogs,
+                user
             },
             "Blog Deleted Successfully"
         ))
@@ -401,8 +402,12 @@ export const viewBlog = asyncHandler(async(req, res) => {
         throw new ApiError(500, "Error while fetching user data")
     }
 
+    console.log("blogId add kiya jaa rha h ab")
+    console.log("Before:- ",userHistory.blogHistory)
     userHistory.blogHistory.push(blogId)
     await userHistory.save({validateBeforeSave: false})
+    console.log("After:- ",userHistory.blogHistory)
+    console.log("Ab blogId add ho chuka history me")
 
     blog.noOfViews+=1
     await blog.save({validateBeforeSave: false})

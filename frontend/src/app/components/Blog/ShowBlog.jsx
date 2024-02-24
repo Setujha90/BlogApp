@@ -9,6 +9,9 @@ import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
+import { formatRelativeTime } from '@/app/server/dateTime';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateFailure, updateStart, updateSuccess } from '@/app/redux/user/userSlice';
 
 const ShowBlog = ({ id }) => {
     const [blog, setBlog] = useState({});
@@ -18,11 +21,13 @@ const ShowBlog = ({ id }) => {
 
     const router = useRouter()
 
+    const dispatch = useDispatch()
+    const loggedInUser = useSelector(state => state.user.currentUser)
+
     useEffect(() => {
         async function fetchData() {
             try {
                 const blogData = await getBlogById(id);
-                await viewBlogById(id);
                 setBlog(blogData);
 
                 const writer = await userById(blogData.owner);
@@ -48,13 +53,23 @@ const ShowBlog = ({ id }) => {
             <div className={styles.profileCard}>
                 <div className={styles.profile}>
                     <img src={owner.avatarImage} alt="avatar" />
-                    <Link href={`/user/${owner._id}`}>{owner.fullName}</Link>
+                    <div className={styles.profileInfo}>
+                        <Link href={`/user/${owner._id}`}>@{owner.username}</Link>
+                        <p>{formatRelativeTime(blog.createdAt)} · {blog.noOfViews} views</p>
+                    </div>
                 </div>
                 <div>
-                    <button onClick={async(e) => {
-                        // const response = await deleteBlog(blog._id)
-                        router.replace('/')
-                    }}><FontAwesomeIcon icon={faTrash} /></button>
+                    {loggedInUser && loggedInUser._id === owner._id ? <button onClick={async(e) => {
+                        dispatch(updateStart())
+                        try {
+                            const response = await deleteBlog(blog._id)
+                            router.replace('/')
+                            dispatch(updateSuccess(response))
+                        } catch (error) {
+                            dispatch(updateFailure(error))
+                            console.error("Error deleting blog:", error)
+                        }
+                    }}><FontAwesomeIcon icon={faTrash} /></button> : ""}
                 </div>
             </div>
             <div className={styles.blogPart}>

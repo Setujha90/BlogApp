@@ -25,7 +25,11 @@ export const createBlog = async (title, description, thumbnail, images) => {
             withCredentials: true
             })
 
-        return response.data.data["blog"]
+        const res = {
+            "_id" : response.data.data["blog"]._id,
+            "user" : response.data.data["user"]
+        }
+        return res
         
     } catch (error) {
         throw error
@@ -39,7 +43,7 @@ export const deleteBlog = async (id) => {
             withCredentials: true
             })
 
-        return response.data.data
+        return response.data.data["user"]
     }
     catch(error){
         throw error
@@ -78,7 +82,7 @@ export const likeBlog = async (id) => {
 export const getBlogById = async (id) => {
     try{
         const response = await axios.get(`${url}/${id}`)
-
+        await axios.post(`${url}/${id}/view`, {}, {withCredentials:true})
         return response.data.data["blog"]
     }
     catch(error){

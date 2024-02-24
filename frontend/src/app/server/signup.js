@@ -91,3 +91,47 @@ export const updateUserProfile = async(id, fullName, email) => {
         throw error
     }
 }
+
+export const bookmark = async(id, blogId) => {
+    try{
+        const response = await axios.post(
+            `${url}/${id}/bookmark`,
+            {
+                "blogId": blogId
+            },
+            {withCredentials:true}
+        )
+
+        const res = {
+            "user" : response.data.data["user"],
+            "msg" : response.data.data["message"]
+        }
+
+        return res
+    }
+    catch(error){
+        throw error
+    }
+}
+
+export const follow = async(id, userId) => {
+    try{
+        const response = await axios.post(
+            `${url}/${id}/follow`,
+            {
+                "userId": userId
+            },
+            {withCredentials:true}
+        )
+
+        const res = {
+            "user" : response.data.data["user"],
+            "msg" : response.data.data["message"]
+        }
+
+        return res
+    }
+    catch(error){
+        throw error
+    }
+}

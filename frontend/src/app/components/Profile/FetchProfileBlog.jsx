@@ -37,7 +37,7 @@ const FetchProfileBlog = ({id}) => {
         </div>
         <div className={styles.blogDescription}>
           <h4>{blog.title}</h4>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Et, accusantium sequi harum a officia blanditiis ullam aut dolorem. Debitis, animi.</p>
+          <p>{blog.description}</p>
         </div>
       </div>
     </Link>

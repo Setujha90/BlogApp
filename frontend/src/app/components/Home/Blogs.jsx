@@ -7,9 +7,12 @@ import { copyToClipboard } from '@/app/server/copyToClipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShareFromSquare, faBookmark } from '@fortawesome/free-regular-svg-icons';
 import { useSelector } from 'react-redux';
+import { formatRelativeTime } from '@/app/server/dateTime';
 
 
 const Blogs = ({blog, userData, i}) => {
+  
+    const formattedTime = formatRelativeTime(blog.createdAt);
 
     // const [likes, setLikes] = useState(blog.noOfLikes)
     // const [loading, setLoading] = useState(false)
@@ -28,7 +31,7 @@ const Blogs = ({blog, userData, i}) => {
               </div>
               <div className={styles.details}>
                 <div>
-                  <Link href={`/user/${userData[i]?._id}`}>@{userData[i]?.fullName}</Link> . <span>{Date(blog.updatedAt) - Date.now()}</span>
+                  <Link href={`/user/${userData[i]?._id}`}>@{userData[i]?.username}</Link> · <span>{formattedTime}</span>
                 </div>
                 <div>1 Friends</div>
               </div>

@@ -2,6 +2,7 @@ import React from 'react'
 import styles from "./styles.module.css"
 
 import { useSelector } from 'react-redux'
+import Link from 'next/link'
 
 const SideProfile = () => {
 
@@ -11,7 +12,7 @@ const SideProfile = () => {
     return <div>Yaha SignIn krne ka button</div>
   }
 
-  const {fullName, email, avatarImage, blogs} = userData
+  const {_id, username, email, avatarImage, blogs} = userData
 
   return (
     <div className={styles.profile}>
@@ -23,7 +24,7 @@ const SideProfile = () => {
             />
           </div>
           <div className={styles.details}>
-            <div>{fullName}</div>
+            <Link href={`/user/${_id}`}>@{username}</Link>
             <div>1 Friends</div>
           </div>
         </div>
