@@ -4,12 +4,12 @@ import "../../page.css";
 import styles from "./styles.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import FetchProfileBlog from "./FetchProfileBlog";
-import { updateProfilePic, updateUserProfile, userById } from "@/app/server/signup";
+import { follow, updateProfilePic, updateUserProfile, userById } from "@/app/server/signup";
 import Link from "next/link";
 import { updateFailure, updateStart, updateSuccess } from "@/app/redux/user/userSlice";
 import Spinner from "../Spinner";
 
-const Profile = ({id}) => {
+const Profile = ({id, tab}) => {
 
   const dispatch = useDispatch()
   const loggedInUser = useSelector(state => state.user.currentUser);
@@ -24,6 +24,13 @@ const Profile = ({id}) => {
 
   const [isEdit, setIsEdit] = useState(false)
 
+  const [isUserFollowed, setIsUserFollowed] = useState(null)
+  const [noOfFolloers, setNoOfFolloers] = useState(0)
+  const [noOfFollowings, setNoOfFollowings] = useState(0)
+  
+
+  const [currentTab, setCurrentTab] = useState(tab)
+
   useEffect(() => {
     async function fetchUser(){
       try {
@@ -32,6 +39,8 @@ const Profile = ({id}) => {
         setFullName(user.fullName)
         setEmail(user.email)
         setAvatarImage(user.avatarImage)
+        setNoOfFolloers(user.followers.length)
+        setNoOfFollowings(user.following.length)
       } 
       catch (error) {
         throw error
@@ -41,8 +50,21 @@ const Profile = ({id}) => {
       }
     }
 
+    function ifFollower(){
+      if(loggedInUser && loggedInUser.following.includes(id)){
+        return true
+      }else{
+        return false
+      }
+    }
+
+    setIsUserFollowed(ifFollower())
     fetchUser()
-  }, [])
+  }, [isUserFollowed])
+
+
+
+
 
   if(loading){
     return (
@@ -106,22 +128,46 @@ const Profile = ({id}) => {
             :
             ""
           }
-
-
+          {loggedInUser && loggedInUser?._id !== user._id ?   (<div>
+              <button onClick={async(e) => {
+                dispatch(updateStart())
+                try{
+                  const response = await follow(loggedInUser._id, user._id)
+                  dispatch(updateSuccess(response.user))
+                  setIsUserFollowed(prevIsUserFollowed => !prevIsUserFollowed);
+                }
+                catch(error){
+                  dispatch(updateFailure(error))
+                  console.error("Error while following user:- ", error)
+                }
+              }} >{isUserFollowed ? "Unfollow" : "Follow"}</button>
+            </div>) : ""}
         </div>
+
+        <div className={styles.stats}>
+          <div>
+            <p><span>{noOfFolloers}</span> Followers</p>
+            <p><span>{noOfFollowings}</span> Following</p>
+            <p><span>{user.blogs.length}</span> Blogs</p>
+          </div>
+        </div>
+
       </div>
 
       {/* Section 2 */}
       <div className={styles.section2}>
         <div className={styles.slideBar}>
           <div>
-            <button>Your Blogs</button>
+            <button onClick={(e) => {setCurrentTab("Blogs")}}>Blogs</button>
           </div>
           <div>
-            <button>History</button>
+            <button onClick={(e) => {setCurrentTab("History")}}>History</button>
           </div>
           <div>
-            <button>Liked Blogs</button>
+            <button onClick={(e) => {setCurrentTab("LikedBlogs")}}>Liked Blogs</button>
+          </div>
+          <div>
+            <button onClick={(e) => {setCurrentTab("Bookmarks")}}>Bookmarks</button>
           </div>
         </div>
         <div className={styles.data}>

@@ -9,8 +9,8 @@ const BlogCard = ({ data }) => {
     const fetchData = async () => {
       const userDataArray = await Promise.all(
         data.map(async (blog) => {
-          const { _id, username, avatarImage } = await userById(blog.owner);
-          return { _id, username, avatarImage };
+          const { _id, username, avatarImage, followers } = await userById(blog.owner);
+          return { _id, username, avatarImage, followers };
         })
       );
       setUserData(userDataArray);

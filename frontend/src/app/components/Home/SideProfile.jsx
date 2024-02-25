@@ -12,7 +12,7 @@ const SideProfile = () => {
     return <div>Yaha SignIn krne ka button</div>
   }
 
-  const {_id, username, email, avatarImage, blogs} = userData
+  const {_id, username, email, avatarImage, blogs, followers} = userData
 
   return (
     <div className={styles.profile}>
@@ -25,7 +25,7 @@ const SideProfile = () => {
           </div>
           <div className={styles.details}>
             <Link href={`/user/${_id}`}>@{username}</Link>
-            <div>1 Friends</div>
+            <div>{followers.length} Followers</div>
           </div>
         </div>
         <div className={styles.contact}>{email}</div>

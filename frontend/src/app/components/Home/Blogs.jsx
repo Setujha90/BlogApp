@@ -33,7 +33,7 @@ const Blogs = ({blog, userData, i}) => {
                 <div>
                   <Link href={`/user/${userData[i]?._id}`}>@{userData[i]?.username}</Link> · <span>{formattedTime}</span>
                 </div>
-                <div>1 Friends</div>
+                <div>{userData[i]?.followers.length} Followers</div>
               </div>
             </div>
               

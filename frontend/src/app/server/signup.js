@@ -126,7 +126,8 @@ export const follow = async(id, userId) => {
 
         const res = {
             "user" : response.data.data["user"],
-            "msg" : response.data.data["message"]
+            "msg" : response.data.data["message"],
+            "isFollowed" : response.data.data["isFollowed"]
         }
 
         return res

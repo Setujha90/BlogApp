@@ -15,10 +15,14 @@
     grid-gap: 20px;
 }
 
+.profile .pic, .description, .stats{
+    background: rgb(235, 235, 235, 10%);
+    border-radius: 30px;
+}
+
 .profile .pic{
     min-width: 300px;
     text-align: center;
-    background: rgb(235, 235, 235, 5%);
     border-radius: 30px;
 }
 
@@ -43,7 +47,6 @@
     flex-direction: column;
     justify-content: space-evenly;
     padding: 0px 50px;
-    background: rgb(235, 235, 235, 5%);
     border-radius: 30px;
     font-size: 1.2em;
 }
@@ -81,8 +84,34 @@
     border: none;
 }
 
+.stats{
+    display: flex;
+    justify-content: center;
+}
+
+.stats div{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-radius: 30px;
+    font-size: 1.2em;
+    align-items: flex-start;
+}
+
+.stats span{
+    background: rgb(255, 255, 255, 20%);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.stats span:hover{
+    background: rgb(255, 255, 255, 30%);
+    cursor: pointer;
+}
+
 .section2{
-    background: rgb(235, 235, 235, 5%);
+    background: rgb(235, 235, 235, 10%);
     border-radius: 30px;
     margin: 50px 0px;
     padding: 20px 20px;
@@ -125,48 +154,9 @@
     display: grid;
     margin: auto;
     margin-top: 40px;
-    /* padding: 0px 22px; */
-    grid-template-columns: repeat(auto-fit, minmax(700px, 1fr));
+    padding: 0px 22px;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     grid-gap: 20px;
     justify-items: center;
 }
 
-.section2 .data .blogCard{
-    background-color: rgb(235, 235, 235, 10%);
-    width: 690px;
-    height: 350px;
-    border-radius: 20px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 0px 10px 0px 20px;
-}
-
-.section2 .data .blogCard .blogThumbnail{
-    width: 300px;
-    height: 300px;
-
-}
-
-.section2 .data .blogCard img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    border-radius: 20px;
-}
-
-.blogDescription{
-    max-width: 330px;
-}
-
-.blogDescription p, .blogDescription h4{
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2; /* number of lines to show */
-    line-height: 1.5em;        /* fallback */
-    max-height: 3em;       /* fallback */
-}

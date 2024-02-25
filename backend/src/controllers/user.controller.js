@@ -473,7 +473,7 @@ export const follow = asyncHandler(async(req, res) => {
             .json(new ApiResponse(
                 200,
                 {
-                    user
+                    user, isFollowed
                 },
                 "Follow removed successfully"
             ))
@@ -492,7 +492,7 @@ export const follow = asyncHandler(async(req, res) => {
         .json(new ApiResponse(
             200,
             {
-                user
+                user, isFollowed
             },
             "Follow added successfully"
         ))
