@@ -8,7 +8,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShareFromSquare, faBookmark } from '@fortawesome/free-regular-svg-icons';
 import { useSelector } from 'react-redux';
 import { formatRelativeTime } from '@/app/server/dateTime';
-
+import Image from 'next/image';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+// import menu from '@/app/styles/menu.png'
 
 const Blogs = ({blog, userData, i}) => {
   
@@ -20,6 +22,8 @@ const Blogs = ({blog, userData, i}) => {
 
     const [copyLoading, setCopyLoading] = useState(false)
     const [bookmarkLoading, setBookmarkLoading] = useState(false)
+
+    const [actionButtons, setActionButtons] = useState(false)
 
     return (
         <div key={blog._id} className={styles.blogCard}>
@@ -38,7 +42,7 @@ const Blogs = ({blog, userData, i}) => {
             </div>
               
             <div className={styles.actionButtons}>
-                <button className={`${styles.popUp} ${copyLoading ? styles.copyPopUp: ""}`} onClick={async(e) => {
+                <button className={styles.actionButtons} onClick={async(e) => {
                   setCopyLoading(false)
                   await copyToClipboard(`http://localhost:3000/blog/${blog._id}`)
                   setBookmarkLoading(false)
@@ -48,11 +52,30 @@ const Blogs = ({blog, userData, i}) => {
                 </button>
                 {
                 loggedInUser ?
-                <button className={`${bookmarkLoading? styles.bookmarkPopUp : ""} ${styles.popUp}`} onClick={(e) => {
-                  setBookmarkLoading(true)
+                <button className={`${styles.actionButtons} ${styles.popup}`} onClick={(e) => {
+                  setActionButtons(!actionButtons)
                   setCopyLoading(false)
                   }} >
-                  <FontAwesomeIcon icon={faBookmark} />
+                  <div className={styles.threeDot}>
+                    <FontAwesomeIcon icon={faBars} />
+                    <div className={`${styles.hidden} ${actionButtons && styles.popUpButtons}`}>
+                      <button>
+                        Delete
+                      </button>
+                      <button>
+                        Bookmark
+                      </button>
+                      <button>
+                        Report
+                      </button>
+                      <button>
+                        Share
+                      </button>
+                      <button>
+                        Related_Posts
+                      </button>
+                    </div>
+                  </div>
                 </button>
                 :
                 ""
@@ -66,8 +89,8 @@ const Blogs = ({blog, userData, i}) => {
             <p>{blog.description}</p>
             <img src={blog.thumbnail} alt="Blog Image" />
           </div>
-          <div className={styles.actionButtons}>
-            {/* <div>
+          {/* <div className={styles.actionButtons}>
+            <div>
               {blog.noOfViews} Views
             </div>
             <div>
@@ -96,9 +119,9 @@ const Blogs = ({blog, userData, i}) => {
             <div>
               <span> {blog.noOfComments} </span>
               <button className={styles.btn}>Comment</button>
-            </div> */}
+            </div>
 
-          </div>
+          </div> */}
         </div>
     )
 }

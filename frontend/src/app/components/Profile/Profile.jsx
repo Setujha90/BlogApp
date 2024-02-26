@@ -30,6 +30,7 @@ const Profile = ({id, tab}) => {
   
 
   const [currentTab, setCurrentTab] = useState(tab)
+  const [currentTabData, setCurrentTabData] = useState("")
 
   useEffect(() => {
     async function fetchUser(){
@@ -63,7 +64,23 @@ const Profile = ({id, tab}) => {
   }, [isUserFollowed])
 
 
-
+  useEffect(() => {
+    function returnCurrentTabData(){
+      if(currentTab === "Blogs"){
+        return user?.blogs
+      }
+      else if(currentTab === "History"){
+        return user?.blogHistory
+      }
+      else if(currentTab === "LikedBlogs"){
+        return user?.likedBlogs
+      }
+      else{
+        return user?.bookmarks
+      }
+    }
+    setCurrentTabData(returnCurrentTabData())
+  }, [currentTab, user])
 
 
   if(loading){
@@ -158,21 +175,21 @@ const Profile = ({id, tab}) => {
       <div className={styles.section2}>
         <div className={styles.slideBar}>
           <div>
-            <button onClick={(e) => {setCurrentTab("Blogs")}}>Blogs</button>
+            <button style={currentTab === "Blogs" ? {background: "rgb(235, 235, 235, 10%)"} : {}} onClick={(e) => {setCurrentTab("Blogs")}}>Blogs</button>
           </div>
           <div>
-            <button onClick={(e) => {setCurrentTab("History")}}>History</button>
+            <button style={currentTab === "History" ? {background: "rgb(235, 235, 235, 10%)"} : {}} onClick={(e) => {setCurrentTab("History")}}>History</button>
           </div>
           <div>
-            <button onClick={(e) => {setCurrentTab("LikedBlogs")}}>Liked Blogs</button>
+            <button style={currentTab === "LikedBlogs" ? {background: "rgb(235, 235, 235, 10%)"} : {}} onClick={(e) => {setCurrentTab("LikedBlogs")}}>Liked Blogs</button>
           </div>
           <div>
-            <button onClick={(e) => {setCurrentTab("Bookmarks")}}>Bookmarks</button>
+            <button style={currentTab === "Bookmark" ? {background: "rgb(235, 235, 235, 10%)"} : {}} onClick={(e) => {setCurrentTab("Bookmarks")}}>Bookmarks</button>
           </div>
         </div>
         <div className={styles.data}>
           {
-            user.blogs.length != 0? user.blogs.map((blogId, i) => 
+            currentTab.length != 0 ? currentTabData?.map((blogId, i) => 
               <FetchProfileBlog id={blogId} />
             )
             : 

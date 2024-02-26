@@ -129,15 +129,13 @@
     border-radius: inherit;
 }
 
-.section2 .slideBar div{
-    padding: 5px 20px;
-}
-
-.section2 .slideBar div button{
-  background: transparent;
-  border: none;
-  outline: none;
-  font-size: 1.2em;
+.section2 .slideBar button{
+    padding: 8px 20px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1.2em;
+    border-radius: 20px;
 }
 
 .section2 .slideBar div:hover{
@@ -149,6 +147,8 @@
 .section2 .slideBar div button:hover{
   cursor: pointer;
 }
+
+
 
 .section2 .data{
     display: grid;

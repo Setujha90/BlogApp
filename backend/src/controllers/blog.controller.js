@@ -265,6 +265,12 @@ export const likeBlog = asyncHandler(async(req, res) => {
         throw new ApiError(401, "Login to like this blog")
     }
 
+    const userLikedBlogs = await User.findById(user._id)
+
+    if(!userLikedBlogs){
+        throw new ApiError(404, "User not found!!!")
+    }
+
     const blogId = req.params.id
 
     if(!blogId){
@@ -301,7 +307,9 @@ export const likeBlog = asyncHandler(async(req, res) => {
 
         blog.noOfLikes -= 1
         await blog.save({validateBeforeSave:false})
-
+        
+        userLikedBlogs.likedBlogs.filter(blogid => {return String(blogid) !== String(blogId)})
+        await userLikedBlogs.save({validateBeforeSave: false})
         return res.status(200).json(new ApiResponse(200, {blog}, "User unliked the blog"))
     }
 
@@ -309,6 +317,10 @@ export const likeBlog = asyncHandler(async(req, res) => {
         blog: blogId,
         likedBy: user._id
     })
+
+    if(!likesDocument){
+        throw new ApiError(500, "Error while registering the like")
+    }
 
     const blog = await Blog.findByIdAndUpdate(blogId, {
         $inc:{
@@ -319,6 +331,9 @@ export const likeBlog = asyncHandler(async(req, res) => {
     if(!blog){
         throw new ApiError(500, "Error while updating the likes of blog")
     }
+
+    userLikedBlogs.likedBlogs.push(blogId)
+    await userLikedBlogs.save({validateBeforeSave: false})
 
     return res
         .status(200)
@@ -404,8 +419,10 @@ export const viewBlog = asyncHandler(async(req, res) => {
 
     console.log("blogId add kiya jaa rha h ab")
     console.log("Before:- ",userHistory.blogHistory)
-    userHistory.blogHistory.push(blogId)
-    await userHistory.save({validateBeforeSave: false})
+    if(!(userHistory.blogHistory.includes(blogId))){
+        userHistory.blogHistory.push(blogId)
+        await userHistory.save({validateBeforeSave: false})
+    }
     console.log("After:- ",userHistory.blogHistory)
     console.log("Ab blogId add ho chuka history me")
 

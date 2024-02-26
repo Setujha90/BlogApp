@@ -2,12 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import styles from "./Create/styles.module.css";
 import commentStyles from "./styles.module.css"
-import { deleteBlog, getBlogById, viewBlogById } from '@/app/server/blogs';
+import { deleteBlog, getBlogById } from '@/app/server/blogs';
 import { userById } from '@/app/server/signup';
 import WriteComment from './WriteComment';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import { formatRelativeTime } from '@/app/server/dateTime';
 import { useDispatch, useSelector } from 'react-redux';
@@ -81,6 +81,13 @@ const ShowBlog = ({ id }) => {
             {/* comment sectoin */}
 
             <hr className={commentStyles.hr}/>
+
+            <div className={styles.actiouttons}>
+                <div>
+                    <span>105 </span>
+                    <FontAwesomeIcon icon={faHeart} />
+                </div>
+            </div>
 
             <div className={commentStyles.comment}>
                 <WriteComment id={id} blogComments={comments} commentIdReply={null} />

@@ -7,6 +7,9 @@
     gap: 20px;
 }
 
+.hidden{
+    display: none;
+}
 
 .profile{
     display: flex;
@@ -85,7 +88,7 @@
     /* display: flex; */
 }
 
-.popUp {
+.actionButtons {
     align-items: center;
     margin: 0px;
     background: transparent;
@@ -94,48 +97,46 @@
     border: none;
     outline: none;
     font-size: 1em;
-    position: relative; /* Ensure relative positioning for pseudo-elements */
+    position: relative;
 }
 
-.popUp svg {
+.actionButtons svg {
     color: rgb(44, 44, 44);
-}
-
-.popUp:hover {
-    background-color: rgba(99, 99, 99, 0.158);
     cursor: pointer;
 }
 
-.popUp svg:active {
-    color: rgb(0, 0, 0);
+.actionButtons:hover{
+    border-radius: inherit;
 }
 
-.popUp:before {
-    content: ""; /* Empty content */
+.actionButtons .threeDot{
+    position: relative;
+}
+
+.actionButtons .popUpButtons{
+    display: flex;
+    flex-direction: column;
     position: absolute;
-    top: -100%; /* Adjust this value as needed */
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(99, 99, 99, 0.158);
-    padding: 10px;
-    border-radius: 20px;
-    white-space: nowrap; /* Prevent wrapping */
-    opacity: 0; /* Initially hidden */
-    transition: opacity 0.3s ease; /* Add transition for smooth appearance */
+    transform: translate(-44%, 0%);
+    gap: 1px;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-.popUp:hover:before {
-    opacity: 1; /* Show the pseudo-element on hover */
+.actionButtons .popUpButtons button{
+    padding: 5px 15px;
+    font-size: 1.2em;
+    border: 1px solid transparent;
+    outline: none;
+    background-color: white;
+    cursor: pointer;
 }
 
-.copyPopUp:before {
-    content: "Copied!!";
+.actionButtons .popUpButtons button:hover{
+    border-bottom: 1px solid rgba(201, 201, 201, 0.315);
+    border-top: 1px solid rgba(201, 201, 201, 0.315);
 }
-
-.bookmarkPopUp:before {
-    content: "Bookmarked!!";
-}
-
 
 .profilePostCard{
     display: flex;
