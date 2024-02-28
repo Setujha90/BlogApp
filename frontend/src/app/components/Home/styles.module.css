@@ -7,10 +7,6 @@
     gap: 20px;
 }
 
-.hidden{
-    display: none;
-}
-
 .profile{
     display: flex;
     /* flex: 1; */
@@ -84,10 +80,6 @@
     gap: 10px;
 }
 
-.profileContainer .actionButtons div{
-    /* display: flex; */
-}
-
 .actionButtons {
     align-items: center;
     margin: 0px;
@@ -122,6 +114,9 @@
     background-color: white;
     border-radius: 10px;
     overflow: hidden;
+    height: 0px;
+    width: 0px;
+    transition: all 0.25s ease;
 }
 
 .actionButtons .popUpButtons button{

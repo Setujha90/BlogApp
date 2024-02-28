@@ -14,7 +14,7 @@ const Logout = () => {
   const dispatch = useDispatch();
 
   return (
-    <button 
+    <button
     onClick={async(e)=>{
       try{
         dispatch(authStart())
@@ -28,7 +28,7 @@ const Logout = () => {
       }
     }}
   >
-    Log Out
+    <>Log Out</>
   </button>
   )
 }

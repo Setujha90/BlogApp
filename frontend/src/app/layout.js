@@ -1,6 +1,7 @@
 import Header from "./components/Header/Header.jsx"
 import ProgressBar from "./components/ProgressBar.jsx"
 import { Providers } from "./redux/provider.jsx";
+import './page.css'
 
 export const metadata = {
   title: 'Next.js',

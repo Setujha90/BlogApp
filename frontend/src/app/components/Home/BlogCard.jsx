@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { userById } from '@/app/server/signup';
 import Blogs from './Blogs';
 
@@ -19,14 +19,15 @@ const BlogCard = ({ data }) => {
     fetchData();
   }, [data]);
 
-  if(data.length === 0){
-    return (<div>Empty</div>);
-  }
+  // if(data.length === 0){
+  //   return (<div>Empty</div>);
+  // }
 
   return (
     <>
       {data.map((blog, i) => (
-        <Blogs blog={blog} userData={userData} i={i} />
+
+          <Blogs blog={blog} userData={userData} i={i} />
       ))}
     </>
   );

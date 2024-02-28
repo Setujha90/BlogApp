@@ -17,8 +17,7 @@ const Home = () => {
 
       {/* all blogs here */}
       <div className={styles.blogsContainer}>
-        <FetchBlogs />
-        
+        <FetchBlogs />        
       </div>
     </div>
   );

@@ -72,7 +72,13 @@ export const likeBlog = async (id) => {
     try{
         const response = await axios.post(`${url}/${id}/like`, {}, {withCredentials: true})
 
-        return response.data.data
+        const res = {
+            "blog" : response.data.data["blog"],
+            "liked" : response.data.data["likedDocument"],
+            "user" : response.data.data["userLikedBlogs"]
+        }
+
+        return res
     }
     catch(error){
         throw error
@@ -82,7 +88,12 @@ export const likeBlog = async (id) => {
 export const getBlogById = async (id) => {
     try{
         const response = await axios.get(`${url}/${id}`)
-        await axios.post(`${url}/${id}/view`, {}, {withCredentials:true})
+        try{
+            const view = await viewBlogById(id)
+            console.log(view)
+        }catch(error){
+            console.error(error)
+        }
         return response.data.data["blog"]
     }
     catch(error){

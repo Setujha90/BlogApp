@@ -63,9 +63,27 @@ export const userSlice = createSlice({
             state.loading = false
             state.error = action.payload
         },
+
+        // Like
+        likeStart: (state) => {
+            state.loading = true
+            state.error = null
+        },
+
+        likeSuceess: (state, action) => {
+            state.loading = false
+            state.error = null
+            state.currentUser = action.payload
+            localStorage.setItem("user", JSON.stringify(state.currentUser))
+        },
+
+        likeFailure: (state, action) => {
+            state.loading = false
+            state.error = action.payload
+        },  
     }
 })
 
-export const {authStart, signUpSuccess, signInSuccess, logoutSuccess, authFailure, updateStart, updateFailure, updateSuccess} = userSlice.actions
+export const {authStart, signUpSuccess, signInSuccess, logoutSuccess, authFailure, likeStart, likeSuceess, likeFailure, updateStart, updateFailure, updateSuccess} = userSlice.actions
 
 export default userSlice.reducer

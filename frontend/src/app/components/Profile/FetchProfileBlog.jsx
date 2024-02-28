@@ -35,7 +35,7 @@ const FetchProfileBlog = ({id}) => {
   }
 
   return (
-    <div className={cardStyles.container}>
+    <div className={`${cardStyles.container}`}>
         <div className={cardStyles.card}>
         <Link href={`/blog/${blog._id}`}>
           <div className={cardStyles.card__header}>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import styles from "./styles.module.css";
+import actionButtonStyles from "@/app/components/Blog/Create/styles.module.css"
 import Link from 'next/link';
 import { likeBlog } from '@/app/server/blogs';
 import Spinner from '../Spinner';
@@ -9,7 +10,7 @@ import { faShareFromSquare, faBookmark } from '@fortawesome/free-regular-svg-ico
 import { useSelector } from 'react-redux';
 import { formatRelativeTime } from '@/app/server/dateTime';
 import Image from 'next/image';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faComment, faHeart } from '@fortawesome/free-solid-svg-icons';
 // import menu from '@/app/styles/menu.png'
 
 const Blogs = ({blog, userData, i}) => {
@@ -19,6 +20,8 @@ const Blogs = ({blog, userData, i}) => {
     // const [likes, setLikes] = useState(blog.noOfLikes)
     // const [loading, setLoading] = useState(false)
     const loggedInUser = useSelector(state => state.user.currentUser)
+
+    
 
     const [copyLoading, setCopyLoading] = useState(false)
     const [bookmarkLoading, setBookmarkLoading] = useState(false)
@@ -58,22 +61,12 @@ const Blogs = ({blog, userData, i}) => {
                   }} >
                   <div className={styles.threeDot}>
                     <FontAwesomeIcon icon={faBars} />
-                    <div className={`${styles.hidden} ${actionButtons && styles.popUpButtons}`}>
-                      <button>
-                        Delete
-                      </button>
-                      <button>
-                        Bookmark
-                      </button>
-                      <button>
-                        Report
-                      </button>
-                      <button>
-                        Share
-                      </button>
-                      <button>
-                        Related_Posts
-                      </button>
+                    <div style={{width: actionButtons? "200px": "0px", height : actionButtons ? "200px": "0px"}} className={styles.popUpButtons}>
+                      <button>Delete</button>
+                      <button>Bookmark</button>
+                      <button>Report</button>
+                      <button>Share</button>
+                      <button>Related_Posts</button>
                     </div>
                   </div>
                 </button>
@@ -89,39 +82,23 @@ const Blogs = ({blog, userData, i}) => {
             <p>{blog.description}</p>
             <img src={blog.thumbnail} alt="Blog Image" />
           </div>
-          {/* <div className={styles.actionButtons}>
-            <div>
-              {blog.noOfViews} Views
-            </div>
-            <div>
-              <span> {loading ? <Spinner /> : likes} </span>
-              <button className={styles.btn}
-                onClick={async(e)=>{
-                  try{
-                    setLoading(true)
-                    // setLikes(blog.noOfLikes)
-                    const response = await likeBlog(blog._id)
-                    if(response["likesDocument"]){
-                      setLikes(likes+1)
-                    }
-                    else{
-                      setLikes(likes-1)
-                    }
-                    setLoading(false)
-                  }
-                  catch(error){
-                    console.error("Error while Liking the blog", error)
-                  }
-                }}
-              >Like
-              </button>
-            </div>
-            <div>
-              <span> {blog.noOfComments} </span>
-              <button className={styles.btn}>Comment</button>
+          
+          <div className={actionButtonStyles.actionButtons}>
+                <div>
+                    {blog.noOfViews} Views
+                </div>
+
+                <div>
+                    <span>{blog.noOfLikes} </span>
+                    <FontAwesomeIcon style={{color: loggedInUser?.likedBlogs.includes(blog._id) ? 'red' : 'white'}} icon={faHeart} />
+                </div>
+
+                <div>
+                    <span>{blog.noOfComments} </span>
+                    <FontAwesomeIcon style={{color: 'white'}} icon={faComment} />
+                </div>
             </div>
 
-          </div> */}
         </div>
     )
 }

@@ -37,11 +37,11 @@ const Header = () => {
             {!loading && <Image onClick={(e)=>{
               setDropDown(!dropDown)
             }} className={styles.profileDP} src={user.avatarImage} width={60} height={60}/> }
-            <div style={{display: dropDown? "flex": "none"}} className={styles.dropDown}>
+            <div style={{width: dropDown? "180px": "0px", height : dropDown ? "140px": "0px"}} className={styles.dropDown}>
               <Link className={styles.button} href={`/user/${user._id}`}>Profile</Link>
               <Link className={styles.button} href={'/blog/create'}>Create Blog</Link>
-              <Logout/>
               <Link className={styles.button} href={"/"}>Help & Support</Link>
+              <Logout/>
             </div>
             </>
             : <div><Link href={"/user/signup"} className={styles.btn}>Sign Up</Link></div>}

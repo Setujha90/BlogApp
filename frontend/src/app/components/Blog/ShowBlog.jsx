@@ -2,22 +2,24 @@
 import React, { useEffect, useState } from 'react';
 import styles from "./Create/styles.module.css";
 import commentStyles from "./styles.module.css"
-import { deleteBlog, getBlogById } from '@/app/server/blogs';
+import { deleteBlog, getBlogById, likeBlog } from '@/app/server/blogs';
 import { userById } from '@/app/server/signup';
 import WriteComment from './WriteComment';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faComment, faHeart, faShareFromSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import { formatRelativeTime } from '@/app/server/dateTime';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateFailure, updateStart, updateSuccess } from '@/app/redux/user/userSlice';
+import { likeFailure, likeStart, likeSuceess, updateFailure, updateStart, updateSuccess } from '@/app/redux/user/userSlice';
+import { copyToClipboard } from '@/app/server/copyToClipboard';
 
 const ShowBlog = ({ id }) => {
     const [blog, setBlog] = useState({});
     const [owner, setOwner] = useState({});
     const [loading, setLoading] = useState(true);
     const [comments, setComments] = useState([])
+    const [like, setLike] = useState()
 
     const router = useRouter()
 
@@ -35,6 +37,7 @@ const ShowBlog = ({ id }) => {
 
                 // Set initial comments
                 setComments(blogData.comment);
+                setLike(blogData.noOfLikes)
             } catch (error) {
                 console.error('Error fetching data:', error);
             } finally {
@@ -76,18 +79,39 @@ const ShowBlog = ({ id }) => {
                 <h1>{blog.title}</h1>
                 <p>{blog.description}</p>
                 {/* Render the first image */}
-                {blog.images.length > 0 && <img src={blog.images[0]} alt="holla" />}
+                {blog.images?.length > 0 && <img src={blog.images[0]} alt="holla" />}
             </div>
             {/* comment sectoin */}
 
             <hr className={commentStyles.hr}/>
 
-            <div className={styles.actiouttons}>
+            <div className={styles.actionButtons}>
                 <div>
-                    <span>105 </span>
-                    <FontAwesomeIcon icon={faHeart} />
+                    {blog.noOfViews} Views
+                </div>
+
+                <div>
+                    <span>{like} </span>
+                    <FontAwesomeIcon onClick={async(e) => {
+                        try{
+                            dispatch(likeStart())
+                            const response = await likeBlog(blog._id)
+                            setLike(response.blog.noOfLikes)
+                            dispatch(likeSuceess(response.user))
+                        } catch(error){
+                            dispatch(likeFailure(error))
+                            console.error(error)
+                        }
+                    }} style={{color: loggedInUser?.likedBlogs.includes(blog._id) ? 'red' : 'white'}} icon={faHeart} />
+                </div>
+
+                <div>
+                    <span>{blog.noOfComments} </span>
+                    <FontAwesomeIcon style={{color: 'white'}} icon={faComment} />
                 </div>
             </div>
+
+            <hr className={commentStyles.hr}/>
 
             <div className={commentStyles.comment}>
                 <WriteComment id={id} blogComments={comments} commentIdReply={null} />

@@ -307,8 +307,13 @@ export const likeBlog = asyncHandler(async(req, res) => {
 
         blog.noOfLikes -= 1
         await blog.save({validateBeforeSave:false})
+
+        console.log("unlike kr rhe h")
         
-        userLikedBlogs.likedBlogs.filter(blogid => {return String(blogid) !== String(blogId)})
+        userLikedBlogs.likedBlogs = userLikedBlogs.likedBlogs.filter(likedBlogId => {
+            return String(likedBlogId) !== String(blogId)
+        });
+        console.log(userLikedBlogs.likedBlogs)
         await userLikedBlogs.save({validateBeforeSave: false})
         return res.status(200).json(new ApiResponse(200, {blog}, "User unliked the blog"))
     }
@@ -340,7 +345,7 @@ export const likeBlog = asyncHandler(async(req, res) => {
         .json(new ApiResponse(
             200,
             {
-                blog, likesDocument
+                blog, likesDocument, userLikedBlogs
             },
             "Successfully liked the blog"
         ))
@@ -403,7 +408,7 @@ export const viewBlog = asyncHandler(async(req, res) => {
     ])
 
     if(isAlreadyViewed.length > 0){
-        return res.status(200).json(new ApiResponse(200, {blog}, "User already viewed this blog"))
+        throw new ApiError(400, "You have already viewed this blog")
     }
 
     const viewedDocument = await View.create({
