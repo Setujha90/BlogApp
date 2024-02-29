@@ -76,7 +76,7 @@ const Profile = ({id, tab}) => {
         return user?.likedBlogs
       }
       else{
-        return user?.bookmarks
+        return user?.bookmark
       }
     }
     setCurrentTabData(returnCurrentTabData())

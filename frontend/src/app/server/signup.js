@@ -104,7 +104,7 @@ export const bookmark = async(id, blogId) => {
 
         const res = {
             "user" : response.data.data["user"],
-            "msg" : response.data.data["message"]
+            "msg" : response.data["message"]
         }
 
         return res

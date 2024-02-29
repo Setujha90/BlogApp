@@ -315,7 +315,7 @@ export const likeBlog = asyncHandler(async(req, res) => {
         });
         console.log(userLikedBlogs.likedBlogs)
         await userLikedBlogs.save({validateBeforeSave: false})
-        return res.status(200).json(new ApiResponse(200, {blog}, "User unliked the blog"))
+        return res.status(200).json(new ApiResponse(200, {blog, userLikedBlogs}, "User unliked the blog"))
     }
 
     const likesDocument = await Like.create({
@@ -422,14 +422,10 @@ export const viewBlog = asyncHandler(async(req, res) => {
         throw new ApiError(500, "Error while fetching user data")
     }
 
-    console.log("blogId add kiya jaa rha h ab")
-    console.log("Before:- ",userHistory.blogHistory)
     if(!(userHistory.blogHistory.includes(blogId))){
         userHistory.blogHistory.push(blogId)
         await userHistory.save({validateBeforeSave: false})
     }
-    console.log("After:- ",userHistory.blogHistory)
-    console.log("Ab blogId add ho chuka history me")
 
     blog.noOfViews+=1
     await blog.save({validateBeforeSave: false})

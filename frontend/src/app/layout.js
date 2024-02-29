@@ -2,6 +2,7 @@ import Header from "./components/Header/Header.jsx"
 import ProgressBar from "./components/ProgressBar.jsx"
 import { Providers } from "./redux/provider.jsx";
 import './page.css'
+import Message from "./utils/Message.jsx";
 
 export const metadata = {
   title: 'Next.js',
@@ -9,6 +10,9 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
+
+
+
  return (
  <Providers>
       <html lang="en">
@@ -16,9 +20,11 @@ export default function RootLayout({ children }) {
           background: "rgb(123,119,193)",
           background: "linear-gradient(90deg, #7b77c1 0%, #00d4ff 100%)"
         }}>
-          <ProgressBar />
-          <Header />
-          {children}
+          <Message>
+            <ProgressBar />
+            <Header />
+            {children}
+          </Message>
         </body>
       </html>
  </Providers>

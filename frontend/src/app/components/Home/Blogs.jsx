@@ -7,10 +7,12 @@ import Spinner from '../Spinner';
 import { copyToClipboard } from '@/app/server/copyToClipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShareFromSquare, faBookmark } from '@fortawesome/free-regular-svg-icons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { formatRelativeTime } from '@/app/server/dateTime';
 import Image from 'next/image';
 import { faBars, faComment, faHeart } from '@fortawesome/free-solid-svg-icons';
+import { bookmark } from '@/app/server/signup';
+import { bookmarkUpdateFailure, bookmarkUpdateStart, bookmarkUpdateSuccess } from '@/app/redux/user/userSlice';
 // import menu from '@/app/styles/menu.png'
 
 const Blogs = ({blog, userData, i}) => {
@@ -20,11 +22,11 @@ const Blogs = ({blog, userData, i}) => {
     // const [likes, setLikes] = useState(blog.noOfLikes)
     // const [loading, setLoading] = useState(false)
     const loggedInUser = useSelector(state => state.user.currentUser)
+    const bookmarkLoading = useSelector(state => state.user.bookmarkLoading)
 
-    
+    const dispatch = useDispatch()
 
     const [copyLoading, setCopyLoading] = useState(false)
-    const [bookmarkLoading, setBookmarkLoading] = useState(false)
 
     const [actionButtons, setActionButtons] = useState(false)
 
@@ -63,7 +65,17 @@ const Blogs = ({blog, userData, i}) => {
                     <FontAwesomeIcon icon={faBars} />
                     <div style={{width: actionButtons? "200px": "0px", height : actionButtons ? "200px": "0px"}} className={styles.popUpButtons}>
                       <button>Delete</button>
-                      <button>Bookmark</button>
+                      <button onClick={async(e) => {
+                        try{
+                          dispatch(bookmarkUpdateStart())
+                          const response = await bookmark(loggedInUser._id, blog._id)
+                          dispatch(bookmarkUpdateSuccess({"msg" : response.msg, "user" : response.user}))
+                        }
+                        catch(error){
+                          dispatch(bookmarkUpdateFailure(error))
+                          console.error("Error bookmarking blog:", error)
+                        }
+                      }}>{loggedInUser?.bookmark.includes(blog._id) ? "Bookmarked" : "Bookmark"}</button>
                       <button>Report</button>
                       <button>Share</button>
                       <button>Related_Posts</button>
