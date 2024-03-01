@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const Skeleton = () => {
-  return (
-    <div>
-      Hollaa man
-    </div>
-  )
-}
+  return <div>Hollaa man</div>;
+};
 
-export default Skeleton
+export default Skeleton;

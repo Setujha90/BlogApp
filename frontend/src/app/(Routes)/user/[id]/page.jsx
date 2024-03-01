@@ -1,24 +1,22 @@
-"use client"
-import Profile from '@/app/components/Profile/Profile.jsx'
-import { useSearchParams } from 'next/navigation'
-import React from 'react'
+"use client";
+import Profile from "@/app/components/Profile/Profile.jsx";
+import { useSearchParams } from "next/navigation";
+import React from "react";
 
+const page = ({ params }) => {
+  const tabParams = useSearchParams();
 
-const page = ({params}) => {
+  let tab = tabParams.get("tab");
 
-  const tabParams = useSearchParams()
-
-  let tab = tabParams.get('tab')
-
-  if(!(["Blogs", "History", "LikedBlogs", "Bookmarks"].includes(tab))){
-    tab = "Blogs"
+  if (!["Blogs", "History", "LikedBlogs", "Bookmarks"].includes(tab)) {
+    tab = "Blogs";
   }
 
   return (
     <div>
-      <Profile id={params.id} tab={tab}/>
+      <Profile id={params.id} tab={tab} />
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default page;

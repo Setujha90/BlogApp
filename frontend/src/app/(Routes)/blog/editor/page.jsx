@@ -1,11 +1,9 @@
-import React from 'react'
-import { NextPage } from 'next'
-import Editor from '../../../components/Editor/Editor'
+import React from "react";
+import { NextPage } from "next";
+import Editor from "../../../components/Editor/Editor";
 
 const IndexPage = () => {
-  return (
-      <Editor />
-  )
-}
+  return <Editor />;
+};
 
-export default IndexPage
+export default IndexPage;

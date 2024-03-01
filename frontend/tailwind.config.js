@@ -1,3 +1,5 @@
+export const mode = 'jit'
+
 export const content = [
   "./app/**/*.{js,jsx,ts,tsx,mdx}",
   "./pages/**/*.{js,jsx,ts,tsx,mdx}",
@@ -10,3 +12,5 @@ export const theme = {
   extend: {},
 };
 export const plugins = [];
+
+export const darkMode = "class";

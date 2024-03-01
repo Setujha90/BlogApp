@@ -1,22 +1,19 @@
-"use client"
-import React, { useEffect } from 'react'
-import NextTopLoader from 'nextjs-toploader';
-import { useDispatch } from 'react-redux';
-import { signInSuccess } from '../redux/user/userSlice';
-
-
+"use client";
+import React, { useEffect } from "react";
+import NextTopLoader from "nextjs-toploader";
+import { useDispatch } from "react-redux";
+import { signInSuccess } from "../redux/user/userSlice";
 
 const ProgressBar = () => {
+  const dispatch = useDispatch();
 
-  const dispatch = useDispatch()
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
 
-  useEffect(()=>{
-    const userData = localStorage.getItem("user")
-
-    if(userData){
-      dispatch(signInSuccess(JSON.parse(userData)))
+    if (userData) {
+      dispatch(signInSuccess(JSON.parse(userData)));
     }
-  }, [])
+  }, []);
 
   return (
     <div>
@@ -36,7 +33,7 @@ const ProgressBar = () => {
         showAtBottom={false}
       />
     </div>
-  )
-}
+  );
+};
 
-export default ProgressBar
+export default ProgressBar;

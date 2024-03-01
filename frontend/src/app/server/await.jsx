@@ -1,5 +1,5 @@
-export default async function Await({promise, children}){
-    let data = await promise
+export default async function Await({ promise, children }) {
+  let data = await promise;
 
-    return children(data)
+  return children(data);
 }

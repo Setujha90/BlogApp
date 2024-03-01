@@ -1,31 +1,24 @@
-"use client"
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
+"use client";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 
 const Editor = () => {
-
-    const editor = useEditor({
-        extensions: [
-          StarterKit,
-        ],
-        content: `
+  const editor = useEditor({
+    extensions: [StarterKit],
+    content: `
           <p>
             Hello World! 🌐
           </p>
         `,
-      })
+  });
 
-      if (!editor) {
-        return null
-      }
+  if (!editor) {
+    return null;
+  }
 
-    console.log(editor)
+  console.log(editor);
 
-    return (
-      <EditorContent editor={editor} />
-    )
-}
+  return <EditorContent editor={editor} />;
+};
 
-export default Editor
-
-
+export default Editor;

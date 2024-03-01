@@ -1,6 +1,6 @@
-import React, { useState, useEffect, Suspense } from 'react';
-import { userById } from '@/app/server/signup';
-import Blogs from './Blogs';
+import React, { useState, useEffect, Suspense } from "react";
+import { userById } from "@/app/server/signup";
+import Blogs from "./Blogs";
 
 const BlogCard = ({ data }) => {
   const [userData, setUserData] = useState([]);
@@ -9,9 +9,11 @@ const BlogCard = ({ data }) => {
     const fetchData = async () => {
       const userDataArray = await Promise.all(
         data.map(async (blog) => {
-          const { _id, username, avatarImage, followers } = await userById(blog.owner);
+          const { _id, username, avatarImage, followers } = await userById(
+            blog.owner,
+          );
           return { _id, username, avatarImage, followers };
-        })
+        }),
       );
       setUserData(userDataArray);
     };
@@ -26,8 +28,7 @@ const BlogCard = ({ data }) => {
   return (
     <>
       {data.map((blog, i) => (
-
-          <Blogs blog={blog} userData={userData} i={i} />
+        <Blogs blog={blog} userData={userData} i={i} />
       ))}
     </>
   );

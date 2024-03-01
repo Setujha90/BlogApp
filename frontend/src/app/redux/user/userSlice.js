@@ -5,9 +5,8 @@ const initialState = {
   loading: false,
   error: null,
   bookmarkLoading: false,
-  bookmarkMsg : null,
+  bookmarkMsg: null,
   updateLoading: false,
-
 };
 
 // if (typeof window !== 'undefined') {
@@ -89,13 +88,13 @@ export const userSlice = createSlice({
     bookmarkUpdateStart: (state) => {
       state.bookmarkLoading = true;
       state.error = null;
-      state.bookmarkMsg = null
+      state.bookmarkMsg = null;
     },
 
     bookmarkUpdateSuccess: (state, action) => {
       state.bookmarkLoading = false;
       state.error = null;
-      state.bookmarkMsg = action.payload.msg
+      state.bookmarkMsg = action.payload.msg;
       state.currentUser = action.payload.user;
       localStorage.setItem("user", JSON.stringify(state.currentUser));
     },
@@ -103,12 +102,12 @@ export const userSlice = createSlice({
     bookmarkUpdateFailure: (state, action) => {
       state.bookmarkLoading = false;
       state.error = action.payload;
-      state.bookmarkMsg = "Error bookmarking blog"
+      state.bookmarkMsg = "Error bookmarking blog";
     },
 
-    bookmarkUpdateDone : (state) => {
-      state.bookmarkMsg = null
-    }
+    bookmarkUpdateDone: (state) => {
+      state.bookmarkMsg = null;
+    },
   },
 });
 
