@@ -3,6 +3,8 @@ import ProgressBar from "./components/ProgressBar.jsx";
 import { Providers } from "./redux/provider.jsx";
 import "./page.css";
 import Message from "./utils/Message.jsx";
+import SideBar from "./components/SideBar/SideBar.jsx";
+import AuthUser from "./utils/AuthUser.jsx";
 
 export const metadata = {
   title: "Next.js",
@@ -14,16 +16,19 @@ export default function RootLayout({ children }) {
     <Providers>
       <html lang="en">
         <body
-          className="light bg-white"
-          style={{
-            // background: "rgb(123,119,193)",
-            // background: "linear-gradient(90deg, #7b77c1 0%, #00d4ff 100%)",
-          }}
+          className="light bg-[#e2e2e2c2]"
         >
           <Message>
             <ProgressBar />
-            <Header />
-            {children}
+            <Header /> 
+            <div className="flex justify-center items-center">
+              <AuthUser>
+                <div className="relative w-[20%] h-fit">
+                  <SideBar />
+                </div>
+              </AuthUser>
+              <div className="w-[80%]">{children}</div>
+            </div>
           </Message>
         </body>
       </html>

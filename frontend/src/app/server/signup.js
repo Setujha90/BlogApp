@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const url = "http://localhost:8000/api/v1/users";
-const url = "https://blogapp-4fjb.onrender.com/api/v1/users";
+const url = "http://localhost:8000/api/v1/users";
+// const url = "https://blogapp-4fjb.onrender.com/api/v1/users";
 
 export const userById = async (id) => {
   try {
@@ -149,3 +149,16 @@ export const follow = async (id, userId) => {
     throw error;
   }
 };
+
+export const renewLoginSession = async () => {
+  try {
+    const response = await axios.post(`${url}/generateAccessToken`, {},
+    {
+      withCredentials: true,
+    })
+
+    return response.data.data["user"]
+  } catch (error) {
+    throw error
+  }
+}

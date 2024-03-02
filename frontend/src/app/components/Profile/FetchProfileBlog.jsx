@@ -1,7 +1,7 @@
 import { getBlogById } from "@/app/server/blogs";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import cardStyles from "./cards.module.css";
+// import cardStyles from "./cards.module.css";
 import { userById } from "@/app/server/signup";
 import { formatRelativeTime } from "@/app/server/dateTime";
 
@@ -32,43 +32,79 @@ const FetchProfileBlog = ({ id }) => {
   }
 
   return (
-    <div className={`${cardStyles.container}`}>
-      <div className={cardStyles.card}>
-        <Link href={`/blog/${blog._id}`}>
-          <div className={cardStyles.card__header}>
-            {/* 600 * 400 */}
-            <img
-              src={blog.thumbnail}
-              alt="card__image"
-              className={`${cardStyles.card__image} ${cardStyles.img}`}
-              width="600"
-            />
-          </div>
-          <div className={cardStyles.card__body}>
-            <span className={`${cardStyles.tag} ${cardStyles.tagred}`}>
-              tag
-            </span>
-            <h4>{blog.title}</h4>
-            <p>{blog.description}</p>
-          </div>
-        </Link>
-        <Link href={`/user/${blog.owner}`}>
-          <div className={cardStyles.card__footer}>
-            <div className={cardStyles.user}>
-              <img
-                src={blogOwner.avatarImage}
-                alt="user__image"
-                className={`${cardStyles.user__image} ${cardStyles.img}`}
-              />
-              <div className={cardStyles.user__info}>
-                <p>@{blogOwner.username}</p>
-                <small>{formatRelativeTime(blog.createdAt)}</small>
-              </div>
-            </div>
-          </div>
-        </Link>
+
+    <div>
+  <div>
+    <Link href={`/blog/${blog._id}`}>
+      <div>
+        {/* 600 * 400 */}
+        <img
+          src={blog.thumbnail}
+          alt="card__image"
+          width="600"
+        />
       </div>
-    </div>
+      <div>
+        <span>tag</span>
+        <h4>{blog.title}</h4>
+        <p>{blog.description}</p>
+      </div>
+    </Link>
+    <Link href={`/user/${blog.owner}`}>
+      <div>
+        <div>
+          <img
+            src={blogOwner.avatarImage}
+            alt="user__image"
+          />
+          <div>
+            <p>@{blogOwner.username}</p>
+            <small>{formatRelativeTime(blog.createdAt)}</small>
+          </div>
+        </div>
+      </div>
+    </Link>
+  </div>
+</div>
+
+
+    // <div className={`${cardStyles.container}`}>
+    //   <div className={cardStyles.card}>
+    //     <Link href={`/blog/${blog._id}`}>
+    //       <div className={cardStyles.card__header}>
+    //         {/* 600 * 400 */}
+    //         <img
+    //           src={blog.thumbnail}
+    //           alt="card__image"
+    //           className={`${cardStyles.card__image} ${cardStyles.img}`}
+    //           width="600"
+    //         />
+    //       </div>
+    //       <div className={cardStyles.card__body}>
+    //         <span className={`${cardStyles.tag} ${cardStyles.tagred}`}>
+    //           tag
+    //         </span>
+    //         <h4>{blog.title}</h4>
+    //         <p>{blog.description}</p>
+    //       </div>
+    //     </Link>
+    //     <Link href={`/user/${blog.owner}`}>
+    //       <div className={cardStyles.card__footer}>
+    //         <div className={cardStyles.user}>
+    //           <img
+    //             src={blogOwner.avatarImage}
+    //             alt="user__image"
+    //             className={`${cardStyles.user__image} ${cardStyles.img}`}
+    //           />
+    //           <div className={cardStyles.user__info}>
+    //             <p>@{blogOwner.username}</p>
+    //             <small>{formatRelativeTime(blog.createdAt)}</small>
+    //           </div>
+    //         </div>
+    //       </div>
+    //     </Link>
+    //   </div>
+    // </div>
   );
 };
 

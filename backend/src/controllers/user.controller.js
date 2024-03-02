@@ -6,6 +6,8 @@ import { uploadOnCloud } from "../utils/cloudinary.js"
 import {View} from "../models/views.models.js"
 import { Like } from "../models/likes.models.js"
 import { Blog } from "../models/blog.models.js"
+import jwt from "jsonwebtoken"
+
 
 export const generateAccessAndRefreshToken = async(id) => {
     const user = await User.findById(id)
@@ -23,6 +25,37 @@ export const generateAccessAndRefreshToken = async(id) => {
 
     return {accessToken, refreshToken}
 }
+
+export const renewLoggedinSession = asyncHandler(async(req, res) => {
+  const token = req.cookies?.refreshToken || req.header("Authorizaton")?.replace("Bearer ", "")
+  
+  if(!token){
+    throw new ApiError(401, "unauthorized user")
+  }
+
+  const decodedToken = await jwt.verify(token, process.env.REFRESH_TOKEN_SECRET)
+  
+  let user = await User.findById(decodedToken?._id)
+  
+  if(!user){
+    throw new ApiError(401, "Unauthorized request")
+  }
+
+  const accessToken = await user.generateAccessToken()
+  user.accessToken = accessToken
+  await user.save({validateBeforeSave:false})
+
+  const sendUser = await User.findById(decodedToken?._id).select("-password -refreshToken -role")
+
+
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, {
+      sameSite: false,
+      maxAge: 24 * 60 * 60 * 1000,
+  })
+    .json(new ApiResponse(200, {"user" :sendUser}, "access token generated successfully"))
+})
 
 export const register = asyncHandler(async(req, res) => {
     const { username, fullName, email, password } = req.body

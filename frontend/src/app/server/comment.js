@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const url = "http://localhost:8000/api/v1/comment";
-const url = "https://blogapp-4fjb.onrender.com/api/v1/comment";
+const url = "http://localhost:8000/api/v1/comment";
+// const url = "https://blogapp-4fjb.onrender.com/api/v1/comment";
 
 export const getCommentById = async (commentId) => {
   try {

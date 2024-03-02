@@ -17,7 +17,10 @@ import {
   updateSuccess,
 } from "@/app/redux/user/userSlice";
 import Spinner from "../Spinner";
-import SideBard from "../SideBar/SideBard";
+import SideBar from "../SideBar/SideBar";
+import Image from "next/image";
+import ProfileButton from "./ProfileButton";
+import AuthUser from "@/app/utils/AuthUser";
 
 const Profile = ({ id, tab }) => {
   const dispatch = useDispatch();
@@ -25,7 +28,7 @@ const Profile = ({ id, tab }) => {
   const updateLoading = useSelector((state) => state.user.loading);
 
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -38,7 +41,7 @@ const Profile = ({ id, tab }) => {
   const [noOfFollowings, setNoOfFollowings] = useState(0);
 
   const [currentTab, setCurrentTab] = useState(tab);
-  const [currentTabData, setCurrentTabData] = useState("");
+  const [currentTabData, setCurrentTabData] = useState([]);
 
   useEffect(() => {
     async function fetchUser() {
@@ -81,7 +84,8 @@ const Profile = ({ id, tab }) => {
         return user?.bookmark;
       }
     }
-    setCurrentTabData(returnCurrentTabData());
+
+    setCurrentTabData(returnCurrentTabData() || []);
   }, [currentTab, user]);
 
   if (loading) {
@@ -90,8 +94,65 @@ const Profile = ({ id, tab }) => {
 
   return (
 
-    <div>
-      <SideBard />
+    <div className="w-[90%] rounded-lg overflow-hidden bg-[#f1f1f1] text-sm">
+      <div className="w-[100%] h-fit mb-8">
+        <div className="relative">
+          <Image className="w-[100%] h-[200px] object-cover object-center"
+            width={800}
+            height={50}
+            src="https://images.pexels.com/photos/268941/pexels-photo-268941.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            alt="Cover Image"
+          />
+          <div className="absolute left-[5%] -bottom-[18%] flex justify-center items-end gap-3 text-sm">
+            <Image className="w-[170px] h-[170px] rounded-full object-cover object-center"
+              width={200}
+              height={200}
+              alt="dp"
+              src={user?.avatarImage || "https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png"}
+            />
+            <p>{user?.followers?.length} Followers</p>
+            <p>{user?.following?.length} Followings</p>
+            <ProfileButton type={loggedInUser?.following.includes(user?._id) ? "Unfollow" : "Follow"} bg="#26D1FF" color="black" />
+            <ProfileButton type="Chat" bg="#ADADAD" color="black" />
+          </div>
+        </div>
+      </div>
+      <div className="px-10 py-3 flex justify-between">
+        <div className="w-[70%]">
+          <div>Vishal Kumar</div>
+          <div className="text-sm ml-2 text-slate-500">Software Engineer</div>
+          <div className="text-sm ml-2 text-slate-500">Kolkata, West Bengal</div>
+          <div className="my-2 leading-5">Description :- Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum sequi nulla cupiditate nobis animi quasi corporis temporibus ab maxime eveniet?</div>
+          <div>
+            <ProfileButton onClick={(e) => {console.log("Clicked", e)}} type={"Edit Profile"} bg={"black"} border="2px solid black" color={"white"} />
+            <ProfileButton type={"Settings"} bg={"white"} color={"black"} border="2px solid black" ></ProfileButton>
+          </div>
+        </div>
+        <div className="w-[30%] self-end text-right">
+          <div className="text-slate-500">Skills</div>
+          <div className="flex justify-end gap-2 text-sm text-right">
+            <div className="bg-[#F8CB6A] px-3 py-1 rounded-2xl" >HTML</div>
+            <div className="bg-[#F8CB6A] px-3 py-1 rounded-2xl" >CSS</div>
+            <div className="bg-[#F8CB6A] px-3 py-1 rounded-2xl" >Dart</div>
+            <div className="bg-[#F8CB6A] px-3 py-1 rounded-2xl" >C++</div>
+          </div>
+        </div>
+      </div>
+      <div className="px-10 py-3 text-md flex justify-center">
+        <div className="flex justify-center p-1 rounded-md bg-[#e2e2e2c2]">
+          <button onClick={(e) => {setCurrentTab("Blog")}} className={`px-2 py-1 w-[150px] rounded-md`}>Blogs</button>
+          <button onClick={(e) => {setCurrentTab("History")}} className={`px-2 py-1 w-[150px] rounded-md`}>History</button>
+          <button onClick={(e) => {setCurrentTab("LikedBlogs")}} className={`px-2 py-1 w-[150px] rounded-md`}>Liked Blogs</button>
+          <button onClick={(e) => {setCurrentTab("Bookmark")}} className={`px-2 py-1 w-[150px] rounded-md`}>Bookmark</button>
+        </div>
+      </div>
+      <div className={styles.data}>
+        {currentTab.length != 0 ? (
+          currentTabData?.map((blogId, i) => <FetchProfileBlog id={blogId} />)
+        ) : (
+          <div>No Posts Yet...</div>
+        )}
+      </div>
     </div>
 
 

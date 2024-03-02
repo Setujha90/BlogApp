@@ -13,9 +13,7 @@ const page = ({ params }) => {
   }
 
   return (
-    <div>
       <Profile id={params.id} tab={tab} />
-    </div>
   );
 };
 

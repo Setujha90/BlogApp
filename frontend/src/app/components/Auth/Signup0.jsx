@@ -153,6 +153,7 @@ const Signup = () => {
               dispatch(signInSuccess(currentUser));
               setStatusMsg(`Login Successfull`);
               router.replace(`http://localhost:3000/`);
+              router.refresh()
             } catch (error) {
               dispatch(authFailure(error.message));
               setStatusMsg(`User login failed!! ${error}`);

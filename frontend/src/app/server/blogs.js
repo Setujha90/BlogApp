@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const url = "http://localhost:8000/api/v1/blog";
-const url = "https://blogapp-4fjb.onrender.com/api/v1/blog"
+const url = "http://localhost:8000/api/v1/blog";
+// const url = "https://blogapp-4fjb.onrender.com/api/v1/blog"
 
 export const getAllBlogs = async () => {
   const response = await axios.get(url);

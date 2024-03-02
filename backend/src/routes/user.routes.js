@@ -11,6 +11,8 @@ import {
     updateUserProfile,
     bookmark,
     follow,
+    generateAccessAndRefreshToken,
+    renewLoggedinSession,
 } from "../controllers/user.controller.js"
 import { verifyJWT } from '../middleware/auth.middleware.js';
 
@@ -22,6 +24,7 @@ router.route("/login").post(login)
 router.route("/:id").get(getUserById)
 router.route("/").get(getAllUsers)
 
+router.route("/generateAccessToken").post(renewLoggedinSession)
 
 // secured routes
 router.route("/logout").post(verifyJWT, logout)
