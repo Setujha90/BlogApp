@@ -18,18 +18,14 @@ export default function RootLayout({ children }) {
         <body
           className="light bg-[#e2e2e2c2]"
         >
-          <Message>
             <ProgressBar />
             <Header /> 
             <div className="flex justify-center items-center">
-              <AuthUser>
                 <div className="relative w-[20%] h-fit">
                   <SideBar />
                 </div>
-              </AuthUser>
-              <div className="w-[80%]">{children}</div>
+              <div className="w-[80%] py-5">{children}</div>
             </div>
-          </Message>
         </body>
       </html>
     </Providers>

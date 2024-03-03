@@ -4,6 +4,7 @@ import { faIdBadge, faPaperPlane, faSquarePlus, faTowerBroadcast, faUserGroup } 
 import React from 'react'
 import LinkButton from './LinkButton'
 import { useSelector } from 'react-redux'
+import Message from '@/app/utils/Message';
 
 const SideBar = () => {
 
@@ -31,6 +32,7 @@ const SideBar = () => {
 				<LinkButton type={'Friends'} src={" "} />
 				<LinkButton type={'Friends'} src={" "} />
 			</div>
+
     </div>
 	</>
   )

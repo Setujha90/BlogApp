@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import "../../page.css";
-import styles from "./styles.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import FetchProfileBlog from "./FetchProfileBlog";
 import {
@@ -10,17 +9,10 @@ import {
   updateUserProfile,
   userById,
 } from "@/app/server/signup";
-import Link from "next/link";
-import {
-  updateFailure,
-  updateStart,
-  updateSuccess,
-} from "@/app/redux/user/userSlice";
-import Spinner from "../Spinner";
-import SideBar from "../SideBar/SideBar";
 import Image from "next/image";
 import ProfileButton from "./ProfileButton";
 import AuthUser from "@/app/utils/AuthUser";
+import AuthLoggedInUser from "@/app/utils/AuthLoggedInUser";
 
 const Profile = ({ id, tab }) => {
   const dispatch = useDispatch();
@@ -48,11 +40,11 @@ const Profile = ({ id, tab }) => {
       try {
         const user = await userById(id);
         setUser(user);
-        setFullName(user.fullName);
-        setEmail(user.email);
+        setFullName(user?.fullName);
+        setEmail(user?.email);
         setAvatarImage(user.avatarImage);
-        setNoOfFolloers(user.followers.length);
-        setNoOfFollowings(user.following.length);
+        setNoOfFolloers(user?.followers?.length);
+        setNoOfFollowings(user?.following?.length);
       } catch (error) {
         throw error;
       } finally {
@@ -108,25 +100,31 @@ const Profile = ({ id, tab }) => {
               width={200}
               height={200}
               alt="dp"
-              src={user?.avatarImage || "https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png"}
+              src={avatarImage || "https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png"}
             />
-            <p>{user?.followers?.length} Followers</p>
-            <p>{user?.following?.length} Followings</p>
-            <ProfileButton type={loggedInUser?.following.includes(user?._id) ? "Unfollow" : "Follow"} bg="#26D1FF" color="black" />
-            <ProfileButton type="Chat" bg="#ADADAD" color="black" />
+            <p>{noOfFolloers} Followers</p>
+            <p>{noOfFollowings} Followings</p>
+            <AuthUser>
+              <ProfileButton type={isUserFollowed ? "Unfollow" : "Follow"} bg="#26D1FF" color="black" />
+              <ProfileButton type="Chat" bg="#ADADAD" color="black" />
+            </AuthUser>
           </div>
         </div>
       </div>
       <div className="px-10 py-3 flex justify-between">
         <div className="w-[70%]">
-          <div>Vishal Kumar</div>
+          <div>{fullName}</div>
           <div className="text-sm ml-2 text-slate-500">Software Engineer</div>
           <div className="text-sm ml-2 text-slate-500">Kolkata, West Bengal</div>
           <div className="my-2 leading-5">Description :- Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum sequi nulla cupiditate nobis animi quasi corporis temporibus ab maxime eveniet?</div>
-          <div>
-            <ProfileButton onClick={(e) => {console.log("Clicked", e)}} type={"Edit Profile"} bg={"black"} border="2px solid black" color={"white"} />
-            <ProfileButton type={"Settings"} bg={"white"} color={"black"} border="2px solid black" ></ProfileButton>
-          </div>
+          <AuthUser>
+            <AuthLoggedInUser userId={user?._id}>
+              <div>
+                <ProfileButton onClick={(e) => {console.log("Clicked", e)}} type={"Edit Profile"} bg={"black"} border="2px solid black" color={"white"} />
+                <ProfileButton type={"Settings"} bg={"white"} color={"black"} border="2px solid black" ></ProfileButton>
+              </div>
+            </AuthLoggedInUser>
+          </AuthUser>
         </div>
         <div className="w-[30%] self-end text-right">
           <div className="text-slate-500">Skills</div>
@@ -139,14 +137,14 @@ const Profile = ({ id, tab }) => {
         </div>
       </div>
       <div className="px-10 py-3 text-md flex justify-center">
-        <div className="flex justify-center p-1 rounded-md bg-[#e2e2e2c2]">
-          <button onClick={(e) => {setCurrentTab("Blog")}} className={`px-2 py-1 w-[150px] rounded-md`}>Blogs</button>
-          <button onClick={(e) => {setCurrentTab("History")}} className={`px-2 py-1 w-[150px] rounded-md`}>History</button>
-          <button onClick={(e) => {setCurrentTab("LikedBlogs")}} className={`px-2 py-1 w-[150px] rounded-md`}>Liked Blogs</button>
-          <button onClick={(e) => {setCurrentTab("Bookmark")}} className={`px-2 py-1 w-[150px] rounded-md`}>Bookmark</button>
+        <div className="flex gap-1 justify-center p-1 rounded-md bg-[#e2e2e2c2]">
+          <button onClick={(e) => {setCurrentTab("Blog")}} className={`px-2 py-1 w-[150px] ${currentTab === "Blog" ? "bg-white" : "hover:bg-slate-100"} rounded-md`}>Blogs</button>
+          <button onClick={(e) => {setCurrentTab("History")}} className={`px-2 py-1 w-[150px] ${currentTab === "History" ? "bg-white" : "hover:bg-slate-100"} rounded-md`}>History</button>
+          <button onClick={(e) => {setCurrentTab("LikedBlogs")}} className={`px-2 py-1 w-[150px] ${currentTab === "LikedBlogs" ? "bg-white" : "hover:bg-slate-100"} rounded-md`}>Liked Blogs</button>
+          <button onClick={(e) => {setCurrentTab("Bookmark")}} className={`px-2 py-1 w-[150px] ${currentTab === "Bookmark" ? "bg-white" : "hover:bg-slate-100"} rounded-md`}>Bookmark</button>
         </div>
       </div>
-      <div className={styles.data}>
+      <div className="px-10 py-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-3 content-center">
         {currentTab.length != 0 ? (
           currentTabData?.map((blogId, i) => <FetchProfileBlog id={blogId} />)
         ) : (

@@ -4,13 +4,14 @@ import { useSelector } from 'react-redux'
 
 const AuthLoggedInUser = ({userId, children}) => {
   
-  const loggedInUser = useSelector(state => state.auth.currentUser)
+  const loggedInUser = useSelector(state => state.user?.currentUser)
 
   if(userId === loggedInUser?._id) {
     return (
-      {children}
+      children
     )
   }
+  return null
 }
 
 export default AuthLoggedInUser

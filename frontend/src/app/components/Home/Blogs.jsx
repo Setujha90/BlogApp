@@ -12,7 +12,6 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { formatRelativeTime } from "@/app/server/dateTime";
-import Image from "next/image";
 import { faBars, faComment, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { bookmark } from "@/app/server/signup";
 import {
@@ -20,7 +19,7 @@ import {
   bookmarkUpdateStart,
   bookmarkUpdateSuccess,
 } from "@/app/redux/user/userSlice";
-// import menu from '@/app/styles/menu.png'
+import Image from 'next/image'
 
 const Blogs = ({ blog, userData, i }) => {
   const formattedTime = formatRelativeTime(blog.createdAt);
@@ -37,7 +36,7 @@ const Blogs = ({ blog, userData, i }) => {
   const [actionButtons, setActionButtons] = useState(false);
 
   return (
-    <div className="text-xs bg-[#e6e6e6] rounded-sm mb-3 dark:text-white w-[100%] py-2 px-2" key={blog._id}>
+    <div className="text-xs bg-white rounded-sm mb-3 dark:text-white w-[100%] py-2 px-2" key={blog._id}>
       {/* Render blog details using userData state */}
       <div>
         <div className="flex justify-between items-center">
@@ -138,11 +137,11 @@ const Blogs = ({ blog, userData, i }) => {
       <div>
         {/* Title */}
         <Link className=" text-base font-semibold" href={`/blog/${blog._id}`}>
-          <h2>{blog.title}</h2>
+          <h2 className=" line-clamp-2">{blog.title}</h2>
         </Link>
         {/* Description */}
-        <p>{blog.description}</p>
-        <img src={blog.thumbnail} alt="Blog Image" />
+        <p className=" line-clamp-3">{blog.description}</p>
+        <Image className="w-[100%] h-[300px] object-cover object-center" width={1024} height={1024} src={blog.thumbnail} alt="Blog Image" />
       </div>
 
       <hr className="w-[100%] border-b-1 mt-2" />
@@ -164,7 +163,7 @@ const Blogs = ({ blog, userData, i }) => {
 
         <div>
           <span>{blog.noOfComments} </span>
-          <FontAwesomeIcon style={{ color: "white" }} icon={faComment} />
+          <FontAwesomeIcon style={{ color: "black" }} icon={faComment} />
         </div>
       </div>
 
