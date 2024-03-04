@@ -12,12 +12,12 @@ const SideBar = () => {
 
   return (
     <>
-	<div className='fixed top-16 flex flex-col text-sm gap-5 px-5 w-[20%]'>
+	<div className='fixed top-16 flex flex-col text-sm gap-5 pl-5 w-[15%]'>
 			{/* sb buttons yaha */}
       <div className='flex flex-col gap-1'>
 				<LinkButton type={'Profile'} icon={faIdBadge} link={`/user/${user?._id}`} />
 				<LinkButton type={'Feeds'} icon={faBlogger} />
-				<LinkButton type={'Create Blog'} icon={faSquarePlus} />
+				<LinkButton type={'Create Blog'} icon={faSquarePlus} link={`/blog/create`} />
 				<LinkButton type={'Friends'} icon={faUserGroup} />
 				<LinkButton type={'Community'} icon={faTowerBroadcast} />
 				<LinkButton type={'Messages'} icon={faPaperPlane} />

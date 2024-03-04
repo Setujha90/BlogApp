@@ -2,7 +2,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-const AuthLoggedInUser = ({userId, children}) => {
+const AuthLoggedInUser = ({userId, sameUser=false, children}) => {
   
   const loggedInUser = useSelector(state => state.user?.currentUser)
 

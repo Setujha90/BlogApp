@@ -21,10 +21,12 @@ export default function RootLayout({ children }) {
             <ProgressBar />
             <Header /> 
             <div className="flex justify-center items-center">
-                <div className="relative w-[20%] h-fit">
-                  <SideBar />
-                </div>
-              <div className="w-[80%] py-5">{children}</div>
+                <AuthUser>
+                  <div className="relative w-[15%] h-fit">
+                    <SideBar />
+                  </div>
+                </AuthUser>
+              <div className="w-[85%]">{children}</div>
             </div>
         </body>
       </html>

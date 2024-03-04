@@ -1,108 +1,35 @@
-"use client";
-import React, { useState } from "react";
-import styles from "./styles.module.css";
+import React, { useRef } from 'react';
+import { Editor } from '@tinymce/tinymce-react';
 
-import { useDispatch, useSelector } from "react-redux";
-import { createBlog } from "@/app/server/blogs";
-import { useRouter } from "next/navigation";
-import {
-  updateFailure,
-  updateStart,
-  updateSuccess,
-} from "@/app/redux/user/userSlice";
-import Spinner from "../../Spinner";
-
-const Blog = () => {
-  const router = useRouter();
-
-  const loggedInUser = useSelector((state) => state.user.currentUser);
-  const loading = useSelector((state) => state.user.loading);
-  const dispatch = useDispatch();
-
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [thumbnail, setThumbnail] = useState(null);
-  const [images, setImages] = useState(null);
-
-  if (!loggedInUser) {
-    return <div>You need to login first to create a blog</div>;
-  }
-
+export default function Blog() {
+  const editorRef = useRef(null);
+  const log = () => {
+    if (editorRef.current) {
+      console.log(editorRef.current.getContent());
+    }
+  };
   return (
-    <div className={styles.container}>
-      <div className={styles.profile}>
-        <img src={loggedInUser.avatarImage} alt="avatar" />
-        <p>{loggedInUser.fullName}</p>
-      </div>
-
-      <form
-        encType="multipart/form-data"
-        className={styles.blog}
-        onSubmit={async (e) => {
-          e.preventDefault();
-          dispatch(updateStart());
-          try {
-            const { _id, user } = await createBlog(
-              title,
-              description,
-              thumbnail,
-              images,
-            );
-            // router.push(`/blog/${id}`)
-            console.log("Blog Posted with id:-", _id);
-            dispatch(updateSuccess(user));
-            router.replace(`/blog/${_id}`);
-          } catch (error) {
-            dispatch(updateFailure(error));
-            console.error("Error hua h yaarr ", error);
-          }
+    <>
+      <Editor
+        apiKey='8neuuq3iq3wr5ph47gk5s2giqwx919yvy51ikmh82znw9oom'
+        onInit={(evt, editor) => editorRef.current = editor}
+        initialValue="<p>This is the initial content of the editor.</p>"
+        init={{
+          height: 500,
+          menubar: false,
+          plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+            'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+          ],
+          toolbar: 'undo redo | blocks | ' +
+            'bold italic forecolor | alignleft aligncenter ' +
+            'alignright alignjustify | bullist numlist outdent indent | ' +
+            'removeformat | help',
+          content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
         }}
-      >
-        <input
-          onChange={(e) => {
-            setTitle(e.target.value);
-          }}
-          value={title}
-          type="text"
-          placeholder="Title"
-        />
-
-        <textarea
-          onChange={(e) => {
-            setDescription(e.target.value);
-          }}
-          value={description}
-          rows="20"
-          placeholder="decription"
-        ></textarea>
-
-        <label>
-          Thumnail :{" "}
-          <input
-            name="thumbnail"
-            id="thumbnail"
-            onChange={(e) => {
-              setThumbnail(e.target.files[0]);
-            }}
-            type="file"
-          />
-        </label>
-
-        <label>
-          Images :{" "}
-          <input
-            name="images"
-            id="images"
-            onChange={(e) => {
-              setImages(e.target.files[0]);
-            }}
-            type="file"
-          />
-        </label>
-        <button disabled={loading}>{loading ? <Spinner /> : "POST"}</button>
-      </form>
-    </div>
+      />
+      <button onClick={log}>Log editor content</button>
+    </>
   );
-};
-
-export default Blog;
+}

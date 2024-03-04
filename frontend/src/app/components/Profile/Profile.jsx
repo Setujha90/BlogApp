@@ -13,6 +13,7 @@ import Image from "next/image";
 import ProfileButton from "./ProfileButton";
 import AuthUser from "@/app/utils/AuthUser";
 import AuthLoggedInUser from "@/app/utils/AuthLoggedInUser";
+import AuthSameUser from "@/app/utils/AuthSameUser";
 
 const Profile = ({ id, tab }) => {
   const dispatch = useDispatch();
@@ -67,6 +68,7 @@ const Profile = ({ id, tab }) => {
   useEffect(() => {
     function returnCurrentTabData() {
       if (currentTab === "Blogs") {
+        console.log(`${currentTab} = `,user?.blogs)
         return user?.blogs;
       } else if (currentTab === "History") {
         return user?.blogHistory;
@@ -77,8 +79,8 @@ const Profile = ({ id, tab }) => {
       }
     }
 
-    setCurrentTabData(returnCurrentTabData() || []);
-  }, [currentTab, user]);
+    setCurrentTabData(returnCurrentTabData());
+  }, [currentTab, setCurrentTabData, user]);
 
   if (loading) {
     return <div>Loading Data...</div>;
@@ -86,7 +88,7 @@ const Profile = ({ id, tab }) => {
 
   return (
 
-    <div className="w-[90%] rounded-lg overflow-hidden bg-[#f1f1f1] text-sm">
+    <div className="w-[90%] mx-auto rounded-lg overflow-hidden bg-[#f1f1f1] text-sm">
       <div className="w-[100%] h-fit mb-8">
         <div className="relative">
           <Image className="w-[100%] h-[200px] object-cover object-center"
@@ -105,8 +107,10 @@ const Profile = ({ id, tab }) => {
             <p>{noOfFolloers} Followers</p>
             <p>{noOfFollowings} Followings</p>
             <AuthUser>
-              <ProfileButton type={isUserFollowed ? "Unfollow" : "Follow"} bg="#26D1FF" color="black" />
-              <ProfileButton type="Chat" bg="#ADADAD" color="black" />
+                <AuthSameUser userId={user?._id}>
+                  <ProfileButton type={isUserFollowed ? "Unfollow" : "Follow"} bg="#26D1FF" color="black" />
+                  <ProfileButton type="Chat" bg="#ADADAD" color="black" />
+                </AuthSameUser>
             </AuthUser>
           </div>
         </div>
@@ -116,7 +120,15 @@ const Profile = ({ id, tab }) => {
           <div>{fullName}</div>
           <div className="text-sm ml-2 text-slate-500">Software Engineer</div>
           <div className="text-sm ml-2 text-slate-500">Kolkata, West Bengal</div>
-          <div className="my-2 leading-5">Description :- Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum sequi nulla cupiditate nobis animi quasi corporis temporibus ab maxime eveniet?</div>
+          <div className="my-2 leading-5">
+            Description :- Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum sequi nulla cupiditate nobis animi quasi corporis temporibus ab maxime eveniet?
+            {/* <div className="revert-tailwind">
+              <p>ewffewuhiu</p>
+              <h1>sdjfhweklrjnwlkre3</h1>
+              <h4>ewrdwerferf</h4>
+              <p>&nbsp;</p>
+            </div> */}
+          </div>
           <AuthUser>
             <AuthLoggedInUser userId={user?._id}>
               <div>
@@ -138,10 +150,14 @@ const Profile = ({ id, tab }) => {
       </div>
       <div className="px-10 py-3 text-md flex justify-center">
         <div className="flex gap-1 justify-center p-1 rounded-md bg-[#e2e2e2c2]">
-          <button onClick={(e) => {setCurrentTab("Blog")}} className={`px-2 py-1 w-[150px] ${currentTab === "Blog" ? "bg-white" : "hover:bg-slate-100"} rounded-md`}>Blogs</button>
-          <button onClick={(e) => {setCurrentTab("History")}} className={`px-2 py-1 w-[150px] ${currentTab === "History" ? "bg-white" : "hover:bg-slate-100"} rounded-md`}>History</button>
-          <button onClick={(e) => {setCurrentTab("LikedBlogs")}} className={`px-2 py-1 w-[150px] ${currentTab === "LikedBlogs" ? "bg-white" : "hover:bg-slate-100"} rounded-md`}>Liked Blogs</button>
-          <button onClick={(e) => {setCurrentTab("Bookmark")}} className={`px-2 py-1 w-[150px] ${currentTab === "Bookmark" ? "bg-white" : "hover:bg-slate-100"} rounded-md`}>Bookmark</button>
+          <button onClick={(e) => {setCurrentTab("Blogs")}} className={`px-2 py-1 w-[150px] ${currentTab === "Blogs" ? "bg-white" : "hover:bg-slate-100"} rounded-md`}>Blogs</button>
+          <AuthUser>
+            <AuthLoggedInUser userId={user?._id}>
+              <button onClick={(e) => {setCurrentTab("History")}} className={`px-2 py-1 w-[150px] ${currentTab === "History" ? "bg-white" : "hover:bg-slate-100"} rounded-md`}>History</button>
+              <button onClick={(e) => {setCurrentTab("LikedBlogs")}} className={`px-2 py-1 w-[150px] ${currentTab === "LikedBlogs" ? "bg-white" : "hover:bg-slate-100"} rounded-md`}>Liked Blogs</button>
+              <button onClick={(e) => {setCurrentTab("Bookmark")}} className={`px-2 py-1 w-[150px] ${currentTab === "Bookmark" ? "bg-white" : "hover:bg-slate-100"} rounded-md`}>Bookmark</button>
+            </AuthLoggedInUser>
+          </AuthUser>
         </div>
       </div>
       <div className="px-10 py-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-3 content-center">

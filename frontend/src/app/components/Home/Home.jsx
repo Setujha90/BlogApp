@@ -15,7 +15,7 @@ const Home = () => {
         {/* side profile position fixed hoga*/}
         {/* {user ? <SideProfile /> : ""} */}
         {/* all blogs here */}
-        <div className="w-[90%] md:w-[60%] flex flex-col bg-white bg-opacity-20 px-1 py-1 rounded-md">
+        <div className="w-[90%] md:w-[50%] flex flex-col bg-white bg-opacity-20 p-1 rounded-md">
           <FetchBlogs />
         </div>
       </div>

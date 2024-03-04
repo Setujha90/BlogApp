@@ -11,6 +11,8 @@ export const content = [
 export const theme = {
   extend: {},
 };
-export const plugins = [];
+export const plugins = [
+  '@tailwindcss/typography'
+];
 
 export const darkMode = "class";

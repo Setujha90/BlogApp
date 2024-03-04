@@ -89,7 +89,6 @@ export const getBlogById = async (id) => {
     const response = await axios.get(`${url}/${id}`);
     try {
       const view = await viewBlogById(id);
-      console.log(view);
     } catch (error) {
       console.error(error);
     }
