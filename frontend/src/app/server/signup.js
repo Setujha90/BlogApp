@@ -128,10 +128,10 @@ export const bookmark = async (id, blogId) => {
   }
 };
 
-export const follow = async (id, userId) => {
+export const follow = async (loggedUserId, userId) => {
   try {
     const response = await axios.post(
-      `${url}/${id}/follow`,
+      `${url}/${loggedUserId}/follow`,
       {
         userId: userId,
       },

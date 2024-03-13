@@ -14,6 +14,7 @@ import ProfileButton from "./ProfileButton";
 import AuthUser from "@/app/utils/AuthUser";
 import AuthLoggedInUser from "@/app/utils/AuthLoggedInUser";
 import AuthSameUser from "@/app/utils/AuthSameUser";
+import { signInSuccess } from "@/app/redux/user/userSlice";
 
 const Profile = ({ id, tab }) => {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const Profile = ({ id, tab }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [avatarImage, setAvatarImage] = useState("");
@@ -41,6 +43,7 @@ const Profile = ({ id, tab }) => {
       try {
         const user = await userById(id);
         setUser(user);
+        setUsername(`@${user?.username}`);
         setFullName(user?.fullName);
         setEmail(user?.email);
         setAvatarImage(user.avatarImage);
@@ -53,6 +56,10 @@ const Profile = ({ id, tab }) => {
       }
     }
 
+    fetchUser();
+  }, [loggedInUser, id]);
+
+  useEffect(() => {
     function ifFollower() {
       if (loggedInUser && loggedInUser?.following?.includes(id)) {
         return true;
@@ -62,13 +69,11 @@ const Profile = ({ id, tab }) => {
     }
 
     setIsUserFollowed(ifFollower());
-    fetchUser();
-  }, [isUserFollowed]);
+  }, [isUserFollowed, setIsUserFollowed])
 
   useEffect(() => {
     function returnCurrentTabData() {
       if (currentTab === "Blogs") {
-        console.log(`${currentTab} = `,user?.blogs)
         return user?.blogs;
       } else if (currentTab === "History") {
         return user?.blogHistory;
@@ -108,7 +113,15 @@ const Profile = ({ id, tab }) => {
             <p>{noOfFollowings} Followings</p>
             <AuthUser>
                 <AuthSameUser userId={user?._id}>
-                  <ProfileButton type={isUserFollowed ? "Unfollow" : "Follow"} bg="#26D1FF" color="black" />
+                  <ProfileButton onClick={async(e) => {
+                    try{
+                      const response = await follow(loggedInUser._id, user._id);
+                      dispatch(signInSuccess(response.user))
+                      setIsUserFollowed(response.isFollowed)
+                    } catch(err){
+                      console.error("Error while following/unfollowing user:- ", err)
+                    }
+                  }} type={isUserFollowed ? "Unfollow" : "Follow"} bg="#26D1FF" color="black" />
                   <ProfileButton type="Chat" bg="#ADADAD" color="black" />
                 </AuthSameUser>
             </AuthUser>
@@ -117,26 +130,35 @@ const Profile = ({ id, tab }) => {
       </div>
       <div className="px-10 py-3 flex justify-between">
         <div className="w-[70%]">
-          <div>{fullName}</div>
-          <div className="text-sm ml-2 text-slate-500">Software Engineer</div>
-          <div className="text-sm ml-2 text-slate-500">Kolkata, West Bengal</div>
-          <div className="my-2 leading-5">
-            Description :- Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum sequi nulla cupiditate nobis animi quasi corporis temporibus ab maxime eveniet?
-            {/* <div className="revert-tailwind">
-              <p>ewffewuhiu</p>
-              <h1>sdjfhweklrjnwlkre3</h1>
-              <h4>ewrdwerferf</h4>
-              <p>&nbsp;</p>
-            </div> */}
-          </div>
-          <AuthUser>
-            <AuthLoggedInUser userId={user?._id}>
-              <div>
-                <ProfileButton onClick={(e) => {console.log("Clicked", e)}} type={"Edit Profile"} bg={"black"} border="2px solid black" color={"white"} />
-                <ProfileButton type={"Settings"} bg={"white"} color={"black"} border="2px solid black" ></ProfileButton>
+          <div>{username}</div>
+          {
+            isEdit ? 
+            <>
+              <input className="bg-white bg-opacity-30 block rounded-sm outline-none" value={fullName} type="text" name="fullName" id="" placeholder="Full Name... " />
+              <input className="bg-white bg-opacity-30 block rounded-sm outline-none text-sm ml-2 text-slate-500" value={"Software Engineer"} type="text" name="careerRole" id="" placeholder="Career Role... " />
+              <input className="bg-white bg-opacity-30 block rounded-sm outline-none text-sm ml-2 text-slate-500" value={"Kolkata, West Bengal"} type="text" name="location" id="" placeholder="Location... " />
+              <textarea className="bg-white w-full bg-opacity-30 block rounded-sm outline-none my-2 leading-5" value={"Description :- Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum sequi nulla cupiditate nobis animi quasi corporis temporibus ab maxime eveniet?"} type="text" name="description" id="" placeholder="Description... " />
+            </>
+            :
+            <>
+              <div>{fullName}</div>
+              <div className="text-sm ml-2 text-slate-500">Software Engineer</div>
+              <div className="text-sm ml-2 text-slate-500">Kolkata, West Bengal</div>
+              <div className="my-2 leading-5">
+                Description :- Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum sequi nulla cupiditate nobis animi quasi corporis temporibus ab maxime eveniet?
               </div>
-            </AuthLoggedInUser>
-          </AuthUser>
+            </>
+          }
+          <div>
+            <AuthUser>
+              <AuthLoggedInUser userId={user?._id}>
+                <div>
+                  <ProfileButton onClick={(e) => {setIsEdit(!isEdit)}} type={isEdit ? "Update Profile" : "Edit Profile"} bg={"black"} border="2px solid black" color={"white"} />
+                  <ProfileButton type={"Settings"} bg={"white"} color={"black"} border="2px solid black" ></ProfileButton>
+                </div>
+              </AuthLoggedInUser>
+            </AuthUser>
+          </div>
         </div>
         <div className="w-[30%] self-end text-right">
           <div className="text-slate-500">Skills</div>

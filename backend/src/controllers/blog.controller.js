@@ -19,9 +19,9 @@ export const createBlog = asyncHandler(async(req, res) => {
         throw new ApiError(401, "unauthorised user, you must be logged in to post blogs")
     }
 
-    const { title, description } = req.body
+    const { title, description, content } = req.body
 
-    if([title, description].some((field) => !field || field?.trim() === "")){
+    if([title, description, content].some((field) => !field || field?.trim() === "")){
         throw new ApiError(400, "Both title and description are required!!!")
     }
 
@@ -48,6 +48,7 @@ export const createBlog = asyncHandler(async(req, res) => {
     const blog = await Blog.create({
         title,
         description,
+        content,
         thumbnail : thumbnail.url,
         images: [images || ""],
         owner : user._id
@@ -59,15 +60,15 @@ export const createBlog = asyncHandler(async(req, res) => {
 
     const userBlogUpdate = await User.findById(user._id)
 
-    user.blogs.push(blog._id)
-    await user.save({validateBeforeSave:false})
+    userBlogUpdate.blogs.push(blog._id)
+    await userBlogUpdate.save({validateBeforeSave:false})
 
     return res
         .status(200)
         .json(new ApiResponse(
             200,
             {
-                blog, user
+                blog, user:userBlogUpdate
             },
             "Blog created successfully"
         ))

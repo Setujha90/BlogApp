@@ -33,6 +33,24 @@ const userSchema = new mongoose.Schema({
     avatarImage:{
         type:String,
     },
+    coverImage: {
+      type:String,
+    },
+    career:{
+        type:String,
+        trim:true,
+    },
+    location:{
+      type:String,
+    },
+    about:{
+      type:String,
+      trim:true,
+    },
+    skills:[{
+        type:String,
+        trim:true,
+    }],
     role:{
         type:String,
         enum: ["user", "admin"],

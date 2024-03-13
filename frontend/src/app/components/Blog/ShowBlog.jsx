@@ -61,13 +61,26 @@ const ShowBlog = ({ id }) => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    async function updateLikes() {
+      try {
+        const blogData = await getBlogById(id);
+        setLike(blogData.noOfLikes);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    updateLikes();
+  }, [loggedInUser])
+
   // if (loading) {
   //   return <div>Loading...</div>;
   // }
 
   return (
 
-
+    !loading &&
     <div className="flex flex-col justify-center items-center w-[80%] text-xs px-10 py-6 bg-white mx-auto rounded-xl">
       {/* title plus profile */}
       <div>
@@ -82,29 +95,39 @@ const ShowBlog = ({ id }) => {
         </div>
         {/* like comment section */}
         <div>
-          <ButtonBar />
+          <ButtonBar blog={blog} like={like} noOfComments={comments.length} />
         </div>
       </div>
 
-      <div className="w-[60%] text-center pt-5">
+      <div className="w-[70%] text-center pt-5">
         {/* description */}
-        <div>
+        <div className=" text-wrap">
           `Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae harum voluptatibus obcaecati aut provident saepe, aperiam consequatur tempora doloribus adipisci.`
           <hr className="w-[30%] mx-auto mt-2" />
         </div>
         {/* content section */}
         <div className="revert-tailwind">
-          <h2>askfjh</h2>
-          <p>gilajkffn asfha sfh </p>
+          <h2>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi, quasi.</h2>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt sed dolorum enim eum sapiente veritatis earum assumenda hic iste iusto sint eaque minima vel, quia asperiores laboriosam vero odio, odit eos provident autem omnis laborum minus a. Magnam, ducimus asperiores ullam saepe eum dolor fugit, tenetur commodi reiciendis ipsum enim doloribus aliquam, itaque ex praesentium officia est atque esse molestias dolorem a repellat eaque. Delectus nobis excepturi at aliquid architecto tempore mollitia vitae, ullam sint quos nam adipisci incidunt tenetur facilis amet est, repellat necessitatibus porro, optio enim libero minima fuga modi perspiciatis. Ab et necessitatibus quas illum tenetur consequuntur veniam nobis fugiat blanditiis! Facere saepe quia neque ipsam autem quis delectus fugiat, veritatis maxime in quo temporibus sint eius nam voluptatibus. Reiciendis vero unde dolor provident voluptas officia omnis totam maiores perspiciatis dolores, rem soluta cum rerum necessitatibus illum itaque tempora, quas saepe sequi. Sint nam eius corporis commodi nostrum, maxime perspiciatis numquam ex? Aspernatur ducimus minima pariatur quae provident architecto, iure a ratione reprehenderit maiores blanditiis qui quidem delectus natus necessitatibus veniam voluptatibus nulla explicabo veritatis iusto nemo? Officia voluptate natus quas, enim nihil tempora et eum, quos, necessitatibus aliquid ratione dignissimos in harum. Blanditiis molestias odio omnis? </p>
         </div>
       </div>
-        {/* same like comment section */}
-        <div className="mx-auto md:w-[50%] w-[100%]">
-          <ButtonBar />
+        
+      {/* same like comment bar */}
+      <div className="mx-auto md:w-[70%] w-[100%]">
+        <ButtonBar blog={blog} like={like} noOfComments={comments.length} />
+      </div>
+
+      {/* comment section */}
+      <div className="w-[100%]">
+        {
+          !loading &&
+          <WriteComment id={id} blogComments={comments} commentIdReply={false} />
+        }      
         </div>
-        {/* related posts */}
-        <div>
-        </div>
+
+      {/* related posts */}
+      <div>
+      </div>
     </div>
 
 // {/* <div>

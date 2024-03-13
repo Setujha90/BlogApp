@@ -87,11 +87,7 @@ export const likeBlog = async (id) => {
 export const getBlogById = async (id) => {
   try {
     const response = await axios.get(`${url}/${id}`);
-    try {
-      const view = await viewBlogById(id);
-    } catch (error) {
-      console.error(error);
-    }
+
     return response.data.data["blog"];
   } catch (error) {
     throw error;

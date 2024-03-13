@@ -59,7 +59,6 @@ export const renewLoggedinSession = asyncHandler(async(req, res) => {
 
 export const register = asyncHandler(async(req, res) => {
     const { username, fullName, email, password } = req.body
-    const avatarImageLocalPath = req.file?.path
 
     if([username, fullName, email, password].some((field)=> !field || field.trim() === "")){
         throw new ApiError(401, "All the fields are required!!!")
@@ -73,42 +72,22 @@ export const register = asyncHandler(async(req, res) => {
         throw new ApiError(400, "User with same username or email already exists")
     }
 
-    if(!avatarImageLocalPath){
-        throw new ApiError(401, "Please upload avatar image")
-    }
-
-    const avatarImage = await uploadOnCloud(avatarImageLocalPath)
-
-    if(!avatarImage){
-        throw new ApiError(501, "Error while uploading avatarImage to cloud")
-    }
-
-
     const user = await User.create({
         username,
         fullName,
         email,
         password,
-        avatarImage: avatarImage.url
     })
 
     if(!user){
         throw new ApiError(500, "Error while register user")
     }
 
-    const createdUser = await User.findById(user._id).select("-password -refreshToken -role")
-
-    if(!createdUser){
-        throw new ApiError(500, "Error while register user (search me nhi mile for createdUser)")
-    }
-
     return res
         .status(200)
         .json(new ApiResponse(
             200,
-            {
-                createdUser
-            },
+            {},
             "User registerd successfully"
         ))
 })
@@ -156,7 +135,7 @@ export const login = asyncHandler(async(req, res) => {
         .json(new ApiResponse(
             200, 
             {
-                loggedInUser
+              loggedInUser
             },
             "User logged in successfully"
         ))
@@ -210,13 +189,12 @@ export const getUserById = asyncHandler(async(req, res) => {
         throw new ApiError(400, "Invalid id, Bad request")
     }
 
-
     return res
         .status(200)
         .json(new ApiResponse(
             200,
             {
-                user
+              user
             },
             "User fetched successfully"
         ))
@@ -256,7 +234,7 @@ export const updateProfilePic = asyncHandler(async(req, res) => {
         throw new ApiError(401, "User must be logged in")
     }
 
-    const user = await User.findById(id)
+    const user = await User.findById(id)?.select("-password -refreshToken -role")
 
     if(!user){
         throw new ApiError(404, "User not found!!")
@@ -291,11 +269,58 @@ export const updateProfilePic = asyncHandler(async(req, res) => {
 
 })
 
+export const updateCoverPic = asyncHandler(async(req, res) => {
+    const loggedInUser = req.user
+    const {id} = req.params
+    const coverImageLocalPath = req.file?.path
+
+    if(!id){
+        throw new ApiError(400, "Invalid Id")
+    }
+    
+    if(!loggedInUser){
+        throw new ApiError(401, "User must be logged in")
+    }
+
+    const user = await User.findById(id)?.select("-password -refreshToken -role")
+
+    if(!user){
+        throw new ApiError(404, "User not found!!")
+    }
+
+    if(!(String(loggedInUser._id) == String(user._id))){
+        throw new ApiError(401, "You are unauthorised to delete blogs of other users")
+    }
+
+    if(!coverImageLocalPath){
+        throw new ApiError(401, "Please upload cover image")
+    }
+
+    const coverImage = await uploadOnCloud(coverImageLocalPath)
+
+    if(!coverImage){
+        throw new ApiError(501, "Error while uploading coverImage to cloud")
+    }
+
+    user.coverImage = coverImage.url
+    await user.save({validateBeforeSave:false})
+
+    return res
+        .status(200)
+        .json(new ApiResponse(
+            200,
+            {
+                user,
+            },
+            "User profile updated successfully!"
+        ))
+})
+
 export const updateUserProfile = asyncHandler(async(req, res) => {
     const loggedInUser = req.user
     const {id} = req.params
 
-    const {fullName, email} = req.body
+    const {fullName, career, location, about} = req.body
 
     if(!loggedInUser){
         throw new ApiError(401, "User must be logged in to user these features")
@@ -305,11 +330,11 @@ export const updateUserProfile = asyncHandler(async(req, res) => {
         throw new ApiError(400, "Invalid user id")
     }
 
-    if([fullName, email].some((field) => !field || field.trim() === "")){
+    if([fullName, career, location, about].some((field) => !field || field.trim() === "")){
         throw new ApiError(400, "All fields are required!!")
     }
 
-    const user = await User.findById(id)
+    const user = await User.findById(id)?.select("-password -refreshToken -role")
 
     if(!user){
         throw new ApiError(404, "User not found!!")
@@ -320,7 +345,9 @@ export const updateUserProfile = asyncHandler(async(req, res) => {
     }
 
     user.fullName = fullName
-    user.email = email
+    user.career = career
+    user.location = location
+    user.about = about
     await user.save({validateBeforeSave:false})
 
     return res
@@ -328,11 +355,88 @@ export const updateUserProfile = asyncHandler(async(req, res) => {
         .json(new ApiResponse(
             200,
             {
-                user
+              user
             },
             "User updated successfully"
         ))
 })
+
+export const updateUserSkills = asyncHandler(async(req, res) => {
+  const loggedInUser = req.user
+  const id = req.params.id
+  const skills = req.body.skills
+
+  if(!loggedInUser){
+    throw new ApiError(401, "Unauthorized user!")
+  }
+
+  if(!id){
+    throw new ApiError(400, "User id is required!")
+  }
+
+  if(!skills || skills?.length == 0){
+    throw new ApiError(400, "Skills array is required!")
+  }
+
+  if(String(loggedInUser._id) !== String(id)){
+    throw new ApiError(401, "Unauthorized user!")
+  }
+
+  const user = await User.findById(loggedInUser._id)?.select("-password -refreshToken -role")
+
+  user.skills = skills
+  await user.save({validateBeforeSave: false})
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {user}, "Skills updated successfully!"))
+
+})
+
+export const deleteUser = asyncHandler(async(req, res) => {
+  const loggedInUser = req.user
+  const id = req.params.id
+
+  if(!loggedInUser){
+    throw new ApiError(401, "Unauthorized user!")
+  }
+
+  if(!id){
+    throw new ApiError(400, "Invalid user id!")
+  }
+
+  if(String(loggedInUser._id) !== String(id)){
+    throw new ApiError(401, "User is unauthorized to deleted user")
+  }
+
+  const user = User.findByIdAndDelete(loggedInUser._id)
+
+  if(!user){
+    throw new ApiError(404, "User not found!")
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "User account deleted successfully"))
+
+})
+
+export const searchUser = asyncHandler(async(req, res) => {
+  const {username, fullName, skills} = req.query
+
+  const query = {}
+
+  if(username) query.username = username
+  if(fullName) query.fullName = fullName
+  if (skills && skills.length > 0) query.skills = { $in: skills }
+
+  const user = await User.find(query)?.select("-password -refreshToken -role")
+
+  return res.status(200).json(new ApiResponse(200, {user}, "User fetched successfully"))
+
+})
+
+
 
 export const bookmark = asyncHandler(async(req, res) => {
     const loggedInUser = req.user
@@ -357,13 +461,13 @@ export const bookmark = asyncHandler(async(req, res) => {
         throw new ApiError(404, "Blog not found")
     }
 
-    const user = await User.findById(id)
+    const user = await User.findById(id)?.select("-password -refreshToken -role");
 
     if(!user){
         throw new ApiError(404, "User not found")
     }
 
-    const isBookmarked = user.bookmark.includes(blogId)
+    const isBookmarked = user.bookmark.includes(blogId);
 
     if(isBookmarked){
         user.bookmark = user.bookmark.filter(item => String(item) !== String(blogId))
@@ -410,7 +514,7 @@ export const follow = asyncHandler(async(req, res) => {
         throw new ApiError(400, "Followed user id is required")
     }
 
-    const user = await User.findById(id)
+    const user = await User.findById(id)?.select("-password -refreshToken -role")
 
     if(!user){
         throw new ApiError(404, "User not found")
@@ -439,7 +543,7 @@ export const follow = asyncHandler(async(req, res) => {
             .json(new ApiResponse(
                 200,
                 {
-                    user, isFollowed
+                    user, isFollowed:false
                 },
                 "Follow removed successfully"
             ))
@@ -458,7 +562,7 @@ export const follow = asyncHandler(async(req, res) => {
         .json(new ApiResponse(
             200,
             {
-                user, isFollowed
+                user, isFollowed:true
             },
             "Follow added successfully"
         ))

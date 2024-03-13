@@ -8,6 +8,7 @@ const ProfileButton = ({
     ...props
 }) => {
 
+
   if(type === "Unfollow"){
     bg = "#ADADAD"
   }
