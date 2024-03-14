@@ -3,8 +3,6 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { ApiError } from "../utils/ApiError.js"
 import { uploadOnCloud } from "../utils/cloudinary.js"
-import {View} from "../models/views.models.js"
-import { Like } from "../models/likes.models.js"
 import { Blog } from "../models/blog.models.js"
 import jwt from "jsonwebtoken"
 
@@ -417,26 +415,51 @@ export const deleteUser = asyncHandler(async(req, res) => {
 
   return res
     .status(200)
+    .clearCookie("accessToken")
+    .clearCookie("refreshToken")
     .json(new ApiResponse(200, {}, "User account deleted successfully"))
-
 })
+
+// export const searchUser = asyncHandler(async(req, res) => {
+//   const {username, fullName, skills} = req.query
+
+//   const query = {}
+
+//   if(username) query.username = username
+//   if(fullName) query.fullName = fullName
+//   if (skills && skills.length > 0) query.skills = { $in: skills }
+
+//   const user = await User.find(query)?.select("-password -refreshToken -role")
+
+//   return res.status(200).json(new ApiResponse(200, {user}, "User fetched successfully"))
+
+// })
 
 export const searchUser = asyncHandler(async(req, res) => {
-  const {username, fullName, skills} = req.query
+  const name = req.query.name
+  const skills = req.query.skills
 
-  const query = {}
+  const searchQuery = []
 
-  if(username) query.username = username
-  if(fullName) query.fullName = fullName
-  if (skills && skills.length > 0) query.skills = { $in: skills }
+  if(name){
+    searchQuery.push(
+      {username: {$regex: new RegExp(name, 'gi')}},
+      {fullName: {$regex: new RegExp(name, 'gi')}}
+    )
+  }
 
-  const user = await User.find(query)?.select("-password -refreshToken -role")
+  if(skills || skills?.length > 0){
+    searchQuery.push({skills: {$in : skills}})
+  }
 
-  return res.status(200).json(new ApiResponse(200, {user}, "User fetched successfully"))
+  console.log(searchQuery)
 
+  const users = await User.find({
+    $or: searchQuery
+  })?.select("-password -refreshToken -role")
+
+  return res.status(200).json(users)
 })
-
-
 
 export const bookmark = asyncHandler(async(req, res) => {
     const loggedInUser = req.user

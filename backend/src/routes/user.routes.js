@@ -21,7 +21,8 @@ const router = Router()
 
 router.route("/register").post(upload.single('avatarImage'), register)
 router.route("/login").post(login)
-router.route("/filter/:id").get(searchUser)
+// router.route("/filter").get(searchUser)
+router.route("/filter").get(searchUser)
 router.route("/:id").get(getUserById)
 router.route("/").get(getAllUsers)
 
