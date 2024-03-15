@@ -12,7 +12,7 @@ const SideBar = () => {
 
   return (
     <>
-	<div className='fixed top-16 flex flex-col text-sm gap-5 pl-5 w-[15%]'>
+	<div className='hidden fixed top-16 md:flex flex-col text-sm gap-5 pl-5 w-[15%]'>
 			{/* sb buttons yaha */}
       <div className='flex flex-col gap-1'>
 				<LinkButton type={'Profile'} icon={faIdBadge} link={`/user/${user?._id}`} />

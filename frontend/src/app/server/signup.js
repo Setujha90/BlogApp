@@ -16,7 +16,6 @@ export const SignupSubmit = async (
   username,
   fullName,
   email,
-  avatarImage,
   password
 ) => {
   try {
@@ -24,13 +23,13 @@ export const SignupSubmit = async (
     formData.append("username", username);
     formData.append("fullName", fullName);
     formData.append("email", email);
-    formData.append("avatarImage", avatarImage); // Append the file here
     formData.append("password", password);
 
-    const response = await axios.post(`${url}/register`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+    const response = await axios.post(`${url}/register`, {
+      username,
+      fullName,
+      email,
+      password
     });
 
     return response.data.data["createdUser"];
@@ -73,7 +72,7 @@ export const updateProfilePic = async (id, avatarImage) => {
   try {
     const formData = new FormData();
     formData.append("avatarImage", avatarImage); // Append the file here
-    const response = await axios.post(
+    const response = await axios.patch(
       `${url}/${id}/updateProfilePic`,
       formData,
       {
@@ -90,13 +89,33 @@ export const updateProfilePic = async (id, avatarImage) => {
   }
 };
 
-export const updateUserProfile = async (id, fullName, email) => {
+export const updateCoverImage = async (id, coverImage) => {
   try {
-    const response = await axios.post(
+    const formData = new FormData();
+    formData.append("coverImage", coverImage); // Append the file here
+    const response = await axios.patch(
+      `${url}/${id}/updateCoverImage`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
+
+    return response.data.data["user"];
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateUserProfile = async (id, fullName, career, location, about) => {
+  try {
+    const response = await axios.patch(
       `${url}/${id}/updateUserProfile`,
       {
-        fullName: fullName,
-        email: email,
+        fullName, career, location, about
       },
       { withCredentials: true }
     );
@@ -107,9 +126,26 @@ export const updateUserProfile = async (id, fullName, email) => {
   }
 };
 
+export const updateUserSkills = async(id, skills) => {
+  try {
+    const response = await axios.patch(
+      `${url}/${id}/updateUserSkills`,
+      {
+        skills
+      },
+      { withCredentials: true }
+    );
+
+    return response.data.data["user"];
+  } catch (error) {
+    throw error;
+  }
+
+}
+
 export const bookmark = async (id, blogId) => {
   try {
-    const response = await axios.post(
+    const response = await axios.patch(
       `${url}/${id}/bookmark`,
       {
         blogId: blogId,
@@ -130,7 +166,7 @@ export const bookmark = async (id, blogId) => {
 
 export const follow = async (loggedUserId, userId) => {
   try {
-    const response = await axios.post(
+    const response = await axios.patch(
       `${url}/${loggedUserId}/follow`,
       {
         userId: userId,

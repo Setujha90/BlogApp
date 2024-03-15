@@ -221,7 +221,6 @@ export const getAllUsers = asyncHandler(async(req, res) => {
 export const updateProfilePic = asyncHandler(async(req, res) => {
     const loggedInUser = req.user
     const {id} = req.params
-    console.log(req.file)
     const avatarImageLocalPath = req.file?.path
 
     if(!id){

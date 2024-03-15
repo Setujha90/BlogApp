@@ -7,6 +7,7 @@ import {
   follow,
   updateProfilePic,
   updateUserProfile,
+  updateUserSkills,
   userById,
 } from "@/app/server/signup";
 import Image from "next/image";
@@ -15,6 +16,9 @@ import AuthUser from "@/app/utils/AuthUser";
 import AuthLoggedInUser from "@/app/utils/AuthLoggedInUser";
 import AuthSameUser from "@/app/utils/AuthSameUser";
 import { signInSuccess } from "@/app/redux/user/userSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass, faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faFloppyDisk, faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 
 const Profile = ({ id, tab }) => {
   const dispatch = useDispatch();
@@ -28,8 +32,15 @@ const Profile = ({ id, tab }) => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [avatarImage, setAvatarImage] = useState("");
+  const [coverImage, setCoverImage] = useState("")
+  const [career, setCareer] = useState("")
+  const [location, setLocation] = useState("")
+  const [about, setAbout] = useState("")
+  const [skills, setSkills] = useState([])
+  const [editedSkills, setEditedSkills] = useState([])
 
   const [isEdit, setIsEdit] = useState(false);
+  const [editSkills, setEditSkills] = useState(false);
 
   const [isUserFollowed, setIsUserFollowed] = useState(null);
   const [noOfFolloers, setNoOfFolloers] = useState(0);
@@ -47,8 +58,13 @@ const Profile = ({ id, tab }) => {
         setFullName(user?.fullName);
         setEmail(user?.email);
         setAvatarImage(user.avatarImage);
+        setCoverImage(user.coverImage)
         setNoOfFolloers(user?.followers?.length);
         setNoOfFollowings(user?.following?.length);
+        setCareer(user.career);
+        setLocation(user.location);
+        setAbout(user.about);
+        setSkills(user.skills);
       } catch (error) {
         throw error;
       } finally {
@@ -69,7 +85,7 @@ const Profile = ({ id, tab }) => {
     }
 
     setIsUserFollowed(ifFollower());
-  }, [isUserFollowed, setIsUserFollowed])
+  }, [isUserFollowed, setIsUserFollowed, loggedInUser])
 
   useEffect(() => {
     function returnCurrentTabData() {
@@ -90,6 +106,10 @@ const Profile = ({ id, tab }) => {
   if (loading) {
     return <div>Loading Data...</div>;
   }
+
+  const allSkills = ["Python", "Java", "JavaScript", "C", "C++", "Ruby", "Swift", "Kotlin", "PHP", "Go", "Rust", "TypeScript", "SQL", "HTML", "CSS", "React Js", "Next Js", "Node Js", "MongoDB", "MySQL", "Django", "Flask", "Express Js"]
+
+  const [filter, setFilter] = useState("")
 
   return (
 
@@ -134,18 +154,18 @@ const Profile = ({ id, tab }) => {
           {
             isEdit ? 
             <>
-              <input className="bg-white bg-opacity-30 block rounded-sm outline-none" value={fullName} type="text" name="fullName" id="" placeholder="Full Name... " />
-              <input className="bg-white bg-opacity-30 block rounded-sm outline-none text-sm ml-2 text-slate-500" value={"Software Engineer"} type="text" name="careerRole" id="" placeholder="Career Role... " />
-              <input className="bg-white bg-opacity-30 block rounded-sm outline-none text-sm ml-2 text-slate-500" value={"Kolkata, West Bengal"} type="text" name="location" id="" placeholder="Location... " />
-              <textarea className="bg-white w-full bg-opacity-30 block rounded-sm outline-none my-2 leading-5" value={"Description :- Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum sequi nulla cupiditate nobis animi quasi corporis temporibus ab maxime eveniet?"} type="text" name="description" id="" placeholder="Description... " />
+              <input className="bg-white block rounded-sm outline-none" onChange={(e) => {setFullName(e.target.value)}} value={fullName} type="text" name="fullName" id="" placeholder="Full Name... " />
+              <input className="bg-white block rounded-sm outline-none text-sm ml-2 text-slate-500" onChange={(e) => {setCareer(e.target.value)}} value={career} type="text" name="careerRole" id="" placeholder="Career Role... " />
+              <input className="bg-white block rounded-sm outline-none text-sm ml-2 text-slate-500" onChange={(e) => {setLocation(e.target.value)}} value={location} type="text" name="location" id="" placeholder="Location... " />
+              <textarea className="bg-white w-full block rounded-sm outline-none my-2 leading-5" onChange={(e) => {setAbout(e.target.value)}} value={about} type="text" name="description" id="" placeholder="Description... " />
             </>
             :
             <>
               <div>{fullName}</div>
-              <div className="text-sm ml-2 text-slate-500">Software Engineer</div>
-              <div className="text-sm ml-2 text-slate-500">Kolkata, West Bengal</div>
+              <div className="text-sm ml-2 text-slate-500">{career}</div>
+              <div className="text-sm ml-2 text-slate-500">{location}</div>
               <div className="my-2 leading-5">
-                Description :- Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum sequi nulla cupiditate nobis animi quasi corporis temporibus ab maxime eveniet?
+                {about}
               </div>
             </>
           }
@@ -153,20 +173,73 @@ const Profile = ({ id, tab }) => {
             <AuthUser>
               <AuthLoggedInUser userId={user?._id}>
                 <div>
-                  <ProfileButton onClick={(e) => {setIsEdit(!isEdit)}} type={isEdit ? "Update Profile" : "Edit Profile"} bg={"black"} border="2px solid black" color={"white"} />
+                  <ProfileButton onClick={async(e) => {
+                    if(isEdit){
+                      try{
+                        const response = await updateUserProfile(id, fullName, career, location, about)
+                        dispatch(signInSuccess(response))
+                        setFullName(response.fullName)
+                        setCareer(response.career)
+                        setLoading(response.location)
+                        setAbout(response.about)
+                      } catch(err){
+                        console.error("Error while updating user profile")
+                      }
+                    }
+                    setIsEdit(!isEdit)}
+                  } 
+                    type={isEdit ? "Update Profile" : "Edit Profile"} 
+                    bg={"black"} border="2px solid black" color={"white"} 
+                  />
                   <ProfileButton type={"Settings"} bg={"white"} color={"black"} border="2px solid black" ></ProfileButton>
                 </div>
               </AuthLoggedInUser>
             </AuthUser>
           </div>
         </div>
-        <div className="w-[30%] self-end text-right">
-          <div className="text-slate-500">Skills</div>
-          <div className="flex justify-end gap-2 text-sm text-right">
-            <div className="bg-[#F8CB6A] px-3 py-1 rounded-2xl" >HTML</div>
-            <div className="bg-[#F8CB6A] px-3 py-1 rounded-2xl" >CSS</div>
-            <div className="bg-[#F8CB6A] px-3 py-1 rounded-2xl" >Dart</div>
-            <div className="bg-[#F8CB6A] px-3 py-1 rounded-2xl" >C++</div>
+        <div className="w-[30%] self-start text-right h-fit">
+          <div className="text-slate-500 pb-2">
+            <span>Skills </span> 
+            {
+            editSkills ? 
+            <FontAwesomeIcon onClick={async(e) => {
+              try{
+                const response = await updateUserSkills(id, [...skills, ...editedSkills])
+                dispatch(signInSuccess(response))
+              }catch(err){
+                console.error(err)
+              } finally{
+                setEditedSkills([])
+                setEditSkills(!editSkills)
+              }
+            }} className="cursor-pointer" icon={faFloppyDisk} />
+            :
+            <FontAwesomeIcon onClick={(e) => {setEditSkills(!editSkills)}} className="cursor-pointer" icon={faPenToSquare} />
+            }
+          </div>
+          <div className="flex flex-wrap justify-end gap-2 text-sm text-right">
+            {
+              [...skills, ...editedSkills].map((skill, i) => {
+                return <div key={i} className="bg-[#F8CB6A] px-3 py-1 rounded-2xl" >{skill} <FontAwesomeIcon onClick={(e) => {setSkills(skills.filter((s) => s !== skill))}} className={`text-xs ${!editSkills ? "hidden" : "relative"}`} icon={faMinus} /></div>
+              })
+            }
+          </div>
+          <div className="p-2 relative text-right">
+            {editSkills && <div>
+              <input type="text" onChange={(e) => {setFilter(e.target.value)}} value={filter} className="rounded-full text-md text-slate-600 pl-7 py-1 outline-none" id="" />
+              <FontAwesomeIcon className="absolute left-[8%] text-slate-400 translate-y-[48%]" icon={faMagnifyingGlass} />
+              <div className="w-[85%] h-[160px] overflow-y-auto absolute left-[8%] bg-slate-50 divide-y-2">
+                {allSkills.map((skill, i) => {
+                  if((skill.toLowerCase()).includes(filter.toLowerCase())){
+                    return <p key={i} onClick={(e) => {
+                      if(![...skills, ...editedSkills].includes(skill) && skills.length + editedSkills.length < 5){
+                        setEditedSkills([...editedSkills,skill])
+                      }
+                    }} className="w-full text-left p-1 px-2 cursor-pointer hover:bg-slate-100" >{skill}</p>
+                  }
+                })}
+              </div>
+            </div>}
           </div>
         </div>
       </div>
