@@ -42,11 +42,13 @@ const Blogs = ({ blog, userData, i }) => {
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <div>
-              <img
-                className="w-[48px] h-[48px] rounded-full object-cover object-center"
-                src={userData[i]?.avatarImage}
-                alt="DP"
-              />
+              <Link href={`/user/${userData[i]?._id}`}>
+                <img
+                  className="w-[48px] h-[48px] rounded-full object-cover object-center"
+                  src={userData[i]?.avatarImage}
+                  alt="DP"
+                />
+              </Link>
             </div>
             <div>
               <div>
@@ -79,8 +81,7 @@ const Blogs = ({ blog, userData, i }) => {
                   <FontAwesomeIcon icon={faBars} />
                   <div
                     className={`flex flex-col gap-1 md:w-[110px] 
-                        ${actionButtons ? "h-[160px]" : "h-[0px]"} 
-                        ${actionButtons ? "md:h-[105px]" : "md:h-[0px]"} 
+                    ${actionButtons ? "h-[160px] md:h-[128px]" : "h-[0px]"} 
                         overflow-hidden text-sm md:text-xs absolute -translate-x-[85%] md:-translate-x-[45%] bg-white md:bg-opacity-90 rounded-md transition-all duration-300 ease-in-out`}
                     style={{
                       padding: actionButtons ? "10px" : "0px",
@@ -88,11 +89,11 @@ const Blogs = ({ blog, userData, i }) => {
                       // height: actionButtons ? "110px" : "0px",
                     }}
                   >
-                    <button className="md:border-[1px] border-x-0 border-white border-opacity-50 hover:border-slate-300">
+                    <button className="">
                       Delete
                     </button>
                     <button
-                      className="md:border-[1px] border-x-0 border-transparent hover:border-slate-300"
+                      className=""
                       onClick={async (e) => {
                         try {
                           dispatch(bookmarkUpdateStart());
@@ -116,13 +117,13 @@ const Blogs = ({ blog, userData, i }) => {
                         ? "Bookmarked"
                         : "Bookmark"}
                     </button>
-                    <button className="md:border-[1px] border-x-0 border-white border-opacity-50 hover:border-slate-300">
+                    <button className="">
                       Report
                     </button>
-                    <button className="md:border-[1px] border-x-0 border-white border-opacity-50 hover:border-slate-300">
+                    <button className="">
                       Share
                     </button>
-                    <button className="md:border-[1px] border-x-0 border-white border-opacity-50 hover:border-slate-300">
+                    <button className="">
                       Related_Posts
                     </button>
                   </div>
