@@ -33,7 +33,7 @@ export const userSlice = createSlice({
       state.currentUser = action.payload;
       state.loading = false;
       state.error = null;
-      localStorage.setItem("user", JSON.stringify(state.currentUser));
+      // localStorage.setItem("user", JSON.stringify(state.currentUser));
     },
 
     updateStart: (state) => {
@@ -50,14 +50,14 @@ export const userSlice = createSlice({
       state.currentUser = action.payload;
       state.loading = false;
       state.error = null;
-      localStorage.setItem("user", JSON.stringify(state.currentUser));
+      // localStorage.setItem("user", JSON.stringify(state.currentUser));
     },
 
     logoutSuccess: (state) => {
       state.loading = false;
       state.currentUser = null;
       state.error = null;
-      localStorage.removeItem("user");
+      // localStorage.removeItem("user");
     },
 
     // failure
@@ -76,7 +76,7 @@ export const userSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.currentUser = action.payload;
-      localStorage.setItem("user", JSON.stringify(state.currentUser));
+      // localStorage.setItem("user", JSON.stringify(state.currentUser));
     },
 
     likeFailure: (state, action) => {
@@ -96,7 +96,7 @@ export const userSlice = createSlice({
       state.error = null;
       state.bookmarkMsg = action.payload.msg;
       state.currentUser = action.payload.user;
-      localStorage.setItem("user", JSON.stringify(state.currentUser));
+      // localStorage.setItem("user", JSON.stringify(state.currentUser));
     },
 
     bookmarkUpdateFailure: (state, action) => {

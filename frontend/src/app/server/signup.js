@@ -80,6 +80,13 @@ export const updateProfilePic = async (id, avatarImage) => {
           "Content-Type": "multipart/form-data",
         },
         withCredentials: true,
+        onUploadProgress: (progressEvent) => {
+          console.log(
+            "Upload Progress: " +
+              Math.round((progressEvent.loaded / progressEvent.total) * 100) +
+              "%"
+          );
+        }
       }
     );
 
@@ -186,9 +193,9 @@ export const follow = async (loggedUserId, userId) => {
   }
 };
 
-export const renewLoginSession = async () => {
+export const getCurrentUser = async () => {
   try {
-    const response = await axios.post(`${url}/generateAccessToken`, {},
+    const response = await axios.post(`${url}/getCurrentUser`, {},
     {
       withCredentials: true,
     })

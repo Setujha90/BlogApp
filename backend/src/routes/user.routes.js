@@ -11,7 +11,7 @@ import {
     updateUserProfile,
     bookmark,
     follow,
-    renewLoggedinSession,
+    getCurrentUser,
     searchUser,
     updateCoverPic,
     updateUserSkills,
@@ -28,9 +28,9 @@ router.route("/filter").get(searchUser)
 router.route("/:id").get(getUserById)
 router.route("/").get(getAllUsers)
 
-router.route("/generateAccessToken").post(renewLoggedinSession)
 
 // secured routes
+router.route("/getCurrentUser").post(verifyJWT, getCurrentUser)
 router.route("/logout").post(verifyJWT, logout)
 router.route("/:id/deleteAccount").delete(verifyJWT, deleteUser)
 router.route("/:id/updateProfilePic").patch(upload.single('avatarImage'), verifyJWT, updateProfilePic)

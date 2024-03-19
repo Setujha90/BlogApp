@@ -42,7 +42,7 @@ export default function Blog() {
           initialValue="<p>Write your content here...</p>"
           init={{
             height: 500,
-            menubar: false,
+            menubar: true,
             plugins: [
               'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
               'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',

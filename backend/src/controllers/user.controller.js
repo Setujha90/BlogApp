@@ -24,35 +24,36 @@ export const generateAccessAndRefreshToken = async(id) => {
     return {accessToken, refreshToken}
 }
 
-export const renewLoggedinSession = asyncHandler(async(req, res) => {
-  const token = req.cookies?.refreshToken || req.header("Authorizaton")?.replace("Bearer ", "")
-  
-  if(!token){
-    throw new ApiError(401, "unauthorized user")
-  }
+export const getCurrentUser = asyncHandler(async(req, res) => {
+  const user = req.user
 
-  const decodedToken = await jwt.verify(token, process.env.REFRESH_TOKEN_SECRET)
-  
-  let user = await User.findById(decodedToken?._id)
-  
   if(!user){
-    throw new ApiError(401, "Unauthorized request")
+    return res
+      .status(200)
+      .json(new ApiResponse(
+        200,
+        {
+          "user" : null,
+        },
+        "No user found"
+      ))
   }
 
-  const accessToken = await user.generateAccessToken()
-  user.accessToken = accessToken
-  await user.save({validateBeforeSave:false})
+  const currentUser = await User.findById(user._id)?.select("-password -refreshToken -role")
 
-  const sendUser = await User.findById(decodedToken?._id).select("-password -refreshToken -role")
-
+  if(!currentUser){
+    throw new ApiError(401, "Unauthorized access!!")
+  }
 
   return res
     .status(200)
-    .cookie("accessToken", accessToken, {
-      sameSite: false,
-      maxAge: 24 * 60 * 60 * 1000,
-  })
-    .json(new ApiResponse(200, {"user" :sendUser}, "access token generated successfully"))
+    .json(new ApiResponse(
+      200,
+      {
+        "user" : currentUser
+      },
+      "User fetched successfully"
+    ))
 })
 
 export const register = asyncHandler(async(req, res) => {
@@ -242,7 +243,7 @@ export const updateProfilePic = asyncHandler(async(req, res) => {
     }
 
     if(!avatarImageLocalPath){
-        throw new ApiError(401, "Please upload avatar image")
+        throw new ApiError(400, "Please upload avatar image")
     }
 
     const avatarImage = await uploadOnCloud(avatarImageLocalPath)

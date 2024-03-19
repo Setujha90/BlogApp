@@ -3,17 +3,32 @@ import React, { useEffect } from "react";
 import NextTopLoader from "nextjs-toploader";
 import { useDispatch } from "react-redux";
 import { signInSuccess } from "../redux/user/userSlice";
+import { getCurrentUser } from "../server/signup";
 
 const ProgressBar = () => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
+  // useEffect(() => {
+  //   const userData = localStorage.getItem("user");
 
-    if (userData) {
-      dispatch(signInSuccess(JSON.parse(userData)));
+  //   if (userData) {
+  //     dispatch(signInSuccess(JSON.parse(userData)));
+  //   }
+  // }, []);
+
+  useEffect(() => {
+    async function currentUser(){
+      try {
+        const response = await getCurrentUser();
+        dispatch(signInSuccess(response));
+      } catch (error) {
+        console.error("Error while fetching current loggedIn user:- ",error);
+      }
     }
-  }, []);
+
+    currentUser();
+  }, [])
+
 
   return (
     <div>

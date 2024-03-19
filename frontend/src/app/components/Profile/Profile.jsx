@@ -17,8 +17,10 @@ import AuthLoggedInUser from "@/app/utils/AuthLoggedInUser";
 import AuthSameUser from "@/app/utils/AuthSameUser";
 import { signInSuccess } from "@/app/redux/user/userSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass, faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faMagnifyingGlass, faMinus, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { faFloppyDisk, faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import ProfileImage from "./ProfileImage";
+import CoverImage from "./CoverImage";
 
 const Profile = ({ id, tab }) => {
   const dispatch = useDispatch();
@@ -48,6 +50,10 @@ const Profile = ({ id, tab }) => {
 
   const [currentTab, setCurrentTab] = useState(tab);
   const [currentTabData, setCurrentTabData] = useState([]);
+
+
+  const allSkills = ["Python", "Java", "JavaScript", "C", "C++", "Ruby", "Swift", "Kotlin", "PHP", "Go", "Rust", "TypeScript", "SQL", "HTML", "CSS", "React Js", "Next Js", "Node Js", "MongoDB", "MySQL", "Django", "Flask", "Express Js"]
+  const [filter, setFilter] = useState("")
 
   useEffect(() => {
     async function fetchUser() {
@@ -107,28 +113,15 @@ const Profile = ({ id, tab }) => {
     return <div>Loading Data...</div>;
   }
 
-  const allSkills = ["Python", "Java", "JavaScript", "C", "C++", "Ruby", "Swift", "Kotlin", "PHP", "Go", "Rust", "TypeScript", "SQL", "HTML", "CSS", "React Js", "Next Js", "Node Js", "MongoDB", "MySQL", "Django", "Flask", "Express Js"]
-
-  const [filter, setFilter] = useState("")
 
   return (
 
     <div className="w-[90%] mx-auto rounded-lg overflow-hidden bg-[#f1f1f1] text-sm">
       <div className="w-[100%] h-fit mb-8">
         <div className="relative">
-          <Image className="w-[100%] h-[200px] object-cover object-center"
-            width={800}
-            height={50}
-            src="https://images.pexels.com/photos/268941/pexels-photo-268941.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-            alt="Cover Image"
-          />
+          <CoverImage coverImage={coverImage} id={id} />
           <div className="absolute left-[5%] -bottom-[18%] flex justify-center items-end gap-3 text-sm">
-            <Image className="w-[170px] h-[170px] rounded-full object-cover object-center"
-              width={200}
-              height={200}
-              alt="dp"
-              src={avatarImage || "https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png"}
-            />
+            <ProfileImage avatarImage={avatarImage} id={user?._id} />
             <p>{noOfFolloers} Followers</p>
             <p>{noOfFollowings} Followings</p>
             <AuthUser>
@@ -202,25 +195,32 @@ const Profile = ({ id, tab }) => {
             <span>Skills </span> 
             {
             editSkills ? 
-            <FontAwesomeIcon onClick={async(e) => {
-              try{
-                const response = await updateUserSkills(id, [...skills, ...editedSkills])
-                dispatch(signInSuccess(response))
-              }catch(err){
-                console.error(err)
-              } finally{
-                setEditedSkills([])
-                setEditSkills(!editSkills)
-              }
-            }} className="cursor-pointer" icon={faFloppyDisk} />
+            <>
+              <FontAwesomeIcon onClick={async(e) => {
+                try{
+                  const response = await updateUserSkills(id, [...skills, ...editedSkills])
+                  dispatch(signInSuccess(response))
+                }catch(err){
+                  console.error(err)
+                } finally{
+                  setEditedSkills([])
+                  setEditSkills(!editSkills)
+                }
+              }} className="cursor-pointer" icon={faFloppyDisk} />
+              <FontAwesomeIcon className="cursor-pointer ml-1" onClick={(e) => {setEditSkills(false)}} icon={faXmark} />
+            </>
             :
-            <FontAwesomeIcon onClick={(e) => {setEditSkills(!editSkills)}} className="cursor-pointer" icon={faPenToSquare} />
+            <AuthUser>
+              <AuthLoggedInUser userId={user?._id}>
+                <FontAwesomeIcon onClick={(e) => {setEditSkills(!editSkills)}} className="cursor-pointer" icon={faPenToSquare} />
+              </AuthLoggedInUser>
+            </AuthUser>
             }
           </div>
           <div className="flex flex-wrap justify-end gap-2 text-sm text-right">
             {
               [...skills, ...editedSkills].map((skill, i) => {
-                return <div key={i} className="bg-[#F8CB6A] px-3 py-1 rounded-2xl" >{skill} <FontAwesomeIcon onClick={(e) => {setSkills(skills.filter((s) => s !== skill))}} className={`text-xs ${!editSkills ? "hidden" : "relative"}`} icon={faMinus} /></div>
+                return <div onClick={(e) => {setSkills(skills.filter((s) => s !== skill))}} key={i} className={`bg-[#F8CB6A] ${!editSkills ? "" : "cursor-pointer"} px-3 py-1 rounded-2xl`} >{skill} <FontAwesomeIcon className={`text-xs ${!editSkills ? "hidden" : "relative"}`} icon={faMinus} /></div>
               })
             }
           </div>
