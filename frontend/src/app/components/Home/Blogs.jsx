@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "./styles.module.css";
 import actionButtonStyles from "@/app/components/Blog/Create/styles.module.css";
 import Link from "next/link";
-import { likeBlog } from "@/app/server/blogs";
+import { deleteBlog, likeBlog } from "@/app/server/blogs";
 import Spinner from "../Spinner";
 import { copyToClipboard } from "@/app/server/copyToClipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,25 +18,24 @@ import {
   bookmarkUpdateFailure,
   bookmarkUpdateStart,
   bookmarkUpdateSuccess,
+  signInSuccess,
 } from "@/app/redux/user/userSlice";
 import Image from 'next/image'
+import AuthUser from "@/app/utils/AuthUser";
+import AuthLoggedInUser from "@/app/utils/AuthLoggedInUser";
 
 const Blogs = ({ blog, userData, i }) => {
-  const formattedTime = formatRelativeTime(blog.createdAt);
-
-  // const [likes, setLikes] = useState(blog.noOfLikes)
-  // const [loading, setLoading] = useState(false)
-  const loggedInUser = useSelector((state) => state.user.currentUser);
-  const bookmarkLoading = useSelector((state) => state.user.bookmarkLoading);
 
   const dispatch = useDispatch();
+  const loggedInUser = useSelector((state) => state.user.currentUser);
 
-  const [copyLoading, setCopyLoading] = useState(false);
-
+  const formattedTime = formatRelativeTime(blog.createdAt);
   const [actionButtons, setActionButtons] = useState(false);
+  const [copyLoading, setCopyLoading] = useState(false);
+  const [deleted, setDeleted] = useState(false);
 
   return (
-    <div className="text-xs bg-white rounded-sm mb-3 dark:text-white w-[100%] py-2 px-2" key={blog._id}>
+    <div style={{display : deleted ? "hidden" : "initial"}} className="text-xs bg-white rounded-sm mb-3 dark:text-white w-[100%] py-2 px-2" key={blog._id}>
       {/* Render blog details using userData state */}
       <div>
         <div className="flex justify-between items-center">
@@ -81,7 +80,7 @@ const Blogs = ({ blog, userData, i }) => {
                   <FontAwesomeIcon icon={faBars} />
                   <div
                     className={`flex flex-col gap-1 md:w-[110px] 
-                    ${actionButtons ? "h-[160px] md:h-[128px]" : "h-[0px]"} 
+                    ${actionButtons ? "h-[160px] md:h-fit" : "h-[0px]"} 
                         overflow-hidden text-sm md:text-xs absolute -translate-x-[85%] md:-translate-x-[45%] bg-white md:bg-opacity-90 rounded-md transition-all duration-300 ease-in-out`}
                     style={{
                       padding: actionButtons ? "10px" : "0px",
@@ -89,37 +88,51 @@ const Blogs = ({ blog, userData, i }) => {
                       // height: actionButtons ? "110px" : "0px",
                     }}
                   >
-                    <button className="">
-                      Delete
-                    </button>
-                    <button
-                      className=""
-                      onClick={async (e) => {
-                        try {
-                          dispatch(bookmarkUpdateStart());
-                          const response = await bookmark(
-                            loggedInUser._id,
-                            blog._id
-                          );
-                          dispatch(
-                            bookmarkUpdateSuccess({
-                              msg: response.msg,
-                              user: response.user,
-                            })
-                          );
-                        } catch (error) {
-                          dispatch(bookmarkUpdateFailure(error));
-                          console.error("Error bookmarking blog:", error);
-                        }
-                      }}
-                    >
-                      {loggedInUser?.bookmark?.includes(blog._id)
-                        ? "Bookmarked"
-                        : "Bookmark"}
-                    </button>
-                    <button className="">
-                      Report
-                    </button>
+                    <AuthUser>
+                      <AuthLoggedInUser userId={userData[i]?._id}>
+                        <button className=""
+                        onClick={async(e) => {
+                          try{
+                            const response = await deleteBlog(blog._id)
+                            dispatch(signInSuccess(response))
+                            console.log(deleted)
+                            setDeleted(true);
+                            console.log(deleted)
+                          }catch(err){
+                            console.error("Error while deleting the blog:- ",err)
+                          }
+                        }}>
+                          Delete
+                        </button>
+                      </AuthLoggedInUser>
+                      <button className=""
+                        onClick={async (e) => {
+                          try {
+                            dispatch(bookmarkUpdateStart());
+                            const response = await bookmark(
+                              loggedInUser._id,
+                              blog._id
+                            );
+                            dispatch(
+                              bookmarkUpdateSuccess({
+                                msg: response.msg,
+                                user: response.user,
+                              })
+                            );
+                          } catch (error) {
+                            dispatch(bookmarkUpdateFailure(error));
+                            console.error("Error bookmarking blog:", error);
+                          }
+                        }}
+                      >
+                        {loggedInUser?.bookmark?.includes(blog._id)
+                          ? "Bookmarked"
+                          : "Bookmark"}
+                      </button>
+                      <button className="">
+                        Report
+                      </button>
+                    </AuthUser>
                     <button className="">
                       Share
                     </button>
@@ -153,18 +166,19 @@ const Blogs = ({ blog, userData, i }) => {
         <div>
           <span>{blog.noOfLikes} </span>
           <FontAwesomeIcon
-            style={{
-              color: loggedInUser?.likedBlogs?.includes(blog._id)
-                ? "red"
-                : "white",
-            }}
+            // style={{
+            //   color: loggedInUser?.likedBlogs?.includes(blog._id)
+            //     ? "red"
+            //     : "grey",
+            // }}
+            className={loggedInUser?.likedBlogs?.includes(blog._id) ? "text-red-500" : "text-slate-400"}
             icon={faHeart}
           />
         </div>
 
         <div>
           <span>{blog.noOfComments} </span>
-          <FontAwesomeIcon style={{ color: "black" }} icon={faComment} />
+          <FontAwesomeIcon className="text-black" icon={faComment} />
         </div>
       </div>
 

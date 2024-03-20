@@ -1,10 +1,11 @@
 "use client";
 import { faBlogger } from '@fortawesome/free-brands-svg-icons'
-import { faIdBadge, faPaperPlane, faSquarePlus, faTowerBroadcast, faUserGroup } from '@fortawesome/free-solid-svg-icons'
+import { faIdBadge, faPaperPlane, faRightFromBracket, faSquarePlus, faTowerBroadcast, faUserGroup } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
 import LinkButton from './LinkButton'
 import { useSelector } from 'react-redux'
 import Message from '@/app/utils/Message';
+import Logout from '../Logout';
 
 const SideBar = () => {
 
@@ -21,6 +22,9 @@ const SideBar = () => {
 				<LinkButton type={'Friends'} icon={faUserGroup} />
 				<LinkButton type={'Community'} icon={faTowerBroadcast} />
 				<LinkButton type={'Messages'} icon={faPaperPlane} />
+        <LinkButton icon={faRightFromBracket} >
+          <Logout />
+        </LinkButton>
 			</div>
 
 			{/* followings show krega yaha */}

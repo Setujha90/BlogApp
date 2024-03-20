@@ -28,14 +28,45 @@ export const getCurrentUser = asyncHandler(async(req, res) => {
   const user = req.user
 
   if(!user){
+
+    const token = req.cookies?.refreshToken || req.header("Authorizaton")?.replace("Bearer ", "")
+
+    if(!token){
+      return res
+        .status(200)
+        .json(new ApiResponse(
+          200,
+          {
+            "user" : null,
+          },
+          "No user found"
+        ))
+    }
+
+    const decodedToken = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET)
+
+    const currentUser = await User.findById(decodedToken?._id)?.select("-password -refreshToken -role")
+
+    if(!currentUser){
+      throw new ApiError(401, "Unauthorized access!!")
+    }
+
+    const {refreshToken, accessToken} = await generateAccessAndRefreshToken(currentUser._id)
+
     return res
       .status(200)
+      .cookie("accessToken", accessToken, {
+        maxAge: 24 * 60 * 60 * 1000,
+      })
+      .cookie("refreshToken", refreshToken, {
+        maxAge: 24 * 60 * 60 * 10000,
+      })
       .json(new ApiResponse(
         200,
         {
-          "user" : null,
+          "user" : currentUser
         },
-        "No user found"
+        "User fetched successfully"
       ))
   }
 
@@ -127,10 +158,10 @@ export const login = asyncHandler(async(req, res) => {
             sameSite: false,
             maxAge: 24 * 60 * 60 * 1000,
         })
-    .cookie("refreshToken", refreshToken, {
-        sameSite: false,
-        maxAge: 24 * 60 * 60 * 10000,
-    })
+        .cookie("refreshToken", refreshToken, {
+            sameSite: false,
+            maxAge: 24 * 60 * 60 * 10000,
+        })
         .json(new ApiResponse(
             200, 
             {

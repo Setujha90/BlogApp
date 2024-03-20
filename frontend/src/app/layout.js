@@ -2,7 +2,6 @@ import Header from "./components/Header/Header.jsx";
 import ProgressBar from "./components/ProgressBar.jsx";
 import { Providers } from "./redux/provider.jsx";
 import "./page.css";
-import Message from "./utils/Message.jsx";
 import SideBar from "./components/SideBar/SideBar.jsx";
 import AuthUser from "./utils/AuthUser.jsx";
 

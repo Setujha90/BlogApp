@@ -1,15 +1,8 @@
 "use client";
 import React from "react";
-import styles from "./styles.module.css";
-import SideProfile from "./SideProfile";
-
-import { useSelector } from "react-redux";
 import FetchBlogs from "./FetchBlogs";
-import Message from "@/app/utils/Message";
 
 const Home = () => {
-  const user = useSelector((state) => state.user.currentUser);
-
   return (
       <div className="relative flex justify-center gap-8 py-5 md:py-10">
         {/* side profile position fixed hoga*/}

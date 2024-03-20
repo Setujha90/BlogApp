@@ -16,7 +16,7 @@ const Header = () => {
 
   return (
     <>
-      <div className="sticky top-0 flex items-center justify-between px-5 py-2 text-sm md:px-12">
+      <div className="sticky z-50 top-0 flex items-center justify-between px-5 py-2 text-sm md:px-12">
         <div>
           <Link href={"/"}>Vishal's Blog</Link>
         </div>
@@ -32,39 +32,33 @@ const Header = () => {
         <div>
           {/* <div>Dark/Light</div> */}
           {user ? (
-            <>
+            <div className="relative">
               {loading && <Spinner width={50} height={50} />}
               {!loading && (
                 <Image
                   onClick={(e) => {
                     setDropDown(!dropDown);
                   }}
-                  className={styles.profileDP}
+                  className="size-[40px] object-cover object-center rounded-full cursor-pointer"
                   src={user.avatarImage}
                   width={30}
                   height={30}
                 />
               )}
               <div
-                style={{
-                  padding: dropDown ? "8px" : "0px",
-                  width: dropDown ? "130px" : "0px",
-                  height: dropDown ? "108px" : "0px",
-                }}
-                className={styles.dropDown}
+                className={`absolute flex flex-col rounded-md bg-white left-[50%] -translate-x-1/2 p-0 overflow-hidden transition-all w-0 h-0 ease-out ${dropDown && "h-[85px] w-[140px] p-2"}`}
               >
-                <Link className={styles.button} href={`/user/${user._id}`}>
+                <Link className=" cursor-pointer" href={`/user/${user._id}`}>
                   Profile
                 </Link>
-                <Link className={styles.button} href={"/blog/create"}>
+                <Link className=" cursor-pointer" href={"/blog/create"}>
                   Create Blog
                 </Link>
-                <Link className={styles.button} href={"/"}>
+                <Link className=" cursor-pointer" href={"/"}>
                   Help & Support
                 </Link>
-                <Logout />
               </div>
-            </>
+            </div>
           ) : (
             <div className="transition ease-in-out px-2 py-[2px] text-sm rounded-sm cursor-pointer hover:bg-black hover:text-white">
               <Link className="text-sm" href={"/user/signup"}>

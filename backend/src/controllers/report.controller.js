@@ -45,7 +45,27 @@ export const createReport = asyncHandler(async (req, res) => {
 });
 
 export const getReports = asyncHandler(async (req, res) => {
+  const currentUser = req.user;
+
+  if(!currentUser){
+    throw new ApiError(401, "You must be logged in to view reports")
+  }
+
+  const user = await User.findById(currentUser._id);
+
+  if(!user){
+    throw new ApiError(404, "User not found")
+  }
+
+  if(user.role !== "admin"){
+    throw new ApiError(403, "You are not allowed to view reports")
+  }
+
   const reports = await Report.find({});
+
+  if(!reports){
+    throw new ApiError(404, "Reports not found")
+  }
 
   return res
     .status(200)
@@ -60,7 +80,7 @@ export const getReports = asyncHandler(async (req, res) => {
 
 export const getReportById = asyncHandler(async (req, res) => {
   const currentUser = req.user;
-  const { reportId } = req.params;
+  const reportId = req.params.id;
 
   if(!currentUser){
     throw new ApiError(401, "You must be logged in to view a report")
@@ -95,7 +115,7 @@ export const getReportById = asyncHandler(async (req, res) => {
 
 export const resolveReport = asyncHandler(async (req, res) => {
   const currentUser = req.user;
-  const { reportId } = req.params;
+  const reportId = req.params.id;
 
   if(!currentUser){
     throw new ApiError(401, "You must be logged in to resolve a report")
@@ -139,7 +159,7 @@ export const resolveReport = asyncHandler(async (req, res) => {
 
 export const rejectReport = asyncHandler(async (req, res) => {
   const currentUser = req.user;
-  const { reportId } = req.params;
+  const reportId = req.params.id;
 
   if(!currentUser){
     throw new ApiError(401, "You must be logged in to reject a report")
