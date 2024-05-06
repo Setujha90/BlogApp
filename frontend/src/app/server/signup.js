@@ -12,24 +12,14 @@ export const userById = async (id) => {
   }
 };
 
-export const SignupSubmit = async (
-  username,
-  fullName,
-  email,
-  password
-) => {
+export const SignupSubmit = async (username, fullName, email, password) => {
   try {
-    const formData = new FormData();
-    formData.append("username", username);
-    formData.append("fullName", fullName);
-    formData.append("email", email);
-    formData.append("password", password);
 
     const response = await axios.post(`${url}/register`, {
       username,
       fullName,
       email,
-      password
+      password,
     });
 
     return response.data.data["createdUser"];
@@ -51,6 +41,8 @@ export const SigninSubmit = async (email, password) => {
     throw error;
   }
 };
+
+export const authSigninSubmit = async () => {};
 
 export const LogoutSubmit = async () => {
   try {
@@ -86,7 +78,7 @@ export const updateProfilePic = async (id, avatarImage) => {
               Math.round((progressEvent.loaded / progressEvent.total) * 100) +
               "%"
           );
-        }
+        },
       }
     );
 
@@ -117,12 +109,21 @@ export const updateCoverImage = async (id, coverImage) => {
   }
 };
 
-export const updateUserProfile = async (id, fullName, career, location, about) => {
+export const updateUserProfile = async (
+  id,
+  fullName,
+  career,
+  location,
+  about
+) => {
   try {
     const response = await axios.patch(
       `${url}/${id}/updateUserProfile`,
       {
-        fullName, career, location, about
+        fullName,
+        career,
+        location,
+        about,
       },
       { withCredentials: true }
     );
@@ -133,12 +134,12 @@ export const updateUserProfile = async (id, fullName, career, location, about) =
   }
 };
 
-export const updateUserSkills = async(id, skills) => {
+export const updateUserSkills = async (id, skills) => {
   try {
     const response = await axios.patch(
       `${url}/${id}/updateUserSkills`,
       {
-        skills
+        skills,
       },
       { withCredentials: true }
     );
@@ -147,8 +148,7 @@ export const updateUserSkills = async(id, skills) => {
   } catch (error) {
     throw error;
   }
-
-}
+};
 
 export const bookmark = async (id, blogId) => {
   try {
@@ -193,15 +193,28 @@ export const follow = async (loggedUserId, userId) => {
   }
 };
 
+export const searchUser = async (name, skills) => {
+  try {
+    const response = await axios.get(`${url}/filter?name=${name}&skills=${skills}`);
+
+    return response.data.data["users"];
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getCurrentUser = async () => {
   try {
-    const response = await axios.post(`${url}/getCurrentUser`, {},
-    {
-      withCredentials: true,
-    })
+    const response = await axios.post(
+      `${url}/getCurrentUser`,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
 
-    return response.data.data["user"]
+    return response.data.data["user"];
   } catch (error) {
-    throw error
+    throw error;
   }
-}
+};

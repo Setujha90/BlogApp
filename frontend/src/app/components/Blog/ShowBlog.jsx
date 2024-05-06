@@ -1,30 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import styles from "./Create/styles.module.css";
-import commentStyles from "./styles.module.css";
-import { deleteBlog, getBlogById, likeBlog } from "@/app/server/blogs";
+import { deleteBlog, getBlogById, likeBlog, viewBlogById } from "@/app/server/blogs";
 import { userById } from "@/app/server/signup";
 import WriteComment from "./WriteComment";
 import { useRouter } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faComment,
-  faHeart,
-  faShareFromSquare,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
 import { formatRelativeTime } from "@/app/server/dateTime";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  likeFailure,
-  likeStart,
-  likeSuceess,
-  updateFailure,
-  updateStart,
-  updateSuccess,
-} from "@/app/redux/user/userSlice";
-import { copyToClipboard } from "@/app/server/copyToClipboard";
 import Image from "next/image";
 import ButtonBar from "./ButtonBar";
 
@@ -43,7 +24,7 @@ const ShowBlog = ({ id }) => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const blogData = await getBlogById(id);
+        const blogData = await viewBlogById(id);
         setBlog(blogData);
 
         const writer = await userById(blogData.owner);
@@ -83,32 +64,31 @@ const ShowBlog = ({ id }) => {
     !loading &&
     <div className="flex flex-col justify-center items-center w-[80%] text-xs px-10 py-6 bg-white mx-auto rounded-xl">
       {/* title plus profile */}
-      <div>
+      <div className="flex justify-center items-center flex-col">
         <h1 className="text-2xl font-bold w-[100%]">{blog.title}</h1>
         {/* profile section */}
         <div className="flex items-center gap-2 py-2">
           <Image className="w-[50px] h-[50px] object-cover object-fit rounded-full" width={60} height={60} src={owner.avatarImage} />
-          <div>
+          <div className=" justify-start">
             <p>@{owner.username} | {loggedInUser?.followings?.includes(owner._id) ? "Unfollow" : "Follow"}</p>
             <small>{formatRelativeTime(blog.createdAt)}</small>
           </div>
         </div>
         {/* like comment section */}
-        <div>
+        <div className="w-[80%]">
           <ButtonBar blog={blog} like={like} noOfComments={comments.length} />
         </div>
       </div>
 
-      <div className="w-[70%] text-center pt-5">
+      <div className="w-[90%] text-center pt-5">
         {/* description */}
         <div className=" text-wrap">
-          `Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae harum voluptatibus obcaecati aut provident saepe, aperiam consequatur tempora doloribus adipisci.`
+          `{blog.description}`
           <hr className="w-[30%] mx-auto mt-2" />
         </div>
         {/* content section */}
-        <div className="revert-tailwind">
-          <h2>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi, quasi.</h2>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt sed dolorum enim eum sapiente veritatis earum assumenda hic iste iusto sint eaque minima vel, quia asperiores laboriosam vero odio, odit eos provident autem omnis laborum minus a. Magnam, ducimus asperiores ullam saepe eum dolor fugit, tenetur commodi reiciendis ipsum enim doloribus aliquam, itaque ex praesentium officia est atque esse molestias dolorem a repellat eaque. Delectus nobis excepturi at aliquid architecto tempore mollitia vitae, ullam sint quos nam adipisci incidunt tenetur facilis amet est, repellat necessitatibus porro, optio enim libero minima fuga modi perspiciatis. Ab et necessitatibus quas illum tenetur consequuntur veniam nobis fugiat blanditiis! Facere saepe quia neque ipsam autem quis delectus fugiat, veritatis maxime in quo temporibus sint eius nam voluptatibus. Reiciendis vero unde dolor provident voluptas officia omnis totam maiores perspiciatis dolores, rem soluta cum rerum necessitatibus illum itaque tempora, quas saepe sequi. Sint nam eius corporis commodi nostrum, maxime perspiciatis numquam ex? Aspernatur ducimus minima pariatur quae provident architecto, iure a ratione reprehenderit maiores blanditiis qui quidem delectus natus necessitatibus veniam voluptatibus nulla explicabo veritatis iusto nemo? Officia voluptate natus quas, enim nihil tempora et eum, quos, necessitatibus aliquid ratione dignissimos in harum. Blanditiis molestias odio omnis? </p>
+        <div dangerouslySetInnerHTML={ {__html : blog.content} } className="revert-tailwind">
+
         </div>
       </div>
         

@@ -102,7 +102,8 @@ userSchema.methods.generateAccessToken = async function(){
         _id: this._id,
         username: this.username,
         fullName: this.fullName,
-        email: this.email        
+        email: this.email,
+        role: this.role,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
@@ -119,6 +120,11 @@ userSchema.methods.generateRefreshToken = async function(){
         expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
     })
 }
+
+// Methods for maintaining Logs
+
+
+
 
 
 export const User = mongoose.model("User", userSchema)

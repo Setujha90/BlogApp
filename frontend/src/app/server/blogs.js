@@ -10,15 +10,16 @@ export const getAllBlogs = async () => {
   return blogs;
 };
 
-export const createBlog = async (title, description, thumbnail, images) => {
+export const createBlog = async (title, description, content, status, thumbnail) => {
   try {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
+    formData.append("content", content);
+    formData.append("status", status);
     formData.append("thumbnail", thumbnail);
-    formData.append("images", images);
-
-    const response = await axios.post(`${url}/create`, formData, {
+    console.log(thumbnail);
+    const response = await axios.post(`${url}/create`, formData , {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -34,6 +35,44 @@ export const createBlog = async (title, description, thumbnail, images) => {
     throw error;
   }
 };
+
+export const uploadThumbnail = async (id, thumbnail) => {
+  try {
+    const formData = new FormData();
+    formData.append("thumbnail", thumbnail);
+
+    const response = await axios.patch(`${url}/${id}/thumbnail`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+    });
+
+    return response.data.data["thumbnail"];
+  } catch (error) {
+    throw error;
+  }
+
+}
+
+export const uploadBlogImage = async (id, image) => {
+  try {
+    const formData = new FormData();
+    formData.append("image", image);
+
+    const response = await axios.patch(`${url}/${id}/image`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+    });
+
+    return response.data.data["image"];
+  } catch (error) {
+    throw error;
+  }
+
+}
 
 export const deleteBlog = async (id) => {
   try {
@@ -97,12 +136,12 @@ export const getBlogById = async (id) => {
 export const viewBlogById = async (id) => {
   try {
     const response = await axios.post(
-      `${url}/${id}/view`,
+      `${url}/${id}/view`, 
       {},
       { withCredentials: true }
     );
 
-    return response;
+    return response.data.data["blog"];
   } catch (error) {
     throw error;
   }

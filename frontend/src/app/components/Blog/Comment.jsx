@@ -1,4 +1,3 @@
-import styles from "./styles.module.css";
 import { deleteComment, getCommentById } from "@/app/server/comment.js";
 import { userById } from "@/app/server/signup";
 import Image from "next/image";

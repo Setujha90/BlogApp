@@ -20,16 +20,11 @@ const FetchBlogs = () => {
 
   return (
     <>
-      {/* <Suspense fallback={<Skeleton />}> */}
-      {/* <Await promise={blogs}> */}
-      {/* {({blogs}) => <BlogCard blogs={blogs} />} */}
       {blogs?.length > 0 ? (
         <BlogCard data={blogs} />
       ) : (
-        <div>No Posts Available Right Now</div>
+        <div key={1}>No Posts Available Right Now</div>
       )}
-      {/* </Await> */}
-      {/* </Suspense> */}
     </>
   );
 };

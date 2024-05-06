@@ -7,18 +7,21 @@ import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Image from 'next/image'
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 const ProfileImage = ({avatarImage, id}) => {
 
   const dispatch = useDispatch();
+
+  const currentUser = useSelector(state => state.user.currentUser)
   const [editImage, setEditImage] = useState(false)
   const [uploadDone, setUploadDone] = useState(false)
   const [editAvatarImage, setEditAvatarImage] = useState("")
 
   return (
-    <div className="relative">
-      <Image onClick={(e) => {setEditImage(!editImage)}} className={`${editImage && "blur-sm"} md:w-[170px] md:h-[170px] rounded-full object-cover object-center`}
+    <div className="relative rounded-full">
+      <Image onClick={(e) => {currentUser?._id === id && setEditImage(!editImage)}}
+        className={`${editImage && "blur-sm"} md:size-[170px] rounded-full object-cover object-center`}
         width={200}
         height={200}
         alt="dp"

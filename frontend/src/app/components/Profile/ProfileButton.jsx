@@ -5,6 +5,7 @@ const ProfileButton = ({
     bg="black",
     border = "none",
     color="white",
+    display="initial",
     ...props
 }) => {
 
@@ -14,7 +15,7 @@ const ProfileButton = ({
   }
 
   return (
-    <button style={{backgroundColor: bg, color: color, border:border}} className='text-white px-3 py-1 mr-2 rounded-lg' {...props}>{type}</button>
+    <button style={{backgroundColor: bg, color: color, border:border, display: display}} className='text-white px-3 py-1 mr-2 rounded-lg' {...props}>{type}</button>
   )
 }
 

@@ -6,17 +6,17 @@ import cookieParser from "cookie-parser";
 const app = express()
 
 app.use(cors({
-    origin: true,
+    origin: process.env.CORS_ORIGIN,
     credentials: true,
 }))
 
 app.use(express.json({
-    limit: "20kb"
+    limit: "20mb"
 }))
 
 // ye walla url ke liye h
 // nested objects ke liye extended
-app.use(express.urlencoded({extended: true, limit: "20kb"}))
+app.use(express.urlencoded({extended: true, limit: "20mb"}))
 
 // agar koi file kuch save krna ho to usko public folder me save krna
 app.use(express.static("public"))

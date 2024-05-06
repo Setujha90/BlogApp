@@ -1,6 +1,5 @@
 import { comment, getBlogById } from "@/app/server/blogs";
 import React, { useEffect, useState } from "react";
-import commentStyles from "./styles.module.css";
 import Comment from "./Comment";
 import { useSelector } from "react-redux";
 import Image from "next/image";

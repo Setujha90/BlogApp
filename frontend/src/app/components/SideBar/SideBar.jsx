@@ -4,8 +4,8 @@ import { faIdBadge, faPaperPlane, faRightFromBracket, faSquarePlus, faTowerBroad
 import React from 'react'
 import LinkButton from './LinkButton'
 import { useSelector } from 'react-redux'
-import Message from '@/app/utils/Message';
 import Logout from '../Logout';
+import Followings from './Followings';
 
 const SideBar = () => {
 
@@ -30,13 +30,12 @@ const SideBar = () => {
 			{/* followings show krega yaha */}
       <div className='flex flex-col gap-2'>
 				<p className='ml-2'>Followings</p>
-				<LinkButton type={'Friends'} src={" "} />
-				<LinkButton type={'Friends'} src={" "} />
-				<LinkButton type={'Friends'} src={" "} />
-				<LinkButton type={'Friends'} src={" "} />
-				<LinkButton type={'Friends'} src={" "} />
+        {
+          user?.following?.map((userId, index) => (
+            <Followings key={index} userId={userId} />
+          ))
+        }
 			</div>
-
     </div>
 	</>
   )

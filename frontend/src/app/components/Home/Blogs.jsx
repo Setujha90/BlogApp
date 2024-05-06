@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import styles from "./styles.module.css";
-import actionButtonStyles from "@/app/components/Blog/Create/styles.module.css";
 import Link from "next/link";
 import { deleteBlog, likeBlog } from "@/app/server/blogs";
-import Spinner from "../Spinner";
 import { copyToClipboard } from "@/app/server/copyToClipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -35,7 +32,7 @@ const Blogs = ({ blog, userData, i }) => {
   const [deleted, setDeleted] = useState(false);
 
   return (
-    <div style={{display : deleted ? "hidden" : "initial"}} className="text-xs bg-white rounded-sm mb-3 dark:text-white w-[100%] py-2 px-2" key={blog._id}>
+    <div style={{display : deleted ? "hidden" : "initial"}} className="text-xs bg-white rounded-sm mb-3 dark:text-white w-[100%] py-2 px-2" key={`/blog/${blog._id}`}>
       {/* Render blog details using userData state */}
       <div>
         <div className="flex justify-between items-center">
@@ -166,11 +163,6 @@ const Blogs = ({ blog, userData, i }) => {
         <div>
           <span>{blog.noOfLikes} </span>
           <FontAwesomeIcon
-            // style={{
-            //   color: loggedInUser?.likedBlogs?.includes(blog._id)
-            //     ? "red"
-            //     : "grey",
-            // }}
             className={loggedInUser?.likedBlogs?.includes(blog._id) ? "text-red-500" : "text-slate-400"}
             icon={faHeart}
           />

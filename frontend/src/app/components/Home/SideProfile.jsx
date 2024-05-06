@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "./styles.module.css";
 
 import { useSelector } from "react-redux";
 import Link from "next/link";

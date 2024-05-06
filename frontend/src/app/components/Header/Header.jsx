@@ -1,12 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import styles from "./styles.module.css";
 
 import { useSelector } from "react-redux";
 import Image from "next/image";
-import Logout from "../Logout";
 import Spinner from "../Spinner";
+import UserFilter from "./UserFilter";
 
 const Header = () => {
   const user = useSelector((state) => state.user.currentUser);
@@ -16,19 +15,15 @@ const Header = () => {
 
   return (
     <>
-      <div className="sticky z-50 top-0 flex items-center justify-between px-5 py-2 text-sm md:px-12">
+      <div className="sticky z-50 top-0 flex items-center justify-between bg-[#e2e2e2c2] backdrop-blur-sm px-5 py-2 text-sm md:px-12">
         <div>
           <Link href={"/"}>Vishal's Blog</Link>
         </div>
-        {/* <div
-          style={{ zIndex: 500 }}
-          className="absolute top-[100%] left-0 w-[100%] flex flex-col gap-2 items-center justify-center backdrop-blur-sm"
-        >
-          <input className="rounded-full w-[75%] px-5 py-2" type="text" placeholder="Search..." />
-          <Link href="/">Home</Link>
-          <Link href="/About">About</Link>
-          <Link href="/Project">Projects</Link>
-        </div> */}
+
+        <div className="relative md:w-[50%] flex flex-col justify-center items-center">
+          <UserFilter />
+        </div>
+        
         <div>
           {/* <div>Dark/Light</div> */}
           {user ? (
