@@ -2,12 +2,13 @@ import { Router } from "express";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 
-import { comment, createBlog, deleteBlog, getAllBlogs, getBlogById, likeBlog, updateBlog, uploadBlogImage, uploadThumbnail, viewBlog } from "../controllers/blog.controller.js";
+import { comment, createBlog, deleteBlog, getAllBlogs, getBlogById, likeBlog, searchBlog, updateBlog, uploadBlogImage, uploadThumbnail, viewBlog } from "../controllers/blog.controller.js";
 
 const router = Router();
 
 
 router.route("/").get(getAllBlogs)
+router.route("/filter").get(searchBlog)
 router.route("/:id").get(getBlogById)
 
 // secured routes

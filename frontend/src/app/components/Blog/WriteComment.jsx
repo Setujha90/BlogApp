@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const WriteComment = ({ id, blogComments, commentIdReply, replyCommentId }) => {
-
   const user = useSelector((state) => state.user.currentUser);
   const [commentContent, setCommentContent] = useState("");
   const [comments, setComments] = useState([]); // New state to store comments
@@ -18,7 +17,6 @@ const WriteComment = ({ id, blogComments, commentIdReply, replyCommentId }) => {
 
   useEffect(() => {
     setComments(blogComments)
-    console.log(blogComments)
   }, [])
 
   async function createComment() {
@@ -81,6 +79,7 @@ const WriteComment = ({ id, blogComments, commentIdReply, replyCommentId }) => {
         <Image 
           className="w-[40px] h-[40px] object-cover object-center rounded-full"
           src={user.avatarImage} width={70} height={70} 
+          alt="Author Image"
         />
         <input
           className="w-[100%] rounded-full px-2 border-2 border-slate-100 outline-none"
@@ -109,9 +108,6 @@ const WriteComment = ({ id, blogComments, commentIdReply, replyCommentId }) => {
     "Login to comment!!!"
   )} 
   <div className="text-xs pl-2 mt-2">
-    {
-      console.log("hello", comments)
-    }
     { commentIdReply
       ? replyComments.map((commentId, i) => {
           return (<Comment key={i} commentId={commentId} />);

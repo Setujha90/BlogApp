@@ -1,5 +1,5 @@
 "use client";
-import Profile from "@/app/components/Profile/Profile.jsx";
+import Profile from "@/app/Profile/Profile.jsx";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 

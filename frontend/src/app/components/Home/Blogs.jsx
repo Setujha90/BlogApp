@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { deleteBlog, likeBlog } from "@/app/server/blogs";
 import { copyToClipboard } from "@/app/server/copyToClipboard";
@@ -30,6 +30,18 @@ const Blogs = ({ blog, userData, i }) => {
   const [actionButtons, setActionButtons] = useState(false);
   const [copyLoading, setCopyLoading] = useState(false);
   const [deleted, setDeleted] = useState(false);
+  const menuRef = useRef();
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setActionButtons(false);
+        console.log("Clicked outside");
+      }
+    }
+
+    document.addEventListener("mousedown", handleOutsideClick);
+  })
 
   return (
     <div style={{display : deleted ? "hidden" : "initial"}} className="text-xs bg-white rounded-sm mb-3 dark:text-white w-[100%] py-2 px-2" key={`/blog/${blog._id}`}>
@@ -76,6 +88,7 @@ const Blogs = ({ blog, userData, i }) => {
                 <div>
                   <FontAwesomeIcon icon={faBars} />
                   <div
+                    ref={menuRef}
                     className={`flex flex-col gap-1 md:w-[110px] 
                     ${actionButtons ? "h-[160px] md:h-fit" : "h-[0px]"} 
                         overflow-hidden text-sm md:text-xs absolute -translate-x-[85%] md:-translate-x-[45%] bg-white md:bg-opacity-90 rounded-md transition-all duration-300 ease-in-out`}

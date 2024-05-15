@@ -1,11 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import "../../page.css";
 import { useDispatch, useSelector } from "react-redux";
 import FetchProfileBlog from "./FetchProfileBlog";
 import {
   follow,
-  updateProfilePic,
   updateUserProfile,
   updateUserSkills,
   userById,
@@ -18,10 +16,8 @@ import AuthSameUser from "@/app/utils/AuthSameUser";
 import { signInSuccess } from "@/app/redux/user/userSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCheck,
   faMagnifyingGlass,
   faMinus,
-  faPlus,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -30,6 +26,7 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import ProfileImage from "./ProfileImage";
 import CoverImage from "./CoverImage";
+import Link from "next/link";
 
 const Profile = ({ id, tab }) => {
   const dispatch = useDispatch();
@@ -154,7 +151,7 @@ const Profile = ({ id, tab }) => {
             <div className="absolute rounded-full left-[5%] -bottom-[18%] text-sm">
               <ProfileImage avatarImage={avatarImage} id={user?._id} />
             </div>
-            <div className="relative md:left-[calc(5%+190px)] top-1 flex gap-3 items-center">
+            <Link href='/user/friends' className="relative md:left-[calc(5%+190px)] top-1 flex gap-3 items-center">
               <p>{noOfFolloers} Followers</p>
               <p>{noOfFollowings} Followings</p>
               <AuthUser>
@@ -182,7 +179,7 @@ const Profile = ({ id, tab }) => {
                   <ProfileButton type="Chat" bg="#ADADAD" color="black" />
                 </AuthSameUser>
               </AuthUser>
-            </div>
+            </Link>
           </div>
         </div>
       </div>
@@ -346,7 +343,7 @@ const Profile = ({ id, tab }) => {
                   onClick={(e) => {
                     editSkills && setSkills(skills.filter((s) => s !== skill));
                   }}
-                  key={i}
+                  key={`skills/${skill}`}
                   className={`bg-[#F8CB6A] ${
                     !editSkills ? "" : "cursor-pointer"
                   } px-3 py-1 rounded-2xl`}
@@ -381,7 +378,7 @@ const Profile = ({ id, tab }) => {
                     if (skill.toLowerCase().includes(filter.toLowerCase())) {
                       return (
                         <p
-                          key={i}
+                          key={`allSkills/${skill}`}
                           onClick={(e) => {
                             if (
                               ![...skills, ...editedSkills].includes(skill) &&
@@ -453,9 +450,9 @@ const Profile = ({ id, tab }) => {
           </AuthUser>
         </div>
       </div>
-      <div className="px-10 py-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-3 content-center">
+      <div key={'/user/Profile'} className="px-10 py-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-3 content-center">
         {currentTab.length != 0 ? (
-          currentTabData?.map((blogId, i) => <FetchProfileBlog id={blogId} />)
+          currentTabData?.map((blogId, i) => <FetchProfileBlog key={blogId} id={blogId} />)
         ) : 
           <>No {console.log("Holla yaha to kuch nhi h") && currentTab} Yet...</>
         }

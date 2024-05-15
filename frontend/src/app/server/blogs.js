@@ -3,6 +3,8 @@ import axios from "axios";
 const url = "http://localhost:8000/api/v1/blog";
 // const url = "https://blogapp-4fjb.onrender.com/api/v1/blog"
 
+let isViewedCalled = false;
+
 export const getAllBlogs = async () => {
   const response = await axios.get(url);
   const blogs = response.data.data["blogs"];
@@ -133,19 +135,57 @@ export const getBlogById = async (id) => {
   }
 };
 
-export const viewBlogById = async (id) => {
-  try {
-    const response = await axios.post(
-      `${url}/${id}/view`, 
-      {},
-      { withCredentials: true }
-    );
 
-    return response.data.data["blog"];
-  } catch (error) {
-    throw error;
+export const viewBlog = async (id) => {
+  if(!isViewedCalled){
+    try {
+      isViewedCalled = true;
+      const response = await axios.post(
+        `${url}/${id}/view`, 
+        {},
+        { withCredentials: true }
+      );
+  
+      return response.data.data["blog"];
+    } catch (error) {
+      throw error;
+    } finally{
+      setTimeout(function () {
+        isViewedCalled = false;
+      }, 1000);
+    }
   }
-};
+}
+
+// export function limiter(fn, wait) {
+//   let isCalled = false;
+
+//   return async function (...args) {
+//       if (!isCalled) {
+//           isCalled = true;
+//           try {
+//               const response = await fn(...args);
+//               return response;
+//           } catch (error) {
+//               // Handle errors here if needed
+//               console.error(error);
+//           } finally {
+//               setTimeout(function () {
+//                   isCalled = false;
+//               }, 5000);
+//           }
+//       }
+//       else{
+//         console.log("Abhi to run h bhai kya kr rha h")
+//       }
+//   };
+// }
+
+// export const viewBlog = async(id) => {
+//   const wrapper = limiter(viewBlogById, 2000)
+//   const data = await wrapper(id);
+//   return data;
+// };
 
 export const comment = async (id, content) => {
   try {
@@ -156,6 +196,16 @@ export const comment = async (id, content) => {
     );
 
     return response.data.data["comment"];
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const serachBlog = async (query, tag) => {
+  try {
+    const response = await axios.get(`${url}/filter?title=${query}&tag=${tag}`);
+
+    return response.data.data["blogs"];
   } catch (error) {
     throw error;
   }

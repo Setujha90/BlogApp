@@ -26,7 +26,7 @@ const BlogCard = ({ data }) => {
   return (
     <>
       {data.map((blog, i) => (
-        <Blogs blog={blog} userData={userData} i={i} />
+        <Blogs blog={blog} key={`blog-${i}`} userData={userData} i={i} />
       ))}
     </>
   );

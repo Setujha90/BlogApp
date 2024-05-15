@@ -15,17 +15,16 @@ const Header = () => {
 
   return (
     <>
-      <div className="sticky z-50 top-0 flex items-center justify-between bg-[#e2e2e2c2] backdrop-blur-sm px-5 py-2 text-sm md:px-12">
-        <div>
+      <div className="sticky z-50 top-0 flex items-center justify-center backdrop-blur-sm px-5 py-2 text-sm md:px-12">
+        {/* <div>
           <Link href={"/"}>Vishal's Blog</Link>
-        </div>
+        </div> */}
 
-        <div className="relative md:w-[50%] flex flex-col justify-center items-center">
+        <div className="relative md:w-[75%] flex flex-col justify-center items-center">
           <UserFilter />
         </div>
         
-        <div>
-          {/* <div>Dark/Light</div> */}
+        {/* <div>
           {user ? (
             <div className="relative">
               {loading && <Spinner width={50} height={50} />}
@@ -61,7 +60,7 @@ const Header = () => {
               </Link>
             </div>
           )}
-        </div>
+        </div> */}
       </div>
     </>
   );

@@ -11,7 +11,6 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
 const ButtonBar = ({blog, like, noOfComments}) => {
-  
   const dispatch = useDispatch()
   
   const [currentBlog, setCurrentBlog] = useState(blog)

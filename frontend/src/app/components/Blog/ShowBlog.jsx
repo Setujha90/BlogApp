@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { deleteBlog, getBlogById, likeBlog, viewBlogById } from "@/app/server/blogs";
+import { deleteBlog, getBlogById, likeBlog, limiter, viewBlog, viewBlogById } from "@/app/server/blogs";
 import { userById } from "@/app/server/signup";
 import WriteComment from "./WriteComment";
 import { useRouter } from "next/navigation";
@@ -10,21 +10,21 @@ import Image from "next/image";
 import ButtonBar from "./ButtonBar";
 
 const ShowBlog = ({ id }) => {
+
   const [blog, setBlog] = useState({});
   const [owner, setOwner] = useState({});
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState([]);
   const [like, setLike] = useState();
+  const [isViewedCalled, setIsViewedCalled] = useState(false);
 
-  const router = useRouter();
-
-  const dispatch = useDispatch();
   const loggedInUser = useSelector((state) => state.user.currentUser);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const blogData = await viewBlogById(id);
+        await viewBlog(id);
+        const blogData = await getBlogById(id);
         setBlog(blogData);
 
         const writer = await userById(blogData.owner);
@@ -39,21 +39,25 @@ const ShowBlog = ({ id }) => {
         setLoading(false);
       }
     }
-    fetchData();
+
+    if(!isViewedCalled){
+      fetchData();
+    }
   }, []);
 
-  useEffect(() => {
-    async function updateLikes() {
-      try {
-        const blogData = await getBlogById(id);
-        setLike(blogData.noOfLikes);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
+  // useEffect(() => {
+  //   async function updateLikes() {
+  //     console.log("Ye walla function to run nhi hona chaiye tha n???")
+  //     try {
+  //       const blogData = await getBlogById(id);
+  //       setLike(blogData.noOfLikes);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   }
 
-    updateLikes();
-  }, [loggedInUser])
+  //   updateLikes();
+  // }, [loggedInUser])
 
   // if (loading) {
   //   return <div>Loading...</div>;
@@ -62,13 +66,13 @@ const ShowBlog = ({ id }) => {
   return (
 
     !loading &&
-    <div className="flex flex-col justify-center items-center w-[80%] text-xs px-10 py-6 bg-white mx-auto rounded-xl">
+    (<div className="flex flex-col justify-center items-center w-[80%] text-xs px-10 py-6 bg-white mx-auto rounded-xl">
       {/* title plus profile */}
       <div className="flex justify-center items-center flex-col">
         <h1 className="text-2xl font-bold w-[100%]">{blog.title}</h1>
         {/* profile section */}
         <div className="flex items-center gap-2 py-2">
-          <Image className="w-[50px] h-[50px] object-cover object-fit rounded-full" width={60} height={60} src={owner.avatarImage} />
+          <Image className="w-[50px] h-[50px] object-cover object-fit rounded-full" width={60} height={60} src={owner.avatarImage} alt="Author Image" />
           <div className=" justify-start">
             <p>@{owner.username} | {loggedInUser?.followings?.includes(owner._id) ? "Unfollow" : "Follow"}</p>
             <small>{formatRelativeTime(blog.createdAt)}</small>
@@ -108,7 +112,7 @@ const ShowBlog = ({ id }) => {
       {/* related posts */}
       <div>
       </div>
-    </div>
+    </div>)
 
 // {/* <div>
 //   <div>

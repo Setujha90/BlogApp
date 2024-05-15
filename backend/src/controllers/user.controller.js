@@ -236,7 +236,7 @@ export const getUserById = asyncHandler(async (req, res) => {
 });
 
 export const getAllUsers = asyncHandler(async (req, res) => {
-  const user = await User.find()?.select("-password -refreshToken -role");
+  const user = await User.find()?.select("-password -refreshToken -role")?.sort({createdAt : -1});
 
   if (!user) {
     throw new ApiError(500, "Error on server");
@@ -499,7 +499,7 @@ export const searchUser = asyncHandler(async (req, res) => {
 
   const users = await User.find({
     $or: searchQuery,
-  })?.select("-password -refreshToken -role");
+  })?.select("-password -refreshToken -role")?.sort({createdAt: -1});
 
 
   return res.status(200).json(new ApiResponse(200, 

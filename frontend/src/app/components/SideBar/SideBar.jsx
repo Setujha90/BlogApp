@@ -6,6 +6,7 @@ import LinkButton from './LinkButton'
 import { useSelector } from 'react-redux'
 import Logout from '../Logout';
 import Followings from './Followings';
+import Link from 'next/link';
 
 const SideBar = () => {
 
@@ -13,13 +14,18 @@ const SideBar = () => {
 
   return (
     <>
-	<div className='hidden fixed top-16 md:flex flex-col text-sm gap-5 pl-5 w-[15%]'>
-			{/* sb buttons yaha */}
+	<div className='hidden fixed top-5 md:flex flex-col justify-center text-sm gap-5 pl-5 w-[15%]'>
+			
+      <Link href='/' className='mx-auto'>
+        Vishal's Blog
+      </Link>
+
+      {/* sb buttons yaha */}
       <div className='flex flex-col gap-1'>
 				<LinkButton type={'Profile'} icon={faIdBadge} link={`/user/${user?._id}`} />
 				<LinkButton type={'Feeds'} icon={faBlogger} />
 				<LinkButton type={'Create Blog'} icon={faSquarePlus} link={`/blog/create`} />
-				<LinkButton type={'Friends'} icon={faUserGroup} />
+				<LinkButton type={'Friends'} icon={faUserGroup} link={`/user/friends`} />
 				<LinkButton type={'Community'} icon={faTowerBroadcast} />
 				<LinkButton type={'Messages'} icon={faPaperPlane} />
         <LinkButton icon={faRightFromBracket} >

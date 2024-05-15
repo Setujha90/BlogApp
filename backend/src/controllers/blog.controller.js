@@ -59,7 +59,7 @@ export const createBlog = asyncHandler(async (req, res) => {
 
   const userBlogUpdate = await User.findById(user._id).select("-password -refreshToken -role");
 
-  userBlogUpdate.blogs.push(blog._id);
+  userBlogUpdate.blogs.unshift(blog._id);
   await userBlogUpdate.save({ validateBeforeSave: false });
 
   return res.status(200).json(
@@ -467,7 +467,7 @@ export const likeBlog = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Error while updating the likes of blog");
   }
 
-  userLikedBlogs.likedBlogs.push(blogId);
+  userLikedBlogs.likedBlogs.unshift(blogId);
   await userLikedBlogs.save({ validateBeforeSave: false });
 
   return res.status(200).json(
@@ -496,6 +496,10 @@ export const getBlogById = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Blog id is invalid");
   }
 
+  if(blog.status !== "published"){
+    throw new ApiError(400, "Blog does not exist");
+  }
+
   return res.status(200).json(
     new ApiResponse(
       200,
@@ -511,10 +515,6 @@ export const viewBlog = asyncHandler(async (req, res) => {
   const blogId = req.params.id;
   const user = req.user;
 
-  if (!user) {
-    return res.status(200).json("Done");
-  }
-
   if (!blogId) {
     throw new ApiError(400, "Blog id is required");
   }
@@ -525,36 +525,17 @@ export const viewBlog = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Blog id is invalid");
   }
 
-  const blogObjectId = new mongoose.Types.ObjectId(`${blogId}`);
-
-  const isAlreadyViewed = await View.aggregate([
-    {
-      $match: {
-        blog: blogObjectId,
-        user: user._id,
-      },
-    },
-  ]);
-
-  if(isAlreadyViewed.length > 1){
-    for(let i = 1; i < isAlreadyViewed.length; i++){
-      await View.findByIdAndDelete(isAlreadyViewed[i]._id);
-    }
+  if (!user) {
+    return res.status(200).json(new ApiResponse(200, { blog }, "View not registered since user is not logged in!!!"));
   }
 
-  if (isAlreadyViewed.length > 0) {
-    return res.status(200).json(
-      new ApiResponse(
-        200,
-        {
-          blog
-        },
-        "Blog already viewed"
-      )
-    );
+  const isViewed = await View.findOne({ user: user._id, blog: blogId });
+
+  if(isViewed){
+    return res.status(200).json(new ApiResponse(200, { blog }, "View not registered since user has already viewed this blog!!!"));
   }
 
-  const viewedDocument = await View.create({
+  await View.create({
     blog: blogId,
     user: user._id,
   });
@@ -566,24 +547,28 @@ export const viewBlog = asyncHandler(async (req, res) => {
   }
 
   if (!userHistory.blogHistory.includes(blogId)) {
-    userHistory.blogHistory.push(blogId);
-    await userHistory.save({ validateBeforeSave: false });
+    await User.updateOne(
+      { _id: user._id },
+      { $push: { blogHistory: { $each: [blogId], $position: 0 } } }
+    );
   }
 
-  blog.noOfViews += 1;
-  await blog.save({ validateBeforeSave: false });
+  await Blog.updateOne(
+    { _id: blogId },
+    { $inc: { noOfViews: 1 } }
+  );
 
   return res.status(200).json(
     new ApiResponse(
       200,
       {
         blog,
-        viewedDocument,
       },
       "Blog viewed"
     )
   );
 });
+
 
 export const comment = asyncHandler(async (req, res) => {
   const blogId = req.params.id;
@@ -636,3 +621,39 @@ export const comment = asyncHandler(async (req, res) => {
     )
   );
 });
+
+export const searchBlog = asyncHandler(async (req, res) => {
+  const { title, tag } = req.query;
+  const searchQuery = [];
+
+  
+  if (title) {
+    searchQuery.push(
+      { title: { $regex: new RegExp(title, "gi") }},
+      { description: { $regex: new RegExp(title, "gi")}},
+    );
+  }
+
+  if (tag || tag?.length > 0) {
+    searchQuery.push({ tags: { $in: tag } });
+  }
+
+  const blogs = await Blog.find({
+    $or: searchQuery,
+    $and: [{status : "published"}],
+  })?.select("title description id")?.sort({createdAt : -1});
+
+  if (!blogs) {
+    throw new ApiError(500, "Error while fetching the blogs");
+  }
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        blogs,
+      },
+      "Fetched blogs successfully"
+    )
+  );
+})

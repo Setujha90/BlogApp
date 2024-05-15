@@ -33,7 +33,7 @@ const FetchProfileBlog = ({ id }) => {
 
   return (
 
-    <div className="bg-[#e2e2e2c2] w-[258px] h-fit text-xs rounded-md">
+    <div key={`Profile/blog/${id}`} className="bg-[#e2e2e2c2] w-[258px] h-fit text-xs rounded-md">
       <Link href={`/blog/${blog._id}`}>
         <div className="p-1">
           {/* 600 * 400 */}
